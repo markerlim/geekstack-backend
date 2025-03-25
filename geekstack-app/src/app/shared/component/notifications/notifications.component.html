@@ -1,0 +1,19 @@
+<div class="holder">
+  <div class="notification-content">
+    @for (item of listofnotif; track $index) {
+    <div class="notification-bubble" (click)="redirectToPost(item.postId)">
+      <div class="actor-holder">
+        <div class="actor-dp">
+          <img [src]="item.senderDp" />
+        </div>
+        <div class="actor-name">
+          <strong>{{ item.senderName }}</strong> {{ item.message }}
+        </div>
+      </div>
+      <div>
+        {{ item.timestamp | timeAgo }}
+      </div>
+    </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,108 @@
+.card-effect-holder {
+    background-color: #26262d;
+    width: calc(100% - 20px);
+    height: 435px;
+    border-radius: 20px 20px 0px 0px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 15px;
+    padding-bottom: 50px;
+    gap: 3px;
+  }
+  
+  .close-btn {
+    background-color: #d14a5b;
+    padding: 3px;
+    text-align: center;
+    width: calc(100% - 6px);
+    border-radius: 3px;
+    flex: 0 0 auto;
+    cursor: pointer;
+  }
+  
+/* Container holding the image */
+.image-container {
+  text-align: center;
+}
+
+/* Default image styling */
+.modal-img {
+  width: 200px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+/* Zoom effect */
+.zoomed-in {
+  transform: scale(1.5);
+}
+
+/* Overlay for full-screen zoom */
+.zoom-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+/* Zoomed-in image */
+.zoomed-image {
+  max-width: 90%;
+  max-height: 90%;
+  border-radius: 8px;
+  transition: transform 0.3s ease-in-out;
+  cursor: pointer;
+}
+
+  
+  .card-table {
+    width: 100%;
+  }
+  
+  .card-table td:nth-child(1) {
+    background-color: rgb(52, 23, 95);
+    color: #f2f3f8;
+    width: 20%;
+    text-align: start;
+    font-size: 14px;
+    padding: 5px;
+  }
+  
+  .card-table td:nth-child(2) {
+    background-color: rgb(176, 125, 202);
+    color: #26262d;
+    text-align: start;
+    font-size: 14px;
+    padding: 5px;
+  }
+  
+  .tcg-text {
+    font-size: 14px;
+  }
+  
+  .table-scroll {
+    overflow-y: auto; /* Ensure scrolling */
+    height: calc(100% - 35px); /* Make sure the table has space for scrolling */
+    padding-bottom: 30px;
+  }
+
+  .buffer{
+    width: 100%;
+    background-color: #00000054;
+    height: calc(100% - 500px);
+  }
+  
+  ::ng-deep .tcg-icon {
+    height: 14px;
+    vertical-align: middle;
+  }
+  

@@ -1,0 +1,43 @@
+<div class="modal-content" (click)="stopPropagation($event)">
+  <div class="logo">
+    <img alt="geekstack" src="/icons/geekstackicon.svg" />
+  </div>
+
+  <div class="heading">
+    <strong>GEEKSTACK</strong>
+  </div>
+
+  <span class="title">Welcome to the place for Cards!</span>
+
+  <form [formGroup]="form" (ngSubmit)="loginWithEmailAndPassword()">
+    <input
+      class="input-field"
+      id="email"
+      type="email"
+      placeholder="Email"
+      formControlName="email"
+      required
+    />
+    <input
+      class="input-field"
+      id="password"
+      type="password"
+      placeholder="Password"
+      formControlName="password"
+      required
+    />
+    <button type="submit" class="login-button" [disabled]="form.invalid">
+      Login
+    </button>
+  </form>
+
+  <br />
+  <button class="google-login-button" (click)="signInWithGoogle()">
+    <mat-icon aria-hidden="false" aria-label="google-login-button">
+      <img src="/google_w.svg" alt="google" />
+    </mat-icon>
+    Login with Google
+  </button>
+
+  <p>Don't have an account? <a class="register-link" href="register">Register</a></p>
+</div>

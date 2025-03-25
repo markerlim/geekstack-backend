@@ -1,0 +1,87 @@
+<div class="register-body">
+  <img class="background" [src]="backgroundImage" />
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" class="form">
+    <p class="title">Register</p>
+    <p class="message">Signup now and get full access to our app.</p>
+    <label>
+      <input
+        class="input"
+        type="text"
+        placeholder=""
+        required=""
+        formControlName="username"
+      />
+      <span>Username</span>
+      @if (form.get('username')?.invalid && form.get('username')?.touched) {
+      <div class="error-msg">
+        @if (form.get('username')?.errors?.['required']) {
+        <div>Username is required.</div>
+        } @if (form.get('username')?.errors?.['minlength']) {
+        <div>Username must be at least 7 characters long.</div>
+        }
+      </div>
+      }
+    </label>
+    <label>
+      <input
+        class="input"
+        type="email"
+        placeholder=""
+        required=""
+        formControlName="email"
+      />
+      <span>Email</span>
+      @if (form.get('email')?.invalid && form.get('email')?.touched) {
+      <div class="error-msg">
+        @if (form.get('email')?.errors?.['required']) {
+        <div>Email is required.</div>
+        } @if (form.get('email')?.errors?.['email']) {
+        <div>Please enter a valid email address.</div>
+        }
+      </div>
+      }
+    </label>
+
+    <label>
+      <input
+        class="input"
+        type="password"
+        placeholder=""
+        required=""
+        formControlName="password"
+      />
+      <span>Password</span>
+      @if (form.get('password')?.invalid && form.get('password')?.touched) {
+      <div class="error-msg">
+        @if (form.get('password')?.errors?.['required']) {
+        <div>Password is required.</div>
+        } @if (form.get('password')?.errors?.['minlength']) {
+        <div>Password must be at least 6 characters long.</div>
+        }
+      </div>
+      }
+    </label>
+    <label>
+      <input
+        class="input"
+        type="password"
+        placeholder=""
+        required=""
+        formControlName="confirmPassword"
+      />
+      <span>Confirm password</span>
+      @if (form.get('confirmPassword')?.invalid &&
+      form.get('confirmPassword')?.touched) {
+      <div class="error-msg">
+        @if (form.get('confirmPassword')?.errors?.['required']) {
+        <div>Confirm Password is required.</div>
+        } @if (form.get('confirmPassword')?.errors?.['mismatch']) {
+        <div>Passwords do not match.</div>
+        }
+      </div>
+      }
+    </label>
+    <button class="submit">Submit</button>
+    <p class="signin">Already have an acount ? <a href="#">Signin</a></p>
+  </form>
+</div>

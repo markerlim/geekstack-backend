@@ -1,0 +1,202 @@
+/* Action bar container */
+.actionbar {
+  height: 150px;
+  width: calc(100% - 40px);
+  flex:0 0 auto;
+  background-color: #121212;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  box-shadow: var(--shadow);
+}
+
+/* Content wrapper */
+.actionbar-content {
+  display: flex;
+  flex-direction: row;
+  align-items : center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+}
+.actionbar-subcontent {
+  display: flex;
+  flex-direction: column;
+  gap:5px;
+}
+.action-buttons{
+  display:flex;
+  flex-direction: row;
+  padding:3px;
+  overflow: hidden;
+}
+
+/* Buttons styling */
+.actionbar-button {
+  background: var(--button-bg);
+  color: var(--text-light);
+  border: none;
+  padding: 12px 20px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+
+.cover-button{
+  width:70px;
+  height:97.65px;
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  flex:0 0 auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.stats-holder{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+  gap:5px;
+}
+
+.stats-holder div{
+  display: flex;
+  flex-direction: row;
+  flex: 0 0 auto;
+  align-items: center;
+}
+
+.stats-text-error{
+  color:#d14a5b;
+  font-weight: 900;
+}
+.energy-img{
+  width:20px;
+}
+
+@media (max-width:599px) {
+  .cover-button{
+    width:50px;
+    height: 69.75px;
+  }
+
+  .actionbar{
+    height: 140px;
+  }
+}
+
+
+.cover-button img{
+  width: inherit;
+  height: inherit;
+}
+
+.actionbar-button:hover {
+  background: var(--button-hover-bg);
+}
+
+/* Deck name input field */
+.deck-name-input {
+  background-color: var(--input-bg);
+  color: var(--text-light);
+  border: 1px solid #7b4fff8c;
+  padding: 12px;
+  border-radius: 8px;
+  flex-grow: 1;
+  max-width: 300px;
+  font-size: 14px;
+  transition: var(--transition);
+  box-shadow: var(--shadow);
+}
+
+.deck-name-input:focus {
+  outline: none;
+  border-color: #7c4fff;
+}
+
+/* Hamburger menu (hidden by default) */
+.hamburger-menu {
+  display: block;
+  position: relative;
+}
+
+.hamburger-button {
+  background: var(--button-bg);
+  color:#7c4fff;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+
+.hamburger-button:hover {
+  background: var(--button-hover-bg);
+}
+
+/* Dropdown actions */
+.dropdown-actions {
+  position: absolute;
+  top: 50%;
+  right: 50%;
+  background: var(--background-dark);
+  box-shadow: var(--shadow);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: 1s ease-in-out;
+}
+
+.dropdown-button{
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  background-color: #222222;
+  color:#7c4fff;
+  border:none;
+  display: flex;
+  gap:5px;
+  font-size: 16px;
+  align-items: center;
+  transition: 1s ease-in-out;
+}
+
+/* Fade-in animation for dropdown */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  /* Hide regular action buttons */
+  .action-buttons {
+    display: none;
+  }
+
+  /* Adjust input field width */
+  .deck-name-input {
+    max-width: 200px;
+  }
+}

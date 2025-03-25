@@ -1,0 +1,116 @@
+.card-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  max-height: calc(100vh - 161px); /* Adjust this to the desired height */
+  overflow-y: scroll;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  gap: 16px;
+  position:relative;  
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: #666 #333; /* Firefox */
+}
+
+/* Styling the scrollbar for WebKit-based browsers (Chrome, Safari) */
+.card-list::-webkit-scrollbar {
+  width: 12px; /* Set the width of the scrollbar */
+}
+
+/* Scrollbar track */
+.card-list::-webkit-scrollbar-track {
+  background: #333; /* Dark track color */
+  border-radius: 10px;
+}
+
+/* Scrollbar thumb */
+.card-list::-webkit-scrollbar-thumb {
+  background: #666; /* Light dark color for the thumb */
+  border-radius: 10px;
+  border: 3px solid #333; /* Optional border to make it pop */
+}
+
+/* Hover state for the scrollbar thumb */
+.card-list::-webkit-scrollbar-thumb:hover {
+  background: #999; /* Lighter color on hover */
+}
+
+/* Optional: Scrollbar corner (where two scrollbars meet) */
+.card-list::-webkit-scrollbar-corner {
+  background: #333; /* Corner color */
+}
+
+.card-item {
+  text-align: center;
+  width: 200px;
+  cursor: pointer;
+}
+
+.card-item img {
+  width: inherit;
+}
+
+.card-item p {
+  color: #f2f3f8;
+}
+
+.action-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+  padding: 10px;
+}
+
+.action-bar div {
+  display: flex;
+  flex-direction: column;
+}
+
+.action-bar label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: #333;
+}
+
+select {
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  width: 150px;
+  background-color: white;
+  transition: border-color 0.3s ease;
+}
+
+select:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+option {
+  padding: 10px;
+  font-size: 14px;
+}
+
+select:hover {
+  border-color: #007bff;
+}
+
+@media (max-width: 599px) {
+  .card-item {
+    width: 100px;
+  }
+}
+
+.reset-btn {
+  width: 36px;
+  height: 36px;
+  color: #f2f3f8;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  background-color: #7c4fff;
+  cursor: pointer;
+}

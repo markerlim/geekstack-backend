@@ -1,0 +1,16 @@
+<div class="search-container">
+    <mat-icon class="search-icon">search</mat-icon>
+    <input type="text" class="search-input" (keydown.enter)="onSearch($event)" placeholder="Search Geekstack">
+    <div class="dropdown-container">
+        <div class="custom-dropdown" [class.active]="isDropdownOpen" (click)="toggleDropdown()">
+            <div class="selected-option">
+                <img [src]="selectedGame.icon" [alt]="selectedGame.name">
+            </div>
+            <ul class="dropdown-options">
+                <li *ngFor="let game of games" (click)="selectGame(game)">
+                    <img [src]="game.icon" [alt]="game.name">
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,25 @@
+<div class="user-page">
+  <div class="user-image">
+    <img [src]="user.displaypic" />
+  </div>
+  <div class="user-name">
+    <input
+    #inputField
+      type="text"
+      [(ngModel)]="nameValue"
+      [disabled]="!isNameEdit"
+    />
+    <mat-icon (click)="onEdit()">edit</mat-icon>
+  </div>
+  @if (isNameEdit) {
+  <div class="edit-buttons">
+    <div (click)="onSave(true)">
+        <mat-icon>save</mat-icon>
+    </div>
+    <div (click)="onSave(false)">
+        <mat-icon>cancel</mat-icon>
+    </div>
+  </div>
+  }
+  <app-tab-content></app-tab-content>
+</div>

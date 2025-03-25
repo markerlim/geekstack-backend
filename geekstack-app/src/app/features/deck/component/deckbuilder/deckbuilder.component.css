@@ -1,0 +1,145 @@
+/* Dark theme for the overall container */
+.deckbuilder-main {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    color: #f2f3f8;
+}
+
+/* Style for the card list and builder */
+.db-cardlist {
+    width: 50%;
+    height: calc(100vh);
+}
+.db-cardlist-mobile{
+    width: 100% !important;
+    height: calc(100%);
+    transform: translateY(100%);
+    position: fixed;
+    bottom:0;
+    z-index: 100;
+    transition: 0.3s ease-in-out;
+    overflow: hidden;
+}
+.active{
+    transform: translateY(0);
+}
+
+.overlay{
+    position: absolute;
+    width: 100%;
+    background-color: #00000054;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    position: fixed;
+    z-index: 50;
+}
+
+
+.open-cardlist{
+    position:fixed;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    bottom: 67px;
+    width: calc(100% - 16px);
+    background-color: #202020;
+    border-radius: 15px 15px 0px 0px;
+    text-align: center;
+    padding:8px;
+    height:20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.db-cardbuild-mobile{
+    width: 100% !important;
+    border: none !important;
+
+}
+
+.db-cardbuild{
+    width: 50%;
+    overflow-y: auto;
+    border-left: 1px solid rgb(41, 51, 62);
+
+}
+/* Customize scrollbar for the dark theme */
+.db-cardlist::-webkit-scrollbar, .db-cardbuild::-webkit-scrollbar {
+    width: 12px; /* Set the width of the scrollbar */
+}
+
+/* Scrollbar track (background) */
+.db-cardlist::-webkit-scrollbar-track, .db-cardbuild::-webkit-scrollbar-track {
+    background: #333; /* Dark track color */
+    border-radius: 10px;
+}
+
+/* Scrollbar handle (the draggable part) */
+.db-cardlist::-webkit-scrollbar-thumb, .db-cardbuild::-webkit-scrollbar-thumb {
+    background: #666; /* Lighter dark color for the handle */
+    border-radius: 10px;
+    border: 3px solid #333; /* Optional border to give it a "neon" look */
+}
+
+/* Scrollbar handle when hovered */
+.db-cardlist::-webkit-scrollbar-thumb:hover, .db-cardbuild::-webkit-scrollbar-thumb:hover {
+    background: #999; /* Lighter color on hover */
+}
+
+/* Optional: Scrollbar corner if needed */
+.db-cardlist::-webkit-scrollbar-corner, .db-cardbuild::-webkit-scrollbar-corner {
+    background: #333; /* Corner color */
+}
+
+.deckcovermodal{
+    display:none;
+    position:absolute;
+    z-index: 100;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    justify-content: center;
+    align-items: center;
+}
+
+.deckloadmodal{
+    display:none;
+    position:absolute;
+    z-index: 100;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    justify-content: center;
+    align-items: center;
+}
+.deckcovermodel-mobile{
+    width: 100% !important;
+    height: calc(100%);
+    position: absolute;
+    top:100%;
+    background-color: #111418;
+    z-index: 100;
+    transition: 0.3s ease-in-out;
+    overflow: hidden;
+    border-radius: 20px 20px 0px 0px;
+}
+
+.deckloadmodel-mobile{
+    width: 100% !important;
+    height: calc(100%);
+    position: absolute;
+    top:100%;
+    background-color: #111418;
+    z-index: 100;
+    transition: 0.3s ease-in-out;
+    overflow: hidden;
+    border-radius: 20px 20px 0px 0px;
+}
+
+.modalActive{
+    display:block;
+    transform: translateY(-80%);
+}

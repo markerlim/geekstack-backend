@@ -1,0 +1,135 @@
+/* Form Container */
+form {
+  padding: 24px;
+  border-radius: 10px;
+  width: calc(100% - 48px);
+  max-width: 600px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Headline Input Field */
+input[type="text"] {
+  width: calc(100% - 32px);
+  padding: 12px 16px;
+  font-size: 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  outline: none;
+  border: none;
+  background-color: #26262d00;
+  color:#f2f3f8;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  border-color: #3b82f6;
+}
+
+.line-sep{
+    height: 1px;
+    background-color: #7c4fff;
+}
+
+/* Textarea Field */
+textarea {
+    width: calc(100% - 32px);
+    padding: 12px 16px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  min-height: 120px;
+  outline: none;
+  resize: none;
+  background-color: #26262d00;
+  color:#f2f3f8;
+  transition: border-color 0.3s ease;
+}
+
+textarea:focus {
+  border-color: #3b82f6;
+}
+
+/* Submit Button */
+button {
+  width: 100%;
+  padding: 12px;
+  background-color: #3b82f6;
+  color: white;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #2563eb;
+}
+
+button:disabled {
+  background-color: #b0d0f5;
+  cursor: not-allowed;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  form {
+    padding: 16px;
+  }
+
+  input[type="text"],
+  textarea,
+  button {
+    font-size: 14px;
+  }
+}
+.decks-holder{
+  display: flex;
+  flex-direction: row;
+  gap:10px;
+  overflow-x: auto;
+}
+.deck-item{
+  position: relative;
+  width: fit-content;
+}
+.deck-item img{
+  width:var(--card-width);
+}
+.cover-dp{
+  border-radius: 10px;
+}
+.cover{
+  position: absolute;
+}
+.deckSelected{
+  display: block;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+  bottom:10px
+}
+
+.tabs{
+  padding-top: 10px;
+  padding-bottom:10px;
+  color:#7c4fff;
+  display:flex;
+  flex-direction:row;
+  justify-content: center;
+}
+
+.tabs input{
+  display: none;
+}
+.tabs label{
+  width: 50%;
+  padding-top: 8px;
+  padding-bottom:8px;
+  text-align: center;
+  transition: background-color 0.3s ease-in-out;
+}
+.highlight{
+  background-color: #f2f3f8;
+}

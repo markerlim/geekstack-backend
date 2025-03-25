@@ -1,0 +1,49 @@
+/* You can add global styles to this file, and also import other style files */
+body {
+  margin: 0px !important;
+  background-color: rgb(16, 20, 24);
+  font-family: "Roboto", sans-serif;
+  overflow: hidden;
+}
+
+:root {
+  --card-width: 125px;
+  --stack-height: 250px;
+}
+
+@media (max-width: 599px) {
+  :root {
+    --card-width: 90px;
+  }
+}
+
+@media (min-width: 600px) and (max-width: 959px) {
+  :root {
+    --card-width: 125px;
+  }
+}
+
+@media (min-width: 960px) and (max-width: 1500px) {
+  :root {
+    --card-width: 150px;
+  }
+}
+
+@media (min-width: 1501px) {
+  :root {
+    --card-width: 300px;
+  }
+}
+
+.overlay {
+  position: absolute;
+  width: 100%;
+  background-color: #00000054;
+  height: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  position: fixed;
+  z-index: 50;
+}

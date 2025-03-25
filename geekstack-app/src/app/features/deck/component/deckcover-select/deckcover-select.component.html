@@ -1,0 +1,18 @@
+
+@if(cardsInDeck.length == 0){
+<div class="message">No cards in deck list</div>
+} @else {
+<div class="card-select-list" [ngClass]="{'mobile':isSmallScreen}">
+  <div class="flex-row">
+    @for (cardData of cardsInDeck; track cardData.card.cardUid) {
+    <app-tcg-image
+      [card]="cardData.card"
+      [isMini]="true"
+      [isClickable]="false"
+      (click)="whenCardSelected(cardData.card)"
+    ></app-tcg-image>
+    }
+  </div>
+  <div (click)="whenSelected($event)">close</div>
+</div>
+} 

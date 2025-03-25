@@ -1,0 +1,31 @@
+export interface CardUnionArena {
+  _id: string;
+  anime: string;
+  animeCode: string;
+  apcost: number;
+  banRatio: number;
+  banWith: string;
+  basicpower: string;
+  booster: string;
+  cardId: string;
+  cardUid: string;
+  cardName: string;
+  cardNameLower: string;
+  category: string;
+  color: string;
+  effect: string;
+  energycost: number;
+  energygen: string;
+  image: string;
+  rarity: string;
+  traits: string;
+  trigger: string;
+  triggerState: string;
+  urlimage: string;
+  rarityAct: string;
+  cardcode: string;
+  price_yyt_id: string;
+  price_fulla_id: string;
+  YYT: string;
+  FULLA: string;
+}

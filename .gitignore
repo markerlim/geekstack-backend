@@ -1,0 +1,50 @@
+# Global IDE and editor files
+.idea/
+.project
+.classpath
+.settings/
+*.launch
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+
+# Cards project ignores
+cards/HELP.md
+cards/target/
+cards/.apt_generated
+cards/.factorypath
+cards/.springBeans
+cards/.sts4-cache
+cards/src/main/resources/firebase/
+!cards/.mvn/wrapper/maven-wrapper.jar
+!cards/**/src/main/**/target/
+!cards/**/src/test/**/target/
+!cards/**/src/main/**/build/
+!cards/**/src/test/**/build/
+
+# Geekstack-app ignores
+geekstack-app/dist/
+geekstack-app/tmp/
+geekstack-app/out-tsc/
+geekstack-app/bazel-out/
+geekstack-app/node_modules/
+geekstack-app/npm-debug.log
+geekstack-app/yarn-error.log
+geekstack-app/.angular/cache/
+geekstack-app/.sass-cache/
+geekstack-app/connect.lock
+geekstack-app/coverage/
+geekstack-app/libpeerconnection.log
+geekstack-app/testem.log
+geekstack-app/typings/
+geekstack-app/src/environments/*
+geekstack-app/android/app/google-services.json
+geekstack-app/.vercel/

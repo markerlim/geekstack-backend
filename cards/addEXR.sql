@@ -1,0 +1,8 @@
+USE geekstack;
+
+CREATE TABLE exc_rate (
+    base VARCHAR(3) NOT NULL,
+    symbol VARCHAR(3) NOT NULL,
+    value FLOAT NOT NULL,
+    timestamp TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);

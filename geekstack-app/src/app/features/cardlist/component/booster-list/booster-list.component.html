@@ -1,0 +1,23 @@
+<div class="booster-list">
+  @for (booster of boosterList; track $index) {
+  <ng-container>
+    @if (tcgPath === 'duelmasters') {
+    <div class="booster-item">
+      <button (click)="onBoosterClick(booster.pathname)">
+        {{ booster.pathname }}
+      </button>
+    </div>
+    } 
+    @if (tcgPath !== 'duelmasters') {
+    <div class="booster-item">
+      <img
+        [src]="booster.imageSrc"
+        [alt]="booster.alt"
+        [width]="booster.imgWidth"
+        (click)="onBoosterClick(booster.pathname)"
+      />
+    </div>
+    }
+  </ng-container>
+  }
+</div>

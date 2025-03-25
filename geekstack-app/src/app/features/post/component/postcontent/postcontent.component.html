@@ -1,0 +1,44 @@
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
+  <div class="decks-holder">
+    @for (item of decksOfUser; let i = $index; track item.deckuid) {
+    <div class="deck-item" (click)="selectDeck(i)">
+      <img class="cover" src="/images/deckcovertemplate.png" />
+      <img class="cover-dp" [src]="item.deckcover" />
+      @if (selectedDeckIndex === i) {
+      <div class="deckSelected">Selected</div>
+      }
+    </div>
+    }
+  </div>
+  <br />
+  <input type="text" placeholder="Add a headline!" formControlName="headline" />
+  <div class="line-sep"></div>
+  <textarea
+    placeholder="Pen down your thoughts..."
+    formControlName="content"
+  ></textarea>
+  <div class="line-sep"></div>
+  <div class="tabs">
+    <input
+      type="radio"
+      id="casuals"
+      name="isTournamentDeck"
+      [value]="false"
+      formControlName="isTournamentDeck"
+      class="input"
+      [checked]="form.value.gameType === false"
+    />
+    <label for="casuals" class="label" [ngClass]="{highlight:form.value.isTournamentDeck === false}">Casuals</label>
+    <input
+      type="radio"
+      id="tournament"
+      name="isTournamentDeck"
+      [value]="true"
+      formControlName="isTournamentDeck"
+      class="input"
+      [checked]="form.value.gameType === true"
+    />
+    <label for="tournament" class="label" [ngClass]="{highlight:form.value.isTournamentDeck === true}">Tournament</label>
+  </div>
+  <button type="submit">Submit</button>
+</form>

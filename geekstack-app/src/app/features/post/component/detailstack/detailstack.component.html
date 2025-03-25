@@ -1,0 +1,120 @@
+<div class="detail-main">
+  <main
+    class="detail-stack"
+    [class.slide-in]="isOpen"
+    [class.slide-out]="!isOpen"
+  >
+    <div class="detail-header">
+      <a (click)="onClose()">
+        <mat-icon>keyboard_arrow_left</mat-icon>
+      </a>
+      <div class="detail-user">
+        @if (!useFallBack) {
+        <div class="user-dp">
+          <img [src]="post.displaypic" />
+        </div>
+        } @else {
+        <mat-icon class="user-blank">account_circle</mat-icon>
+        }
+        <span>{{ post.name }}</span>
+      </div>
+      <mat-icon>weekend</mat-icon>
+    </div>
+    <div class="detail-content">
+      <div class="detail-card-holder">
+        @for (item of listofcards; track $index) {
+        <div class="single-card">
+          <app-tcg-image [cardRecord]="item" [isPost]="true"></app-tcg-image>
+          <div class="count">{{ item.count }}</div>
+        </div>
+        }
+      </div>
+      <h3>HEADER</h3>
+      <p class="textcontent">
+        {{ post.content }}
+      </p>
+      <div class="timestamp">
+        <strong>{{ formattedTimestamp }}</strong>
+      </div>
+      @if (this.listofcomments.length>0) {
+      <h3 id="comment-section">{{ this.listofcomments.length }} comments</h3>
+
+      <div class="listofcomments">
+        @for (comment of listofcomments; track $index) {
+        <div class="comment-holder">
+          @if (!commentUserFallBack) {
+          <div class="user-dp">
+            <img [src]="comment.displaypic" (error)="onImageError()" />
+          </div>
+          } @else {
+          <mat-icon class="user-blank">account_circle</mat-icon>
+          }
+          <div class="user-comment">
+            <div>{{ comment.name }}</div>
+            <div>
+              {{ comment.comment }}
+            </div>
+            <div class="sub-user-comment">
+              <div>
+                {{ comment.timestamp | timeAgo }}
+              </div>
+              @if (comment.userId == userId) {
+              <div (click)="onOpenDeleteDialog(comment.commentId)"><code>delete</code></div>
+              }
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+      } @else {
+      <h3 id="comment-section">comments</h3>
+      }
+    </div>
+
+    <div class="detail-func">
+      <div class="func-comment" (click)="openCommentDrawer()">
+        What is on your mind?
+      </div>
+      <div class="func-holder">
+        <div class="like-holder" (click)="likePost($event)">
+          <mat-icon [ngClass]="{ liked: isLiked }"
+            >@if (isLiked) {favorite} @else {favorite_border}
+          </mat-icon>
+          <p>
+            {{ this.listoflikes.length }}
+          </p>
+        </div>
+        <mat-icon (click)="scrollToSection()">comment</mat-icon>
+        <mat-icon>share</mat-icon>
+      </div>
+    </div>
+  </main>
+  <div
+    class="posting-comment"
+    [class.slide-in]="isCommenting"
+    [class.slide-out]="!isCommenting"
+  >
+    <div class="emoji-picker">
+      <span *ngFor="let emoji of emojiList" (click)="addEmoji(emoji, $event)">
+        {{ emoji }}
+      </span>
+    </div>
+    <form (ngSubmit)="commentPost(commentText)">
+      <textarea
+        [ngClass]="{
+          widthWithText: commentText,
+          widthWithoutText: !commentText
+        }"
+        [(ngModel)]="commentText"
+        name="comment"
+        placeholder="Type your comment..."
+      ></textarea>
+      <button
+        [ngClass]="{ btnWithText: commentText, btnWithoutText: !commentText }"
+        type="submit"
+      >
+        <mat-icon>arrow_upward</mat-icon>
+      </button>
+    </form>
+  </div>
+</div>

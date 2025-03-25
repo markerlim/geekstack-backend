@@ -1,0 +1,77 @@
+<div class="actionbar">
+  <div class="actionbar-content">
+    <button
+      class="actionbar-button cover-button"
+      type="button"
+      (click)="clickDeckCover($event)"
+    >
+      <img [src]="imageSrc" alt="Cover Icon" />
+    </button>
+    <div class="actionbar-subcontent">
+      <input
+        type="text"
+        class="deck-name-input"
+        [value]="deckname"
+        (input)="onDeckNameChange($event)"
+        [placeholder]="deckname"
+      />
+      <div class="stats-holder">
+        <div [ngClass]="{ 'stats-text-error': totalCount > 50 }">
+          <img src="/unionarena/TTOTAL.png" />
+          <span>: {{ totalCount }}</span>
+        </div>
+        <div [ngClass]="{ 'stats-text-error': finalCountForUA > 4 }">
+          <img src="/unionarena/TFINAL.png" />
+          <span>: {{ finalCountForUA }}</span>
+        </div>
+        <div [ngClass]="{ 'stats-text-error': colorCountForUA > 4 }">
+          <img src="/unionarena/TCOLOR.png" />
+          <span>: {{ colorCountForUA }}</span>
+        </div>
+        <div [ngClass]="{ 'stats-text-error': specialCountForUA > 4 }">
+          <img src="/unionarena/TSPECIAL.png" />
+          <span>: {{ specialCountForUA }}</span>
+        </div>
+      </div>
+      <div class="stats-holder">
+        @for (key of getKeysFrom0To7(); track key) {
+          <div>
+            @if (key == 7) {
+              <span> 
+                &lt;
+              </span>
+            }
+            <img class="energy-img" [src]="'/unionarena/ENERGY' + key + '.png'" />
+            <span>: {{ energyCostMapForUA[key] || 0 }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <div class="hamburger-menu">
+      <button class="hamburger-button" (click)="toggleMenu($event)">
+        <mat-icon>menu</mat-icon>
+      </button>
+
+      @if (isMenuOpen) {
+      <div class="dropdown-actions">
+        <button class="dropdown-button save-button" (click)="saveDecklist()">
+          <mat-icon>save</mat-icon>Save
+        </button>
+        <button
+          class="dropdown-button load-button"
+          (click)="clickLoadDecklist($event)"
+        >
+          <mat-icon>folder</mat-icon> Load
+        </button>
+        <button class="dropdown-button clear-button" (click)="clearDecklist()">
+          <mat-icon>clear</mat-icon> Clear
+        </button>
+        <button class="dropdown-button export-button">
+          <mat-icon>import_export</mat-icon> Export
+        </button>
+      </div>
+      }
+    </div>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<!-- Navigation Bar -->
+<nav>
+  <div class="logo">
+    <img src="/icons/geekstackicon.svg" alt="Logo" />
+    <div>
+      <strong>GEEKSTACK</strong>
+      <span>Everything Cards</span>
+    </div>
+  </div>
+  <div class="login">
+    @if (user) {
+    <ng-container>
+      <div class="avatar-container" (click)="toggleMenu()" tabindex="0">
+        <img [src]="user.displaypic" alt="User Photo" class="user-photo" />
+        @if (!isSmallScreen) {<span class="username">{{
+          user.name || "Guest"
+        }}</span
+        >}
+      </div>
+      @if(menuOpen) {
+      <div class="menu">
+        <button (click)="navigateTo('account')">Account</button>
+        <button (click)="navigateTo('notifications')">Notifications</button>
+        <button (click)="handleLogout()">Sign Out</button>
+      </div>
+      }
+    </ng-container>
+    } @else {
+    <button (click)="openLoginModal()">LOGIN</button>
+    }
+  </div>
+</nav>
+

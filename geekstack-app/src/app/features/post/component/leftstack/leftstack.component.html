@@ -1,0 +1,5 @@
+<div class="leftstack-list">
+    @for (post of userpost; track post.postId) {
+    <app-singlestack [post]="post" [user]="user" (removeDeck)="onDataReceivedFromSinglestacks($event)"></app-singlestack>
+    }
+</div>

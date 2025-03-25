@@ -1,0 +1,125 @@
+/* Modal background */
+.formWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed; /* Ensures modal stays on the screen */
+  font-family: Roboto,sans-serif;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5); /* Adds a dark background behind the modal */
+  z-index: 1000; /* Ensures modal is on top */
+}
+
+/* Modal content container */
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  display:flex;
+  flex-direction: column;
+  align-items: center;
+  width: 300px; /* You can adjust the width */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+
+/* Logo styles */
+.logo img {
+  width: auto;
+  height: 80px;
+}
+
+/* Heading styles */
+.heading {
+  font-size: 30px;
+}
+
+/* Title styles */
+.title {
+  display: block;
+  margin-top: 10px;
+  font-size: 18px;
+  color: #555;
+}
+
+/* Input field styles */
+.input-field {
+  width: 200px;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Button styles */
+.login-button {
+  width: 200px;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #784C9A;
+  color: #fff;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-button:hover {
+  background-color: #6e3e78;
+}
+
+.modal-content form{
+  text-align: center;
+}
+
+/* Google login button styles */
+.google-login-button {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 5px;
+  border:none;
+  background-color: #784C9A;
+  color: #f2f3f8;
+  font-size: 14px;
+}
+.google-icon{
+  color: #ffffff;
+}
+
+.google-login-button:hover {
+  background-color: #6e3e78;
+}
+
+/* Error message styles */
+.error-message {
+  color: red;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+.register-link {
+  color: #aa9ada;
+  text-decoration: none; 
+  font-weight: bold;
+  font-size: 16px;
+  transition: color 0.3s ease, text-decoration 0.3s ease;
+  cursor: pointer;
+}
+
+.register-link:hover {
+  color: #7c4fff;
+  text-decoration: underline;
+}
+
+.register-link:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(174, 0, 255, 0.5);
+}
+

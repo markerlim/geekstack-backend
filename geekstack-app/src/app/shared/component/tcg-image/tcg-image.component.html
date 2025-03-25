@@ -1,0 +1,19 @@
+<div
+  class="card"
+  [ngClass]="{
+    'mini-card': isMini,
+    'post-card': isPost,
+  }"
+  (click)="onClickImage()"
+>
+  <img [src]="imageSrc" [alt]="imageAlt" />
+</div>
+
+@if (isTcgImageClicked) {
+<div class="image-modal">
+  <app-tcg-modal
+    [Card]="card"
+    (onCloseTcgModal)="onCloseImage($event)"
+  ></app-tcg-modal>
+</div>
+}

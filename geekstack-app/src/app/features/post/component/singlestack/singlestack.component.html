@@ -1,0 +1,42 @@
+<div class="single-stack" (click)="onClickPost(post.postId)">
+  <div class="image-holder">
+    <img [src]="imageSrc" />
+  </div>
+  <div class="user-holder">
+    @if (!useFallBack) {
+    <div class="user-dp">
+      <img [src]="post.displaypic" (error)="onImageError()" />
+    </div>
+    } @else {
+    <mat-icon class="user-blank">account_circle</mat-icon>
+    }
+    <div class="user-name">{{ post.name }}</div>
+  </div>
+  <div class="pseudo-holder"></div>
+  <div class="content-holder">{{ post.headline || post.content }}</div>
+  <div class="functions-holder">
+    <div>
+      <mat-icon [ngClass]="{ liked: isLiked }" (click)="likePost($event)"
+        >@if (isLiked) {favorite} @else {favorite_border}
+      </mat-icon>
+      <mat-icon>comment</mat-icon>
+      <mat-icon>share</mat-icon>
+    </div>
+    @if (post.userId === user.userId) {
+    <mat-icon class="del-icon" (click)="onOpenDeleteDialog($event)">clear</mat-icon>
+    }
+  </div>
+</div>
+@if (isDetailStackOpen) {
+<app-detailstack
+  [isOpen]="isSlideReady"
+  [isLiked]="isLiked"
+  [post]="post"
+  [user]="user"
+  [useFallBack]="useFallBack"
+  (onCloseStack)="onClosePost()"
+  (onLikingPost)="onLikingPost($event)"
+>
+</app-detailstack>
+}
+

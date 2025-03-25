@@ -1,0 +1,38 @@
+.window {
+  display: flex;
+  flex-direction: row;
+  height: calc(100vh - 68.5px);
+  overflow: hidden;
+}
+
+.router-outlet {
+  flex: 1;
+  overflow: auto;
+  position: relative;
+  height: calc(100vh - 68.5px);
+  overflow: hidden;
+}
+
+@media (max-width: 600px) {
+  .window {
+    flex-direction: column;
+  }
+  .pwa-padding{
+    height:160px;
+  }
+  .router-outlet{
+    padding-bottom: 80px;
+  }
+}
+
+.grayscale {
+  filter: grayscale(100%);
+}
+
+.normal {
+  filter :none;
+}
+
+app-bottom-nav {
+  z-index: 50;
+}
