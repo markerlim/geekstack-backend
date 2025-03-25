@@ -12,11 +12,11 @@ ARG APP_DIR=/app
 WORKDIR ${APP_DIR}
 
 # Copy project files into the image
-COPY pom.xml .
-COPY mvnw .
-COPY mvnw.cmd .
-COPY .mvn .mvn
-COPY src src
+COPY cards/pom.xml .
+COPY cards/mvnw .
+COPY cards/mvnw.cmd .
+COPY cards/.mvn .mvn
+COPY cards/src src
 
 # Ensure the mvnw script has execution permissions
 RUN chmod +x mvnw
@@ -29,9 +29,6 @@ ENV SERVER_PORT=8080
 
 # Expose the port
 EXPOSE ${SERVER_PORT}
-EXPOSE ${RABBITMQ_LOCALHOST}
-EXPOSE ${RABBITMQ_LOCAL_PORT}
-EXPOSE ${RABBITMQ_GUEST}
 
 # Run the application
 ENTRYPOINT ["java", "-jar", "target/cards-0.0.1-SNAPSHOT.jar"]
