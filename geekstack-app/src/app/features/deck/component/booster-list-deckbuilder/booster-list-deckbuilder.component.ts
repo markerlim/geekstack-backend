@@ -53,7 +53,6 @@ export class BoosterListDeckbuilderComponent implements OnInit {
   selectedColor = '';
   selectedBooster = '';
   selectedRarity = '';
-  cardsInDeck$!: Observable<{ card: any; count: number }[]>;
 
   @Output()
   onCardListActive = new Subject<boolean>();
@@ -64,7 +63,6 @@ export class BoosterListDeckbuilderComponent implements OnInit {
   constructor() {}
 
   ngOnInit(): void {
-    this.cardsInDeck$ = this.cardDeckService.cardsInDeck$;
     this.route.paramMap.subscribe((params) => {
       this.tcgPath = params.get('tcg')?.replace('/', '') || '';
       this.booster = params.get('booster') || '';

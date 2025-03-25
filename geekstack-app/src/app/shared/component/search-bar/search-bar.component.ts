@@ -14,7 +14,8 @@ export class SearchBarComponent {
   games = [
     { name: 'unionarena', icon: '/icons/unionarenaicon.ico' },
     { name: 'onepiece', icon: '/icons/onepieceicon.png' },
-    { name: 'dragonballzfw', icon: '/icons/dragonballz.ico' }
+    { name: 'dragonballzfw', icon: '/icons/dragonballz.ico' },
+    { name: 'cookierunbraverse', icon: '/icons/cookierun.png' }
   ];
 
   selectedGame = this.games[0];
@@ -29,7 +30,7 @@ export class SearchBarComponent {
 
   selectGame(game: { name: string; icon: string }) {
     this.selectedGame = game;
-    this.isDropdownOpen = false;
+    this.toggleDropdown();
   }
 
   @HostListener('document:click', ['$event'])

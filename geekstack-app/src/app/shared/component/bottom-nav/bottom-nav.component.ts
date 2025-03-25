@@ -33,7 +33,7 @@ export class BottomNavComponent {
       path: '/stacks',
     },
     {
-      src: '/icons/bottomnav/MUSelected.svg',
+      src: '/icons/bottomnav/BellSelected.svg',
       alt: 'notitfication',
       path: '/notifications',
     },

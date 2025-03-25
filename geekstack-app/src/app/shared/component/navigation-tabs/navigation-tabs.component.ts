@@ -12,7 +12,10 @@ import { RouterLink } from '@angular/router';
 export class NavigationTabsComponent {
   tabs = [
     { icon: '/icons/bottomnav/HomeSelected.svg', alt: 'home', label: 'Home', path: '/home' },
-    { icon: '/icons/bottomnav/Inventory.svg', alt: 'Decks', label: 'Decks', path: '/deckbuilder/unionarena' },
+    { icon: '/icons/unionarenaicon.ico', alt: 'Decks', label: 'Decks', path: '/deckbuilder/unionarena' },
+    { icon: '/icons/onepieceicon.png', alt: 'Decks', label: 'Decks', path: '/deckbuilder/onepiece' },
+    { icon: '/icons/cookierun.png', alt: 'Decks', label: 'Decks', path: '/deckbuilder/cookierunbraverse' },
+    { icon: '/icons/dragonballz.ico', alt: 'Decks', label: 'Decks', path: '/deckbuilder/dragonballzfw' },
     { icon: '/icons/bottomnav/NewsSelected.svg', alt: 'Stacks', label: 'Stacks', path: '/stacks' },
     { icon: '/icons/bottomnav/FAQSelected.svg', alt: 'FAQ', label: 'FAQ', path: '/faq' },
   ];

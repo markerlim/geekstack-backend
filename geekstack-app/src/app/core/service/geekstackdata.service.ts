@@ -198,4 +198,16 @@ export class GeekstackService {
   getNotificationsForUser(): Observable<Notifications[]> {
     return this.http.get<Notifications[]>(this.baseURLuser + '/notifications');
   }
+
+  sendReportError(userId: string, cardUid: string, errorMsg: string){
+    return this.http.post(this.baseURLuser+"/report-error",{
+      userId: userId,
+      cardUid: cardUid,
+      errorMsg: errorMsg
+    })
+  }
+
+  getExchangeRate() : Observable<string>{
+    return this.http.get<string>(this.baseURLuser+"/getExcRate");
+  }
 }

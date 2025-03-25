@@ -7,10 +7,24 @@
       <img [src]="tcg.img" [alt]="tcg.alt" />
     </div>
     }
-  </div>}
-  @else{
+  </div>
+  <div class="additional-content">
+    <div class="additonal-header">
+      Today's Exchange Rate
+    </div>
+    <div class="exchange-rate-container">
+      <span class="currency">1 SGD</span>
+      <span class="equals">=</span>
+      <span class="value">{{ exchangeRate | number: '1.2-2' }}</span>
+      <span class="currency">JPY</span>
+    </div>
+    <div class="additional-sub-header">
+      Exchange rate refreshes daily at around 00:00 UTC
+    </div>
+  </div>
+  } @else{
   <div class="search-results">
-    @for (item of cardList; track $index) {
+    @for (item of cardList; track item.cardUid) {
     <app-tcg-image [card]="item"></app-tcg-image>
     }
   </div>

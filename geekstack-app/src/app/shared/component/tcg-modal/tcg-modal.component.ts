@@ -1,10 +1,14 @@
-import { Component, Input, Output } from '@angular/core';
+import { Component, inject, Input, Output } from '@angular/core';
 import { Subject } from 'rxjs';
 import { CardUnionArena } from '../../../core/model/card-unionarena.model';
 import { CardOnePiece } from '../../../core/model/card-onepiece.model';
 import { CardDragonBallZFW } from '../../../core/model/card-dragonballzfw.model';
 import { CookieRunCard } from '../../../core/model/card-cookierunbraverse.model';
 import { CommonModule } from '@angular/common';
+import { MatIconModule } from '@angular/material/icon';
+import { MatDialog } from '@angular/material/dialog';
+import { ErrorReportModalComponent } from '../error-report-modal/error-report-modal.component';
+import { UserStore } from '../../../core/store/user.store';
 
 type GameCard =
   | CardUnionArena
@@ -14,7 +18,7 @@ type GameCard =
   
 @Component({
   selector: 'app-tcg-modal',
-  imports: [CommonModule],
+  imports: [CommonModule,MatIconModule],
   templateUrl: './tcg-modal.component.html',
   styleUrl: './tcg-modal.component.css',
 })
@@ -62,6 +66,8 @@ export class TcgModalComponent {
     "[Trigger]": "/icons/UAtags/CTTrigger.png",
   };
   
+  private dialog = inject(MatDialog);
+  private userStore = inject(UserStore);
   constructor(){}
 
   onCloseModal() {
@@ -73,14 +79,33 @@ export class TcgModalComponent {
   }
 
   getCardType(): string {
+    if ('costlife' in this.Card) return 'onepiece';
+    if ('elementId' in this.Card) return 'cookierunbraverse';
+
     if ('cardName' in this.Card) {
       if ('anime' in this.Card) return 'unionarena';
-      if ('pirateCrew' in this.Card) return 'onepiece';
       if ('saga' in this.Card) return 'dragonballzfw';
-      if ('cookieType' in this.Card) return 'cookierunbraverse';
     }
     return 'Unknown';
   }
+
+  openErrorDialog(): void {
+    const dialogRef = this.dialog.open(ErrorReportModalComponent, {
+      width: '300px',
+      data: { 
+        message: 'Describe the issue with this card',
+        cardUid: this.Card.cardUid,
+        userId: this.userStore.getCurrentUser().userId ?? "anonymous"
+      }
+    });
+  
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        console.log('Error reported:', result.errorMessage);
+      }
+    });
+  }
+  
 
   replaceTagsWithIcons(line: string): string {
     let replacedLine = line;    

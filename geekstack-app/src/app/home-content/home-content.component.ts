@@ -49,7 +49,7 @@ export class HomeContentComponent {
   ];
 
   searchValue: string = '';
-
+  exchangeRate: string = '';
   cardList: Array<
     CardUnionArena | CardOnePiece | CardDragonBallZFW | CookieRunCard
   > = [];
@@ -75,6 +75,11 @@ export class HomeContentComponent {
 
   ngAfterViewInit() {
     this.updateScrollableState();
+    this.geekstackService.getExchangeRate().subscribe({
+      next: (response) => {
+        this.exchangeRate = response;
+      }
+    })
   }
 
   private updateScrollableState(): void {

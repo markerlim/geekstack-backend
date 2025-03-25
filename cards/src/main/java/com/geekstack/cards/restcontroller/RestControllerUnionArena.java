@@ -43,7 +43,7 @@ public class RestControllerUnionArena {
                 HttpStatus.OK);
     }
 
-    // http://localhost:8080/api/data/unionarena/search/{phrase to search for}
+    // http://localhost:8080/api/data/unionarena/prompts/{phrase to search for}
     @GetMapping("/prompts/{term}")
     public ResponseEntity<List<UnionArenaCardDTO>> searchUnionArenaPrompts(@PathVariable String term) {
         return new ResponseEntity<List<UnionArenaCardDTO>>(cardListService.listofunionarena().searchDatabase(term),

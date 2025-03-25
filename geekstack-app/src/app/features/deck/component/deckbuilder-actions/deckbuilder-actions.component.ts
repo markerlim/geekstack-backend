@@ -6,14 +6,16 @@ import {
   inject,
   Input,
   Output,
+  SimpleChanges,
 } from '@angular/core';
-import { first, map, Subject } from 'rxjs';
+import { first, map, Subject, takeUntil } from 'rxjs';
 import { CardDeckService } from '../../../../core/service/card-deck.service';
 import { MatIconModule } from '@angular/material/icon';
 import { UserStore } from '../../../../core/store/user.store';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
 import { CardUnionArena } from '../../../../core/model/card-unionarena.model';
 import { TcgStore } from '../../../../core/store/ctcg.store';
+import { CardOnePiece } from '../../../../core/model/card-onepiece.model';
 
 @Component({
   selector: 'app-deckbuilder-actions',
@@ -45,6 +47,7 @@ export class DeckbuilderActionsComponent {
   colorCountForUA: number = 0;
   specialCountForUA: number = 0;
   energyCostMapForUA: Record<number, number> = {};
+  costMapForOP: Record<number, number> = {};
 
   userId: string = '';
 
@@ -58,56 +61,109 @@ export class DeckbuilderActionsComponent {
   private geekstackService = inject(GeekstackService);
   private userStore = inject(UserStore);
   private tcgStore = inject(TcgStore);
+  private destroy$ = new Subject<void>();
   constructor() {}
 
   ngOnInit() {
     this.userId = this.userStore.getCurrentUser().userId;
-    if (this.tcgStore.getCurrentTcg() == 'unionarena') {
-      this.cardDeckService.cardsInDeck$.subscribe(() => {
-        this.totalCount = this.cardDeckService.getTotalCount();
-        this.colorCountForUA =
-          this.cardDeckService.getColorCountForUnionArena();
-        this.finalCountForUA =
-          this.cardDeckService.getFinalCountForUnionArena();
-        this.specialCountForUA =
-          this.cardDeckService.getSpecialCountForUnionArena();
-      });
-      this.cardDeckService.cardsInDeck$.pipe(
-        map((cardsInDeck) => {
-          const energyCostMap: Record<number, number> = {}; // Store energy costs
+    this.tcgStore.currentTcg$.subscribe({
+      next: (res) => {
+        this.tcg = res;
+      }
+    });
+    this.initializeDeckDetails();
+  }
 
-          cardsInDeck.forEach((entry) => {
-            const gameCard = this.cardDeckService.mapToGameCard(
-              entry.card,
-              'unionarena'
-            ) as CardUnionArena;
-            let energyCost = gameCard.energycost ?? 0;
+  private initializeDeckDetails(): void {
+    this.destroy$.next();
+    if (this.tcg === 'unionarena') {
+      this.cardDeckService.cardsInDeck$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.totalCount = this.cardDeckService.getTotalCount();
+          this.colorCountForUA =
+            this.cardDeckService.getColorCountForUnionArena();
+          this.finalCountForUA =
+            this.cardDeckService.getFinalCountForUnionArena();
+          this.specialCountForUA =
+            this.cardDeckService.getSpecialCountForUnionArena();
+        });
+      this.cardDeckService.cardsInDeck$
+        .pipe(
+          map((cardsInDeck) => {
+            const energyCostMap: Record<number, number> = {}; // Store energy costs
 
-            if (energyCost > 7) {
-              energyCost = 7;
-            }
+            cardsInDeck.forEach((entry) => {
+              const gameCard = this.cardDeckService.mapToGameCard(
+                entry.card,
+                'unionarena'
+              ) as CardUnionArena;
+              let energyCost = gameCard.energycost ?? 0;
 
-            if (!energyCostMap[energyCost]) {
-              energyCostMap[energyCost] = 0;
-            }
-            
-            energyCostMap[energyCost] += entry.count;
-          });
-          return energyCostMap;
-        })
-      ).subscribe((energyCostMap) => {
-        this.energyCostMapForUA = energyCostMap; // Assign the result to the component property
-      });
+              if (energyCost > 7) {
+                energyCost = 7;
+              }
+
+              if (!energyCostMap[energyCost]) {
+                energyCostMap[energyCost] = 0;
+              }
+
+              energyCostMap[energyCost] += entry.count;
+            });
+            return energyCostMap;
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((energyCostMap) => {
+          this.energyCostMapForUA = energyCostMap;
+        });
     }
+
+    if (this.tcg === 'onepiece') {
+      this.cardDeckService.cardsInDeck$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.totalCount = this.cardDeckService.getTotalCount();
+      });
+      this.cardDeckService.cardsInDeck$
+        .pipe(
+          map((cardsInDeck) => {
+            const costMap: Record<number, number> = {}; // Store life costs
+
+            cardsInDeck.forEach((entry) => {
+              const gameCard = this.cardDeckService.mapToGameCard(
+                entry.card,
+                'onepiece'
+              ) as CardOnePiece;
+              const costlife = parseInt(gameCard.costlife, 10) || 0;
+
+              if (!costMap[costlife]) {
+                costMap[costlife] = 0;
+              }
+
+              costMap[costlife] += entry.count;
+            });
+            return costMap;
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((costMap) => {
+          this.costMapForOP = costMap;
+        });
+    }
+
   }
 
   getKeysFrom0To7(): number[] {
     return Array.from({ length: 8 }, (_, i) => i);
   }
-
+  
+  getKeysFrom0To10(): number[] {
+    return Array.from({ length: 11 }, (_, i) => i);
+  }
   clickLoadDecklist(event: any) {
     event.stopPropagation();
-    this.onDeckloadSelect.next(true); 
+    this.onDeckloadSelect.next(true);
   }
 
   clearDecklist() {
@@ -150,7 +206,7 @@ export class DeckbuilderActionsComponent {
   }
 
   clickDeckCover(event: any) {
-    event.stopPropagation()
+    event.stopPropagation();
     this.onDeckcoverSelect.next(true);
   }
 

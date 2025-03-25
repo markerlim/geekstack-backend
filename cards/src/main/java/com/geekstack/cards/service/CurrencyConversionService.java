@@ -57,4 +57,7 @@ public class CurrencyConversionService {
 
     }
 
+    public String getExchangeRate(String base, String symbol){
+        return Float.toString(exchangeRateRepository.getExchangeRate(base, symbol));
+    }
 }

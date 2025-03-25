@@ -35,25 +35,26 @@ public class RestControllerDragonballzfw {
                 HttpStatus.OK);
     }
 
-        // http//localhost:8080/data/dragonballzfw/filter/{category or color or rarity}/{booster}
-        @GetMapping("/filter/{field}/{booster}")
-        public ResponseEntity<List<String>> OnePieceFiltersByBooster(@PathVariable String field,
-                @PathVariable String booster) {
-            if (field.toLowerCase().equals(F_CARDTYPE.toLowerCase())) {
-                return new ResponseEntity<List<String>>(cardListService.listofdragonballzfw().cardtypeFilters(booster),
-                        HttpStatus.OK);
-            }
-    
-            if (field.toLowerCase().equals(F_COLOR)) {
-                return new ResponseEntity<List<String>>(cardListService.listofdragonballzfw().colorFilters(booster),
-                        HttpStatus.OK);
-            }
-    
-            if (field.toLowerCase().equals(F_RARITY)) {
-                return new ResponseEntity<List<String>>(cardListService.listofdragonballzfw().rarityFilters(booster),
-                        HttpStatus.OK);
-            }
-            return null;
+    // http//localhost:8080/data/dragonballzfw/filter/{category or color or
+    // rarity}/{booster}
+    @GetMapping("/filter/{field}/{booster}")
+    public ResponseEntity<List<String>> OnePieceFiltersByBooster(@PathVariable String field,
+            @PathVariable String booster) {
+        if (field.toLowerCase().equals(F_CARDTYPE.toLowerCase())) {
+            return new ResponseEntity<List<String>>(cardListService.listofdragonballzfw().cardtypeFilters(booster),
+                    HttpStatus.OK);
         }
+
+        if (field.toLowerCase().equals(F_COLOR)) {
+            return new ResponseEntity<List<String>>(cardListService.listofdragonballzfw().colorFilters(booster),
+                    HttpStatus.OK);
+        }
+
+        if (field.toLowerCase().equals(F_RARITY)) {
+            return new ResponseEntity<List<String>>(cardListService.listofdragonballzfw().rarityFilters(booster),
+                    HttpStatus.OK);
+        }
+        return null;
+    }
 
 }

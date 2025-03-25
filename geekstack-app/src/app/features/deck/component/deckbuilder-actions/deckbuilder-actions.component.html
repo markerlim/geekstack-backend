@@ -20,6 +20,7 @@
           <img src="/unionarena/TTOTAL.png" />
           <span>: {{ totalCount }}</span>
         </div>
+        @if (this.tcg === "unionarena") {
         <div [ngClass]="{ 'stats-text-error': finalCountForUA > 4 }">
           <img src="/unionarena/TFINAL.png" />
           <span>: {{ finalCountForUA }}</span>
@@ -32,18 +33,32 @@
           <img src="/unionarena/TSPECIAL.png" />
           <span>: {{ specialCountForUA }}</span>
         </div>
+        }
       </div>
       <div class="stats-holder">
-        @for (key of getKeysFrom0To7(); track key) {
-          <div>
-            @if (key == 7) {
-              <span> 
-                &lt;
-              </span>
-            }
-            <img class="energy-img" [src]="'/unionarena/ENERGY' + key + '.png'" />
-            <span>: {{ energyCostMapForUA[key] || 0 }}</span>
-          </div>
+        @if (this.tcg === "unionarena") { @for (key of getKeysFrom0To7(); track
+        key) {
+        <div>
+          @if (key == 7) {
+          <span> &lt; </span>
+          }
+          <img
+            class="energy-img"
+            [src]="'/energyicons/ENERGY' + key + '.png'"
+          />
+          <span>: {{ energyCostMapForUA[key] || 0 }}</span>
+        </div>
+        } }
+        @if (this.tcg === "onepiece") {
+          @for (key of getKeysFrom0To10(); track key) {
+            <div>
+            <img
+            class="energy-img"
+            [src]="'/energyicons/ENERGY' + key + '.png'"
+          />
+          <span>: {{ costMapForOP[key] || 0 }}</span>
+        </div>
+          }
         }
       </div>
     </div>

@@ -45,7 +45,10 @@ nav .logo div {
   display: flex;
   align-items: center;
 }
-
+.back-btn{
+  width:40px;
+  font-size: 30px;
+}
 .menu {
   position: absolute;
   top: 50px;

@@ -1,11 +1,16 @@
 <!-- Navigation Bar -->
 <nav>
+  @if (showBackInstead && isSmallScreen) {
+  <div class="back-btn" (click)="goBack()">⇽</div>
+  }
   <div class="logo">
     <img src="/icons/geekstackicon.svg" alt="Logo" />
+    @if (!showBackInstead) {
     <div>
       <strong>GEEKSTACK</strong>
       <span>Everything Cards</span>
     </div>
+    }
   </div>
   <div class="login">
     @if (user) {
@@ -30,4 +35,3 @@
     }
   </div>
 </nav>
-

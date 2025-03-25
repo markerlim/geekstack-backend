@@ -52,7 +52,6 @@ public class CardListService {
         }
 
         public List<DuelMasterCard> byBooster(String booster) {
-            System.out.println("DM-01 Base Set (OCG)");
             System.out.println(booster);
             return duelMasterRepository.getCardsByBooster(booster);
         }
@@ -138,6 +137,10 @@ public class CardListService {
 
         public List<CookieRunCard> byBooster(String booster) {
             return cookieRunRepository.getCardsByBooster(booster);
+        }
+
+        public List<CookieRunCard> searchDatabase(String term){
+            return cookieRunRepository.searchForCards(term);
         }
     }
 

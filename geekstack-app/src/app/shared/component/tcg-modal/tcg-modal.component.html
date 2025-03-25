@@ -1,5 +1,4 @@
-<div class="buffer" (click)="onCloseModal()" >
-</div>
+<div class="buffer" (click)="onCloseModal()"></div>
 <div class="card-effect-holder">
   <div class="table-scroll">
     @if (getCardType() === "unionarena") {
@@ -41,11 +40,58 @@
         </td>
       </tr>
     </table>
+    } @if (getCardType() === "onepiece") {
+    <div class="image-container">
+      <img
+        class="modal-img"
+        [src]="getOnePieceCard()?.urlimage"
+        (click)="onClickZoomIn()"
+      />
+    </div>
+    <table class="card-table">
+      <tr>
+        <td>Name:</td>
+        <td>{{ getOnePieceCard()?.cardname }}</td>
+      </tr>
+      <tr>
+        <td>Id:</td>
+        <td>{{ getOnePieceCard()?.cardId }}</td>
+      </tr>
+      <tr>
+        <td>Type:</td>
+        <td>{{ getOnePieceCard()?.typing }}</td>
+      </tr>
+      <tr>
+        <td>Effect:</td>
+        <td>
+          @for (line of getOnePieceCard()?.effects;let i = $index; track $index)
+          {
+          <ng-container>
+            <span
+              class="tcg-text"
+              [innerHTML]="replaceTagsWithIcons(line)"
+            ></span>
+          </ng-container>
+          }
+        </td>
+      </tr>
+    </table>
+    } @if (getCardType() === "cookierunbraverse") {
+    <div class="zoom-overlay" (click)="onCloseModal()">
+      <img [src]="getCookieRunCard()?.urlimage" class="zoomed-image" />
+    </div>
     }
+    <div class="error-btn" (click)="openErrorDialog()">
+      <mat-icon>error</mat-icon>
+    </div>
   </div>
-  @if (isZoomIn) {
+  @if (isZoomIn && getCardType()==="unionarena") {
   <div class="zoom-overlay" (click)="onClickZoomIn()">
     <img [src]="getUnionArenaCard()?.urlimage" class="zoomed-image" />
+  </div>
+  } @if (isZoomIn && getCardType()==="onepiece") {
+  <div class="zoom-overlay" (click)="onClickZoomIn()">
+    <img [src]="getOnePieceCard()?.urlimage" class="zoomed-image" />
   </div>
   }
   <a class="close-btn" (click)="onCloseModal()">X</a>

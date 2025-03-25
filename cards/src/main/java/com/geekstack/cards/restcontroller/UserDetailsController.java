@@ -25,11 +25,11 @@ import com.geekstack.cards.model.Notification;
 import com.geekstack.cards.model.OnePieceDecklist;
 import com.geekstack.cards.model.UnionArenaDecklist;
 import com.geekstack.cards.repository.UserDetailsMongoRepository;
+import com.geekstack.cards.service.CurrencyConversionService;
+import com.geekstack.cards.service.EmailService;
 import com.geekstack.cards.service.FirebaseService;
 import com.geekstack.cards.service.UserDetailService;
 import com.google.firebase.auth.FirebaseToken;
-
-import jakarta.ws.rs.Path;
 
 @RestController
 @RequestMapping("/api/user")
@@ -43,6 +43,12 @@ public class UserDetailsController {
 
     @Autowired
     private FirebaseService firebaseService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private CurrencyConversionService currencyConversionService;
 
     @PostMapping("/create")
     public ResponseEntity<Map<String, Object>> createNewUser(@RequestBody String idToken) {
@@ -203,5 +209,25 @@ public class UserDetailsController {
             @RequestParam(defaultValue = "10") String limit) throws Exception {
         return new ResponseEntity<List<Notification>>(userDetailService.listNotifications(authorization, limit),
                 HttpStatus.OK);
+    }
+
+    @PostMapping("/report-error")
+    public ResponseEntity<Map<String,Object>> reportError(@RequestBody String payload){
+        Map<String, Object> response = new HashMap<>();
+        try {
+            emailService.sendReportEmail(payload);
+            response.put("message", "Error reported successfully");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            response.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @GetMapping("/getExcRate")
+    public ResponseEntity<String> exchangeRate(@RequestParam(required = false,defaultValue = "SGD") String base, 
+    @RequestParam(required = false, defaultValue = "JPY") String symbol){
+        return new ResponseEntity<String>(currencyConversionService.getExchangeRate(base, symbol),
+        HttpStatus.OK);
     }
 }

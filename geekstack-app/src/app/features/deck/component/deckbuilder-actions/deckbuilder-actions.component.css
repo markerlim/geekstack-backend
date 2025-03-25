@@ -80,7 +80,8 @@
   font-weight: 900;
 }
 .energy-img{
-  width:20px;
+  width:15px;
+  margin:2px;
 }
 
 @media (max-width:599px) {

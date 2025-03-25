@@ -1,13 +1,13 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import { NavigationEnd, Router } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { LoginModalComponent } from '../login-modal/login-modal.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { FireAuthService } from '../../../core/service/fireauth.service';
 import { UserStore } from '../../../core/store/user.store';
 import { GSSqlUser } from '../../../core/model/sql-user.model';
-import { NotificationsComponent } from "../notifications/notifications.component";
+import { filter } from 'rxjs';
 
 @Component({
   selector: 'app-navbar',
@@ -21,8 +21,10 @@ export class NavbarComponent implements OnInit {
   isSmallScreen: boolean = false;
   menuOpen = false;
   notificationClicked = false;
+  showBackInstead = false;
 
   private router = inject(Router);
+  private location = inject(Location);
   private dialog = inject(MatDialog);
   private authService = inject(FireAuthService);
   private userStore = inject(UserStore);
@@ -40,10 +42,19 @@ export class NavbarComponent implements OnInit {
       .subscribe((result) => {
         this.isSmallScreen = result.matches;
       });
+
+      this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        const currentUrl = event.urlAfterRedirects;
+        if(this.isSmallScreen){
+          this.showBackInstead = !['/', '/home', '/notifications'].includes(currentUrl);
+        }
+      });
   }
 
   goBack(): void {
-    this.router.navigate(['../']);
+    this.location.back();
   }
 
   async handleLogout(): Promise<void> {

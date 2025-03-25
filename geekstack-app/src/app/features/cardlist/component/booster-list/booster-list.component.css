@@ -3,10 +3,11 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  max-height: calc(100vh - 109px); /* Adjust this to the desired height */
   overflow-y: scroll;
   padding-top: 20px;
   padding-bottom: 20px;
+  padding-left:10px;
+  padding-right: 10px;
   gap: 16px;
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: #666 #333; /* Firefox */
@@ -59,6 +60,15 @@
 @media (max-width: 599px) {
   .booster-item {
     width: 125px;
+  }
+  .booster-list{
+    height: calc(100vh - 178px);
+  }
+}
+
+@media (min-width:600px) {
+  .booster-list{
+    height: calc(100vh - 109px);
   }
 }
 

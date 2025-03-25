@@ -20,16 +20,23 @@ public class RestControllerCookieRun {
     @Autowired
     private CardListService cardListService;
 
-    // http//localhost:8080/data/cookierun
+    // http//localhost:8080/data/cookierunbraverse
     @GetMapping
     public ResponseEntity<List<CookieRunCard>> allCookieRunPage() {
         return new ResponseEntity<List<CookieRunCard>>(cardListService.listofcookierun().all(), HttpStatus.OK);
     }
 
-    // http//localhost:8080/data/cookierun/{booster}
+    // http//localhost:8080/data/cookierunbraverse/{booster}
     @GetMapping("/{booster}")
     public ResponseEntity<List<CookieRunCard>> allCookieRunPageByBooster(@PathVariable String booster) {
         return new ResponseEntity<List<CookieRunCard>>(cardListService.listofcookierun().byBooster(booster),
+                HttpStatus.OK);
+    }
+
+            // http//localhost:8080/data/cookierunbraverse/search/{phrase to search for}
+    @GetMapping("/search/{term}")
+    public ResponseEntity<List<CookieRunCard>> searchDuelMaster(@PathVariable String term) {
+        return new ResponseEntity<List<CookieRunCard>>(cardListService.listofcookierun().searchDatabase(term),
                 HttpStatus.OK);
     }
 }
