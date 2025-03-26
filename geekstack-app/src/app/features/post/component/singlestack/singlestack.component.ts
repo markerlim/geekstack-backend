@@ -10,6 +10,7 @@ import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
 import { debounceTime, filter, Subject } from 'rxjs';
 import { LoginModalComponent } from '../../../../shared/component/login-modal/login-modal.component';
+import { environment } from '../../../../../environments/environment';
 
 @Component({
   selector: 'app-singlestack',
@@ -140,7 +141,7 @@ export class SinglestackComponent {
 
   onSharePost(event: Event) {
     event.stopPropagation();
-    const url = window.location.href + '/' + this.post.postId;
+    const url =  'https://cards.geekstack.dev/stacks/' + this.post.postId;
     navigator.clipboard
       .writeText(url)
       .then(() => {

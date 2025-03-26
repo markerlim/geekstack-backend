@@ -129,7 +129,7 @@ export class DetailstackComponent {
   }
 
   onSharePost() {
-    const url = window.location.href + '/' + this.post.postId;
+    const url =  'https://cards.geekstack.dev/stacks/' + this.post.postId;
     navigator.clipboard
       .writeText(url)
       .then(() => {
