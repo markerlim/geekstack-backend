@@ -22,6 +22,12 @@ export class NavbarComponent implements OnInit {
   menuOpen = false;
   notificationClicked = false;
   showBackInstead = false;
+  private readonly NO_BACK_ROUTES = [
+    '/',
+    '/home',
+    '/notifications',
+    '/deckbuilder',
+  ];
 
   private router = inject(Router);
   private location = inject(Location);
@@ -43,14 +49,26 @@ export class NavbarComponent implements OnInit {
         this.isSmallScreen = result.matches;
       });
 
-      this.router.events
+    this.router.events
       .pipe(filter((event) => event instanceof NavigationEnd))
       .subscribe((event: any) => {
         const currentUrl = event.urlAfterRedirects;
-        if(this.isSmallScreen){
-          this.showBackInstead = !['/', '/home', '/notifications'].includes(currentUrl);
+        if (this.isSmallScreen) {
+          this.showBackInstead = this.shouldShowBackButton(currentUrl);
         }
       });
+  }
+
+  shouldShowBackButton(currentUrl: string): boolean {
+    if (this.NO_BACK_ROUTES.includes(currentUrl)) {
+      return false;
+    }
+
+    if (currentUrl.startsWith('/deckbuilder/')) {
+      return false;
+    }
+
+    return true;
   }
 
   goBack(): void {

@@ -1,12 +1,10 @@
 import { CommonModule } from '@angular/common';
 import {
   Component,
-  EventEmitter,
   HostListener,
   inject,
   Input,
   Output,
-  SimpleChanges,
 } from '@angular/core';
 import { first, map, Subject, takeUntil } from 'rxjs';
 import { CardDeckService } from '../../../../core/service/card-deck.service';
@@ -16,6 +14,8 @@ import { GeekstackService } from '../../../../core/service/geekstackdata.service
 import { CardUnionArena } from '../../../../core/model/card-unionarena.model';
 import { TcgStore } from '../../../../core/store/ctcg.store';
 import { CardOnePiece } from '../../../../core/model/card-onepiece.model';
+import { CookieRunCard } from '../../../../core/model/card-cookierunbraverse.model';
+import { CardDragonBallZFW } from '../../../../core/model/card-dragonballzfw.model';
 
 @Component({
   selector: 'app-deckbuilder-actions',
@@ -28,7 +28,7 @@ export class DeckbuilderActionsComponent {
   isMenuOpen = false;
 
   @Input()
-  imageSrc: string = '/images/deckimage.jpg';
+  imageSrc: string = '/images/gsdeckimage.jpg';
 
   @Input()
   isSmallScreen: boolean = false;
@@ -46,8 +46,7 @@ export class DeckbuilderActionsComponent {
   finalCountForUA: number = 0;
   colorCountForUA: number = 0;
   specialCountForUA: number = 0;
-  energyCostMapForUA: Record<number, number> = {};
-  costMapForOP: Record<number, number> = {};
+  costMap: Record<number, number> = {};
 
   userId: string = '';
 
@@ -115,7 +114,7 @@ export class DeckbuilderActionsComponent {
           takeUntil(this.destroy$)
         )
         .subscribe((energyCostMap) => {
-          this.energyCostMapForUA = energyCostMap;
+          this.costMap = energyCostMap;
         });
     }
 
@@ -135,7 +134,7 @@ export class DeckbuilderActionsComponent {
                 entry.card,
                 'onepiece'
               ) as CardOnePiece;
-              const costlife = parseInt(gameCard.costlife, 10) || 0;
+              const costlife = parseInt(gameCard.costlife) || 0;
 
               if (!costMap[costlife]) {
                 costMap[costlife] = 0;
@@ -148,10 +147,79 @@ export class DeckbuilderActionsComponent {
           takeUntil(this.destroy$)
         )
         .subscribe((costMap) => {
-          this.costMapForOP = costMap;
+          this.costMap = costMap;
         });
     }
 
+    if (this.tcg === 'cookierunbraverse') {
+      this.cardDeckService.cardsInDeck$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.totalCount = this.cardDeckService.getTotalCount();
+      });
+      this.cardDeckService.cardsInDeck$
+        .pipe(
+          map((cardsInDeck) => {
+            const costMap: Record<number, number> = {};
+
+            cardsInDeck.forEach((entry) => {
+              const gameCard = this.cardDeckService.mapToGameCard(
+                entry.card,
+                'cookierunbraverse'
+              ) as CookieRunCard;
+              const level = parseInt(gameCard.cardLevelTitle) || 0;
+
+              if (!costMap[level]) {
+                costMap[level] = 0;
+              }
+
+              costMap[level] += entry.count;
+            });
+            return costMap;
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((costMap) => {
+          this.costMap = costMap;
+        });
+    }
+
+    if (this.tcg === 'dragonballzfw') {
+      this.cardDeckService.cardsInDeck$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.totalCount = this.cardDeckService.getTotalCount();
+      });
+      this.cardDeckService.cardsInDeck$
+        .pipe(
+          map((cardsInDeck) => {
+            const costMap: Record<number, number> = {};
+
+            cardsInDeck.forEach((entry) => {
+              const gameCard = this.cardDeckService.mapToGameCard(
+                entry.card,
+                'dragonballzfw'
+              ) as CardDragonBallZFW;
+              const cost = parseInt(gameCard.cost) || 0;
+
+              if (!costMap[cost]) {
+                costMap[cost] = 0;
+              }
+
+              costMap[cost] += entry.count;
+            });
+            return costMap;
+          }),
+          takeUntil(this.destroy$)
+        )
+        .subscribe((costMap) => {
+          this.costMap = costMap;
+        });
+    }
+  }
+
+  getKeysFrom0To3(): number[] {
+    return Array.from({ length: 4 }, (_, i) => i);
   }
 
   getKeysFrom0To7(): number[] {
@@ -196,7 +264,7 @@ export class DeckbuilderActionsComponent {
     });
 
     this.deckname = 'New Deck';
-    this.imageSrc = '/images/deckimage.jpg';
+    this.imageSrc = '/images/gsdeckimage.jpg';
     this.clearDecklist();
   }
 

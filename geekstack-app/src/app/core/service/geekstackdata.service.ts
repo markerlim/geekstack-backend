@@ -73,7 +73,27 @@ export class GeekstackService {
     );
   }
 
-  getUserPostById(limit: number, page: number) {
+  getUserPostByType(limit: number, page: number, type: string) {
+    return this.http.get<Userpost[]>(
+      this.baseURLuserpost +
+        '/type/' +
+        type +
+        '?' +
+        'limit=' +
+        limit +
+        '&' +
+        'page=' +
+        page
+    );
+  }
+
+  getUserPostByPostId(postId: string) {
+    return this.http.get<Userpost>(
+      this.baseURLuserpost + '/findpost/' + postId
+    );
+  }
+
+  getUserPostByUserId(limit: number, page: number) {
     return this.http.get<Userpost[]>(
       this.baseURLuserpost +
         '/listuserpostings?limit=' +
@@ -119,11 +139,7 @@ export class GeekstackService {
 
   deleteCommentUserPost(postId: string, commentId: string) {
     return this.http.delete(
-      this.baseURLuserpost +
-        '/comment/' +
-         postId +
-        '/delete/' +
-        commentId
+      this.baseURLuserpost + '/comment/' + postId + '/delete/' + commentId
     );
   }
 
@@ -199,15 +215,15 @@ export class GeekstackService {
     return this.http.get<Notifications[]>(this.baseURLuser + '/notifications');
   }
 
-  sendReportError(userId: string, cardUid: string, errorMsg: string){
-    return this.http.post(this.baseURLuser+"/report-error",{
+  sendReportError(userId: string, cardUid: string, errorMsg: string) {
+    return this.http.post(this.baseURLuser + '/report-error', {
       userId: userId,
       cardUid: cardUid,
-      errorMsg: errorMsg
-    })
+      errorMsg: errorMsg,
+    });
   }
 
-  getExchangeRate() : Observable<string>{
-    return this.http.get<string>(this.baseURLuser+"/getExcRate");
+  getExchangeRate(): Observable<string> {
+    return this.http.get<string>(this.baseURLuser + '/getExcRate');
   }
 }

@@ -1,4 +1,10 @@
-import { Component, OnInit, ElementRef, ViewChild, inject } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ElementRef,
+  ViewChild,
+  inject,
+} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -11,11 +17,11 @@ import { TcgImageComponent } from '../../../../shared/component/tcg-image/tcg-im
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
 
 @Component({
-    selector: 'app-card-list-display',
-    standalone: true,
-    imports: [CommonModule, FormsModule, TcgImageComponent],
-    templateUrl: './card-list-display.component.html',
-    styleUrls: ['./card-list-display.component.css']
+  selector: 'app-card-list-display',
+  standalone: true,
+  imports: [CommonModule, FormsModule, TcgImageComponent],
+  templateUrl: './card-list-display.component.html',
+  styleUrls: ['./card-list-display.component.css'],
 })
 export class CardListDisplayComponent implements OnInit {
   @ViewChild('cardListContainer', { static: true })
@@ -37,7 +43,7 @@ export class CardListDisplayComponent implements OnInit {
   > = [];
   isLoading = false;
 
-  private geekstackService =  inject(GeekstackService);
+  private geekstackService = inject(GeekstackService);
   private route = inject(ActivatedRoute);
 
   constructor() {}
@@ -49,9 +55,7 @@ export class CardListDisplayComponent implements OnInit {
 
       this.tcgPath = params.get('tcg')?.replace('/', '') || '';
       this.booster = params.get('booster') || '';
-      this.fetchFilterOptions();
       this.fetchCardList();
-      console.log(this.filterCards);
     });
   }
 
@@ -60,56 +64,90 @@ export class CardListDisplayComponent implements OnInit {
       console.error('TCG path or booster is not set!');
       return;
     }
-
-    this.geekstackService
-      .getTcgSetFilter(this.tcgPath, 'color', this.booster)
-      .subscribe({
-        next: (colors) => {
-          console.log('Colors:', colors); // Debugging
-          this.colors = colors || [];
-        },
-        error: (err) => {
-          console.error('Failed to fetch colors:', err);
-          this.colors = [];
-        },
-      });
-
-    // Fetch boosters
-    const boosterField =
-      this.tcgPath === 'unionarena'
-        ? 'booster'
-        : this.tcgPath === 'onepiece'
-        ? 'category'
-        : this.tcgPath === 'dragonballzfw'
-        ? 'cardtype'
-        : '';
-    this.geekstackService
-      .getTcgSetFilter(this.tcgPath, boosterField, this.booster)
-      .subscribe({
-        next: (boosters) => {
-          console.log('Boosters:', boosters); // Debugging
-          this.boosters = boosters || [];
-        },
-        error: (err) => {
-          console.error('Failed to fetch boosters:', err);
-          this.boosters = [];
-        },
-      });
-
-    this.geekstackService
-      .getTcgSetFilter(this.tcgPath, 'rarity', this.booster)
-      .subscribe({
-        next: (rarities) => {
-          console.log('Rarities:', rarities); // Debugging
-          this.rarities = rarities || [];
-        },
-        error: (err) => {
-          console.error('Failed to fetch rarities:', err);
-          this.rarities = [];
-        },
-      });
+    this.colors = this.getUniqueColorsFromList();
+    this.rarities = this.getUniqueRarityFromList();
+    this.boosters = this.getUniqueBoosterFromList();
   }
 
+  getUniqueColorsFromList(): string[] {
+    if (!this.cardList || this.cardList.length === 0) {
+      return [];
+    }
+
+    return [
+      ...new Set(
+        this.cardList
+          .map((card) => {
+            if ('color' in card) {
+              return card.color;
+            } else if ('energyType' in card) {
+              return card.energyType;
+            }
+            return undefined;
+          })
+          .filter((color): color is string => color !== undefined)
+      ),
+    ];
+  }
+
+  getUniqueRarityFromList(): string[] {
+    if (!this.cardList || this.cardList.length === 0) {
+      return [];
+    }
+
+    return [
+      ...new Set(
+        this.cardList
+          .map((card) => {
+            if ('rarity' in card) {
+              return card.rarity;
+            }
+            return undefined;
+          })
+          .filter((rarity): rarity is string => rarity !== undefined)
+      ),
+    ];
+  }
+
+  getUniqueBoosterFromList(): string[] {
+    if (!this.cardList || this.cardList.length === 0) {
+      return [];
+    }
+
+    return [
+      ...new Set(
+        this.cardList
+          .map((card) => {
+            if (
+              this.tcgPath === 'onepiece' &&
+              'category' in card &&
+              card.category === 'leader'
+            ) {
+              return undefined;
+            }
+            if (
+              this.tcgPath === 'dragonballzfw' &&
+              'cardtype' in card &&
+              (card.cardtype === 'LEADER' ||
+                card.cardtype === 'LEADER | AWAKEN')
+            ) {
+              return undefined;
+            }
+            switch (this.tcgPath) {
+              case 'unionarena':
+                return (card as CardUnionArena).booster;
+              case 'onepiece':
+                return (card as CardOnePiece).category;
+              case 'dragonballzfw':
+                return (card as CardDragonBallZFW).cardtype;
+              default:
+                return undefined;
+            }
+          })
+          .filter((item): item is string => item !== undefined)
+      ),
+    ];
+  }
   fetchCardList(): void {
     if (this.isLoading) return;
 
@@ -121,6 +159,7 @@ export class CardListDisplayComponent implements OnInit {
         next: (response) => {
           // Replace the card list with the fetched data
           this.cardList = response || [];
+          this.fetchFilterOptions();
           this.filterCards(); // Apply filters
         },
         error: (err) => {
@@ -141,7 +180,46 @@ export class CardListDisplayComponent implements OnInit {
 
   filterCards(): void {
     this.filteredCards = this.cardList.filter((card) => {
-      if ('color' in card && 'booster' in card && 'rarity' in card) {
+      if (
+        ('category' in card && card.category === 'leader') ||
+        ('cardtype' in card &&
+          (card.cardtype === 'LEADER' || card.cardtype === 'LEADER | AWAKEN'))
+      ) {
+        return false;
+      }
+
+      //selectedBooster is for category
+      // One Piece specific filtering
+      else if (this.tcgPath === 'onepiece') {
+        const onePieceCard = card as {
+          color?: string;
+          rarity?: string;
+          category?: string;
+        };
+        return (
+          (!this.selectedColor || onePieceCard.color === this.selectedColor) &&
+          (!this.selectedRarity ||
+            onePieceCard.rarity === this.selectedRarity) &&
+          (!this.selectedBooster ||
+            onePieceCard.category === this.selectedBooster)
+        );
+      }
+      //selectedBooster is for cardType
+      // Dragonballzfw specific filtering
+      else if (this.tcgPath === 'dragonballzfw') {
+        const dragonballzfw = card as {
+          color?: string;
+          rarity?: string;
+          cardtype?: string;
+        };
+        return (
+          (!this.selectedColor || dragonballzfw.color === this.selectedColor) &&
+          (!this.selectedRarity ||
+            dragonballzfw.rarity === this.selectedRarity) &&
+          (!this.selectedBooster ||
+            dragonballzfw.cardtype === this.selectedBooster)
+        );
+      } else if ('color' in card && 'booster' in card && 'rarity' in card) {
         return (
           (this.selectedColor ? card.color === this.selectedColor : true) &&
           (this.selectedBooster
@@ -149,8 +227,7 @@ export class CardListDisplayComponent implements OnInit {
             : true) &&
           (this.selectedRarity ? card.rarity === this.selectedRarity : true)
         );
-      }
-      if ('energyType' in card && 'grade' in card) {
+      } else if ('energyType' in card && 'grade' in card) {
         return (
           (this.selectedColor
             ? card.energyType === this.selectedColor

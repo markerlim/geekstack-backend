@@ -29,7 +29,7 @@
         </div>
         }
       </div>
-      <h3>HEADER</h3>
+      <h3>{{post.headline || "HEADER"}}</h3>
       <p class="textcontent">
         {{ post.content }}
       </p>
@@ -68,6 +68,9 @@
       </div>
       } @else {
       <h3 id="comment-section">comments</h3>
+      <div class="no-comments">
+        No comments for this post.
+      </div>
       }
     </div>
 

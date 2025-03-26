@@ -83,18 +83,9 @@ select {
   transition: border-color 0.3s ease;
 }
 
-select:focus {
-  outline: none;
-  border-color: #007bff;
-}
-
 option {
   padding: 10px;
   font-size: 14px;
-}
-
-select:hover {
-  border-color: #007bff;
 }
 
 @media (max-width: 599px) {

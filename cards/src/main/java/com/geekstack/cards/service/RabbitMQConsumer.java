@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,8 @@ import com.geekstack.cards.repository.UserPostMongoRepository;
 
 @Service
 public class RabbitMQConsumer {
+
+    private final static Logger logger = LoggerFactory.getLogger(RabbitMQConsumer.class);
 
     @Autowired
     private UserPostMongoRepository userPostMongoRepository;
@@ -68,14 +72,15 @@ public class RabbitMQConsumer {
     }
 
     private void bulkInsertIntoDatabase(List<String> likes) {
+        
         Map<String, List<String>> holder = new HashMap<>();
 
         for (String entry : likes) {
-            String[] array = entry.split(":");
+            logger.info(entry);
+            String[] array = entry.replace("\"", "").split(":");
             String userId = array[1];
-            List<String> list = holder.computeIfAbsent(userId, k -> new ArrayList<>());
-            list.add(array[0]);
-            holder.put(userId, list);
+            holder.putIfAbsent(userId, new ArrayList<>());
+            holder.get(userId).add(array[0]);
         }
 
         for (String userId : holder.keySet()) {

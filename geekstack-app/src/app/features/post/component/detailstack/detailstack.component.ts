@@ -210,6 +210,7 @@ export class DetailstackComponent {
   }
 
   openCommentDrawer() {
+    console.log("trigger open")
     this.isCommenting = true;
   }
   onClose() {

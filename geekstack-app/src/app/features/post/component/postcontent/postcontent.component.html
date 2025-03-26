@@ -1,6 +1,17 @@
+<div class="options-selector"> 
+  <div>Select Card Game:</div>
+  <select [(ngModel)]="tcg" (change)="onTcgChange()">
+    <option value="unionarena" selected>Union Arena</option>
+    <option value="onepiece">One Piece</option>
+    <option value="cookierunbraverse">Cookie Run</option>
+    <option value="dragonballzfw">Dragon Ball Z</option>
+  </select>
+</div>
+
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div class="decks-holder">
-    @for (item of decksOfUser; let i = $index; track item.deckuid) {
+    @if (decksOfUser && decksOfUser.length > 0) { @for (item of decksOfUser; let i = $index; track
+    item.deckuid) {
     <div class="deck-item" (click)="selectDeck(i)">
       <img class="cover" src="/images/deckcovertemplate.png" />
       <img class="cover-dp" [src]="item.deckcover" />
@@ -8,6 +19,8 @@
       <div class="deckSelected">Selected</div>
       }
     </div>
+    }} @else {
+    <div class="nodecks">No Decks found</div>
     }
   </div>
   <br />
@@ -28,7 +41,12 @@
       class="input"
       [checked]="form.value.gameType === false"
     />
-    <label for="casuals" class="label" [ngClass]="{highlight:form.value.isTournamentDeck === false}">Casuals</label>
+    <label
+      for="casuals"
+      class="label"
+      [ngClass]="{ highlight: form.value.isTournamentDeck === false }"
+      >Casuals</label
+    >
     <input
       type="radio"
       id="tournament"
@@ -38,7 +56,12 @@
       class="input"
       [checked]="form.value.gameType === true"
     />
-    <label for="tournament" class="label" [ngClass]="{highlight:form.value.isTournamentDeck === true}">Tournament</label>
+    <label
+      for="tournament"
+      class="label"
+      [ngClass]="{ highlight: form.value.isTournamentDeck === true }"
+      >Tournament</label
+    >
   </div>
   <button type="submit">Submit</button>
 </form>

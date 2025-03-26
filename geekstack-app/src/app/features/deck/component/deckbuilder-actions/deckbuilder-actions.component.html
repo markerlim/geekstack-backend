@@ -6,6 +6,9 @@
       (click)="clickDeckCover($event)"
     >
       <img [src]="imageSrc" alt="Cover Icon" />
+      @if (imageSrc === "/images/gsdeckimage.jpg") {
+        <span>Click me to pick a cover</span>
+      }
     </button>
     <div class="actionbar-subcontent">
       <input
@@ -46,20 +49,37 @@
             class="energy-img"
             [src]="'/energyicons/ENERGY' + key + '.png'"
           />
-          <span>: {{ energyCostMapForUA[key] || 0 }}</span>
+          <span>: {{ costMap[key] || 0 }}</span>
         </div>
-        } }
-        @if (this.tcg === "onepiece") {
-          @for (key of getKeysFrom0To10(); track key) {
-            <div>
-            <img
+        } } @if (this.tcg === "onepiece") { @for (key of getKeysFrom0To10();
+        track key) {
+        <div>
+          <img
             class="energy-img"
             [src]="'/energyicons/ENERGY' + key + '.png'"
           />
-          <span>: {{ costMapForOP[key] || 0 }}</span>
+          <span>: {{ costMap[key] || 0 }}</span>
         </div>
-          }
-        }
+        } } @if (this.tcg === "cookierunbraverse") { @for (key of
+        getKeysFrom0To3(); track key) {
+        <div>
+          <span>Lv.</span>
+          <img
+            class="energy-img"
+            [src]="'/energyicons/ENERGY' + key + '.png'"
+          />
+          <span>: {{ costMap[key] || 0 }}</span>
+        </div>
+        } } @if (this.tcg === "dragonballzfw") { @for (key of
+        getKeysFrom0To10(); track key) {
+        <div>
+          <img
+            class="energy-img"
+            [src]="'/energyicons/ENERGY' + key + '.png'"
+          />
+          <span>: {{ costMap[key] || 0 }}</span>
+        </div>
+        }}
       </div>
     </div>
 

@@ -97,51 +97,9 @@ export class BoosterListDeckbuilderComponent implements OnInit {
       return;
     }
 
-    this.geekstackService
-      .getTcgSetFilter(this.tcgPath, 'color', this.booster)
-      .subscribe({
-        next: (colors) => {
-          this.colors = colors || [];
-        },
-        error: (err) => {
-          console.error('Failed to fetch colors:', err);
-          this.colors = [];
-        },
-      });
-
-    // Fetch boosters
-    const boosterField =
-      this.tcgPath === 'unionarena'
-        ? 'booster'
-        : this.tcgPath === 'onepiece'
-        ? 'category'
-        : this.tcgPath === 'dragonballzfw'
-        ? 'cardtype'
-        : '';
-
-    this.geekstackService
-      .getTcgSetFilter(this.tcgPath, boosterField, this.booster)
-      .subscribe({
-        next: (boosters) => {
-          this.boosters = boosters || [];
-        },
-        error: (err) => {
-          console.error('Failed to fetch boosters:', err);
-          this.boosters = [];
-        },
-      });
-
-    this.geekstackService
-      .getTcgSetFilter(this.tcgPath, 'rarity', this.booster)
-      .subscribe({
-        next: (rarities) => {
-          this.rarities = rarities || [];
-        },
-        error: (err) => {
-          console.error('Failed to fetch rarities:', err);
-          this.rarities = [];
-        },
-      });
+    this.colors = this.getUniqueColorsFromList();
+    this.rarities = this.getUniqueRarityFromList();
+    this.boosters = this.getUniqueBoosterFromList();
   }
 
   fetchBoosterList(): void {
@@ -155,13 +113,117 @@ export class BoosterListDeckbuilderComponent implements OnInit {
     });
   }
 
+  getUniqueColorsFromList(): string[] {
+    if (!this.cardList || this.cardList.length === 0) {
+      return [];
+    }
+
+    return [
+      ...new Set(
+        this.cardList
+          .map((card) => {
+            if ('color' in card) {
+              return card.color;
+            } else if ('energyType' in card) {
+              return card.energyType;
+            }
+            return undefined;
+          })
+          .filter((color): color is string => color !== undefined)
+      ),
+    ];
+  }
+
+  getUniqueRarityFromList(): string[] {
+    if (!this.cardList || this.cardList.length === 0) {
+      return [];
+    }
+
+    return [
+      ...new Set(
+        this.cardList
+          .map((card) => {
+            if ('rarity' in card) {
+              return card.rarity;
+            }
+            return undefined;
+          })
+          .filter((rarity): rarity is string => rarity !== undefined)
+      ),
+    ];
+  }
+
+  getUniqueBoosterFromList(): string[] {
+    if (!this.cardList || this.cardList.length === 0) {
+      return [];
+    }
+
+    return [
+      ...new Set(
+        this.cardList
+          .map((card) => {
+            if (this.tcgPath === 'onepiece' && 'category' in card && card.category === 'leader') {
+              return undefined;
+            }
+            if (this.tcgPath === 'dragonballzfw' && 'cardtype' in card && (card.cardtype === 'LEADER' || card.cardtype === 'LEADER | AWAKEN')) {
+              return undefined;
+            }
+            switch (this.tcgPath) {
+              case 'unionarena':
+                return (card as CardUnionArena).booster;
+              case 'onepiece':
+                return (card as CardOnePiece).category;
+              case 'dragonballzfw':
+                return (card as CardDragonBallZFW).cardtype;
+              default:
+                return undefined;
+            }
+          })
+          .filter(
+            (item): item is string => item !== undefined
+          )
+      ),
+    ];
+  }
+
   filterCards(): void {
     this.filteredCards = this.cardList.filter((card) => {
-      if ('category' in card && card.category === 'leader') {
+      if ('category' in card && card.category === 'leader' || 'cardtype' in card && (card.cardtype === 'LEADER' || card.cardtype === 'LEADER | AWAKEN') ) {
         return false;
       }
-
-      if ('color' in card && 'booster' in card && 'rarity' in card) {
+      
+      //selectedBooster is for category
+      // One Piece specific filtering
+      else if (this.tcgPath === 'onepiece') {
+        const onePieceCard = card as {
+          color?: string;
+          rarity?: string;
+          category?: string;
+        };
+        return (
+          (!this.selectedColor || onePieceCard.color === this.selectedColor) &&
+          (!this.selectedRarity ||
+            onePieceCard.rarity === this.selectedRarity) &&
+          (!this.selectedBooster ||
+            onePieceCard.category === this.selectedBooster)
+        );
+      }
+      //selectedBooster is for cardType
+      // Dragonballzfw specific filtering
+      else if (this.tcgPath === 'dragonballzfw') {
+        const dragonballzfw = card as {
+          color?: string;
+          rarity?: string;
+          cardtype?: string;
+        };
+        return (
+          (!this.selectedColor || dragonballzfw.color === this.selectedColor) &&
+          (!this.selectedRarity ||
+            dragonballzfw.rarity === this.selectedRarity) &&
+          (!this.selectedBooster ||
+            dragonballzfw.cardtype === this.selectedBooster)
+        );
+      } else if ('color' in card && 'booster' in card && 'rarity' in card) {
         return (
           (this.selectedColor ? card.color === this.selectedColor : true) &&
           (this.selectedBooster
@@ -170,7 +232,8 @@ export class BoosterListDeckbuilderComponent implements OnInit {
           (this.selectedRarity ? card.rarity === this.selectedRarity : true)
         );
       }
-      if ('energyType' in card && 'grade' in card) {
+
+      else if ('energyType' in card && 'grade' in card) {
         return (
           (this.selectedColor
             ? card.energyType === this.selectedColor

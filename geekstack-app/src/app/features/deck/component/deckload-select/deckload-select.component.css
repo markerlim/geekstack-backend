@@ -1,25 +1,5 @@
-@media (max-width: 599px) {
-  :root {
-    --card-width: 125px;
-  }
-}
-
-@media (min-width: 600px) and (max-width: 959px) {
-  :root {
-    --card-width: 150px;
-  }
-}
-
-@media (min-width: 960px) and (max-width: 1500px) {
-  :root {
-    --card-width: 150px;
-  }
-}
-
 @media (min-width: 1501px) {
-  :root {
-    --card-width: 300px;
-  }
+
   .card-select-list {
     height: 600px;
   }
@@ -36,7 +16,7 @@
   top:40%;
   left:50%;
   transform: translate(-50%,-50%);
-  width: calc((var(--card-width) * 3) + 90px);
+  width: calc((var(--decksize) * 3) + 90px);
   height: 300px;
   scrollbar-width: thin; /* Firefox */
   scrollbar-color: #666 #333; /* Firefox */
@@ -65,13 +45,14 @@
 .card-item-cover {
   position: absolute;
   top: 0;
-  width: var(--card-width);
-  height: calc(var(--card-width) * 1.4);
+  flex:0 0 auto;
+  width: 100%;
+  height: calc(var(--decksize) * 1.4);
   border-radius: 7px 7px 7px 7px;
 }
 .card-item-cover img{
-  width: inherit;
-}
+  width: var(--decksize);
+ }
 
 .card-item-function {
   position: absolute;
@@ -118,8 +99,7 @@ mat-icon:hover {
 }
 
 .card-item img {
-  width: var(--card-width);
-  height:calc(var(--card-width) * 1.4);
+  width: var(--decksize);
   border-radius: 7px 7px 7px 7px;
 }
 

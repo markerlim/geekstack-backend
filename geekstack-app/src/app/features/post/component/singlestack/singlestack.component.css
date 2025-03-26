@@ -6,6 +6,7 @@
   overflow: hidden;
   padding-bottom: 10px;
   background-color: #26262d;
+  color:#f2f3f8;
   position: relative;
 }
 
@@ -25,6 +26,7 @@
 .user-holder {
   position: absolute;
   top: calc(var(--stack-height) * 0.5);
+  width: calc(100% - 12px);
   display: flex;
   flex-direction: row;
   align-items: end;
@@ -51,6 +53,9 @@
 .user-name {
   font-size: 15px;
   margin-bottom: 5px;
+  text-overflow: ellipsis;
+  white-space: nowrap; 
+  overflow: hidden; 
 }
 
 .pseudo-holder {
@@ -88,7 +93,7 @@ mat-icon {
 
 app-detailstack {
   position: fixed !important;
-  background-color: #d14a5b;
+  color:#f2f3f8;
   top: 0;
   right: -100%;
   width: 100%;

@@ -2,6 +2,7 @@ package com.geekstack.cards.service;
 
 import java.io.StringReader;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -76,8 +77,8 @@ public class UserPostService {
             Map<String, Object> postUser = userMap.get(postUserId);
 
             if (postUser != null) {
-                post.setDisplaypic(postUser.get("displaypic") != null ? postUser.get("displaypic").toString() : null);
-                post.setName(postUser.get("name") != null ? postUser.get("name").toString() : null);
+                post.setDisplaypic(getStringOrNull(postUser, "displaypic"));
+                post.setName(getStringOrNull(postUser, "name"));
             }
 
             List<Comment> comments = post.getListofcomments();
@@ -87,11 +88,67 @@ public class UserPostService {
                     if (commentUserId != null) {
                         Map<String, Object> commentUser = userMap.get(commentUserId);
                         if (commentUser != null) {
-                            comment.setDisplaypic(
-                                    commentUser.get("displaypic") != null ? commentUser.get("displaypic").toString()
-                                            : null);
-                            comment.setName(
-                                    commentUser.get("name") != null ? commentUser.get("name").toString() : null);
+                            comment.setDisplaypic(getStringOrNull(commentUser, "displaypic"));
+                            comment.setName(getStringOrNull(commentUser, "name"));
+                        }
+                    }
+                }
+            }
+        }
+
+        return userPosts;
+    }
+
+    public List<UserPost> listUserPostByType(int page, int limit, String type) {
+        List<UserPost> userPosts = userPostMongoRepository.userPostingsByType(page, limit, type);
+
+        Set<String> uniquePostUserIds = userPosts.stream()
+                .map(UserPost::getUserId)
+                .collect(Collectors.toSet());
+
+        Set<String> uniqueCommentUserIds = new HashSet<>();
+        for (UserPost post : userPosts) {
+            List<Comment> comments = post.getListofcomments();
+            if (comments != null) {
+                comments.stream()
+                        .map(Comment::getUserId)
+                        .filter(Objects::nonNull)
+                        .forEach(uniqueCommentUserIds::add);
+            }
+        }
+
+        Set<String> allUniqueUserIds = new HashSet<>();
+        allUniqueUserIds.addAll(uniquePostUserIds);
+        allUniqueUserIds.addAll(uniqueCommentUserIds);
+
+        List<Map<String, Object>> allUserDetails = userPostMySQLRepository
+                .batchGetUser(new ArrayList<>(allUniqueUserIds));
+        System.out.println("finish user details pull\n");
+
+        Map<String, Map<String, Object>> userMap = new HashMap<>();
+        for (Map<String, Object> user : allUserDetails) {
+            String userId = (String) user.get("userId");
+            userMap.put(userId, user);
+        }
+
+        for (UserPost post : userPosts) {
+            String postUserId = post.getUserId();
+            Map<String, Object> postUser = userMap.get(postUserId);
+
+            if (postUser != null) {
+                post.setDisplaypic(getStringOrNull(postUser, "displaypic"));
+                post.setName(getStringOrNull(postUser, "name"));
+            }
+
+            List<Comment> comments = post.getListofcomments();
+            if (comments != null) {
+                for (Comment comment : comments) {
+                    String commentUserId = comment.getUserId();
+                    if (commentUserId != null) {
+                        Map<String, Object> commentUser = userMap.get(commentUserId);
+                        if (commentUser != null) {
+                            comment.setDisplaypic(getStringOrNull(commentUser, "displaypic"));
+                            comment.setName(getStringOrNull(commentUser, "name"));
                         }
                     }
                 }
@@ -138,8 +195,8 @@ public class UserPostService {
             Map<String, Object> postUser = userMap.get(postUserId);
 
             if (postUser != null) {
-                post.setDisplaypic(postUser.get("displaypic") != null ? postUser.get("displaypic").toString() : null);
-                post.setName(postUser.get("name") != null ? postUser.get("name").toString() : null);
+                post.setDisplaypic(getStringOrNull(postUser, "displaypic"));
+                post.setName(getStringOrNull(postUser, "name"));
             }
 
             List<Comment> comments = post.getListofcomments();
@@ -149,11 +206,8 @@ public class UserPostService {
                     if (commentUserId != null) {
                         Map<String, Object> commentUser = userMap.get(commentUserId);
                         if (commentUser != null) {
-                            comment.setDisplaypic(
-                                    commentUser.get("displaypic") != null ? commentUser.get("displaypic").toString()
-                                            : null);
-                            comment.setName(
-                                    commentUser.get("name") != null ? commentUser.get("name").toString() : null);
+                            comment.setDisplaypic(getStringOrNull(commentUser, "displaypic"));
+                            comment.setName(getStringOrNull(commentUser, "name"));
                         }
                     }
                 }
@@ -200,8 +254,8 @@ public class UserPostService {
             Map<String, Object> postUser = userMap.get(postUserId);
 
             if (postUser != null) {
-                post.setDisplaypic(postUser.get("displaypic") != null ? postUser.get("displaypic").toString() : null);
-                post.setName(postUser.get("name") != null ? postUser.get("name").toString() : null);
+                post.setDisplaypic(getStringOrNull(postUser, "displaypic"));
+                post.setName(getStringOrNull(postUser, "name"));
             }
 
             List<Comment> comments = post.getListofcomments();
@@ -211,11 +265,8 @@ public class UserPostService {
                     if (commentUserId != null) {
                         Map<String, Object> commentUser = userMap.get(commentUserId);
                         if (commentUser != null) {
-                            comment.setDisplaypic(
-                                    commentUser.get("displaypic") != null ? commentUser.get("displaypic").toString()
-                                            : null);
-                            comment.setName(
-                                    commentUser.get("name") != null ? commentUser.get("name").toString() : null);
+                            comment.setDisplaypic(getStringOrNull(commentUser, "displaypic"));
+                            comment.setName(getStringOrNull(commentUser, "name"));
                         }
                     }
                 }
@@ -225,11 +276,74 @@ public class UserPostService {
         return userPosts;
     }
 
-    // This method is no longer needed as we're handling all users in one go
-    // You can remove this method entirely
+    public UserPost getOnePost(String postId) {
+        // Get single post instead of list
+        UserPost userPost = userPostMongoRepository.getOnePost(postId);
+        
+        // Collect unique user IDs from post and comments
+        Set<String> allUniqueUserIds = new HashSet<>();
+        
+        // Add post author ID
+        if (userPost.getUserId() != null) {
+            allUniqueUserIds.add(userPost.getUserId());
+        }
+    
+        // Add comment author IDs
+        if (userPost.getListofcomments() != null) {
+            userPost.getListofcomments().stream()
+                .map(Comment::getUserId)
+                .filter(Objects::nonNull)
+                .forEach(allUniqueUserIds::add);
+        }
+    
+        // Batch fetch user details
+        List<Map<String, Object>> allUserDetails = userPostMySQLRepository
+                .batchGetUser(new ArrayList<>(allUniqueUserIds));
+        
+        System.out.println("Finished user details pull for " + allUniqueUserIds.size() + " users\n");
+    
+        // Create user map for easy lookup
+        Map<String, Map<String, Object>> userMap = allUserDetails.stream()
+            .collect(Collectors.toMap(
+                user -> (String) user.get("userId"),
+                user -> user
+            ));
+    
+        // Set post author details
+        if (userPost.getUserId() != null) {
+            Map<String, Object> postUser = userMap.get(userPost.getUserId());
+            if (postUser != null) {
+                userPost.setDisplaypic(getStringOrNull(postUser, "displaypic"));
+                userPost.setName(getStringOrNull(postUser, "name"));
+            }
+        }
+    
+        // Set comment author details
+        if (userPost.getListofcomments() != null) {
+            for (Comment comment : userPost.getListofcomments()) {
+                if (comment.getUserId() != null) {
+                    Map<String, Object> commentUser = userMap.get(comment.getUserId());
+                    if (commentUser != null) {
+                        comment.setDisplaypic(getStringOrNull(commentUser, "displaypic"));
+                        comment.setName(getStringOrNull(commentUser, "name"));
+                    }
+                }
+            }
+        }
+    
+        return userPost;
+    }
+    
+    private String getStringOrNull(Map<String, Object> map, String key) {
+        Object value = map.get(key);
+        return value != null ? value.toString() : null;
+    }
+
     // Create a post
     public void createPost(UserPost userPost) {
         userPost.setTimestamp(LocalDateTime.now());
+        userPost.setListofcomments(new ArrayList<>());
+        userPost.setListoflikes(new ArrayList<>());
         userPostMongoRepository.userPostAction(userPost);
     }
 
@@ -247,7 +361,7 @@ public class UserPostService {
         String message = "commented on your post.";
 
         rabbitMQProducer.sendNotificationEvent(jobject.getString("postId"), jobject.getString("posterId"),
-                LocalDateTime.now(),message, userObject.getString("userId"), userObject.getString("name"), userObject.getString("displaypic"));
+                LocalDateTime.now(ZoneOffset.UTC),message, userObject.getString("userId"), userObject.getString("name"), userObject.getString("displaypic"));
         return userPostMongoRepository.addComment(jobject.getString("postId"), jobject.getString("comment"), userObject.getString("userId"));
     }
 
@@ -271,6 +385,6 @@ public class UserPostService {
 
         rabbitMQProducer.sendLikeEvent(jobject.getString("postId"), userObject.getString("userId"));
         rabbitMQProducer.sendNotificationEvent(jobject.getString("postId"), jobject.getString("posterId"),
-                LocalDateTime.now(),message, userObject.getString("userId"), userObject.getString("name"), userObject.getString("displaypic"));
+                LocalDateTime.now(ZoneOffset.UTC),message, userObject.getString("userId"), userObject.getString("name"), userObject.getString("displaypic"));
     }
 }

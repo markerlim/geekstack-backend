@@ -1,6 +1,5 @@
 package com.geekstack.cards.restcontroller;
 
-import java.io.StringReader;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +21,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.geekstack.cards.model.UserPost;
 import com.geekstack.cards.service.UserPostService;
 
-import jakarta.json.Json;
-import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
-
 @RestController
 @RequestMapping("/api/userpost")
 public class UserPostController {
@@ -39,6 +34,11 @@ public class UserPostController {
         return ResponseEntity.ok(userPostService.listUserPost(Integer.parseInt(page), Integer.parseInt(limit)));
     }
 
+    @GetMapping("/type/{posttype}")
+    public ResponseEntity<List<UserPost>> listalluserpostByType(@RequestParam(defaultValue = "1") String page,
+            @RequestParam(defaultValue = "20") String limit, @PathVariable String posttype) {
+        return ResponseEntity.ok(userPostService.listUserPostByType(Integer.parseInt(page), Integer.parseInt(limit),posttype));
+    }
     /**
      * Example of Json from form
      * {
@@ -74,6 +74,11 @@ public class UserPostController {
             response.put("message", "Error creating post: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+
+    @GetMapping("/findpost/{postId}")
+    public ResponseEntity<UserPost> getPostByPostId(@PathVariable String postId){
+        return ResponseEntity.ok(userPostService.getOnePost(postId));
     }
 
     @DeleteMapping("/delete/{postId}")

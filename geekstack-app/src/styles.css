@@ -9,6 +9,7 @@ body {
 :root {
   --card-width: 125px;
   --stack-height: 250px;
+  --decksize: 150px;
 }
 
 @media (max-width: 599px) {
@@ -32,6 +33,7 @@ body {
 @media (min-width: 1501px) {
   :root {
     --card-width: 300px;
+    --decksize: 300px;
   }
 }
 

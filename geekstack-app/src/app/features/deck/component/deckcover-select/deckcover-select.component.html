@@ -7,7 +7,6 @@
     @for (cardData of cardsInDeck; track cardData.card.cardUid) {
     <app-tcg-image
       [card]="cardData.card"
-      [isMini]="true"
       [isClickable]="false"
       (click)="whenCardSelected(cardData.card)"
     ></app-tcg-image>

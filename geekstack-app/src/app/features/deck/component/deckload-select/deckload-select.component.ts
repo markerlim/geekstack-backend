@@ -14,6 +14,7 @@ import { CardUnionArena } from '../../../../core/model/card-unionarena.model';
 import { CardOnePiece } from '../../../../core/model/card-onepiece.model';
 import { CardDragonBallZFW } from '../../../../core/model/card-dragonballzfw.model';
 import { CookieRunCard } from '../../../../core/model/card-cookierunbraverse.model';
+import { Router } from '@angular/router';
 
 type GameCard =
   | CardUnionArena
@@ -48,6 +49,7 @@ export class DeckloadSelectComponent {
 
   private cardDeckService = inject(CardDeckService);
   private geekstackService = inject(GeekstackService);
+  private router = inject(Router);
   constructor() {
   }
 
@@ -67,6 +69,9 @@ export class DeckloadSelectComponent {
     this.onCloseSelector.next(false);
   }
 
+  shareDeck(){
+    this.router.navigate(['/poststacks']);
+  }
   deleteDeck(deckId: string) {
     this.geekstackService.userDeleteDeck(this.userId, deckId,this.tcg).subscribe({
       next: () => {

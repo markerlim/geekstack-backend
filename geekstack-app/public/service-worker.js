@@ -3,6 +3,19 @@ importScripts('https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox
 if (workbox) {
     const { routing, strategies, expiration } = workbox;
 
+    workbox.routing.registerRoute(
+        ({url}) => url.origin === 'https://cards.geekstack.dev',
+        new workbox.strategies.NetworkFirst({
+          cacheName: 'pages',
+          plugins: [
+            new workbox.expiration.Plugin({
+              maxEntries: 100,
+              maxAgeSeconds: 30 * 24 * 60 * 60 // 30 days
+            })
+          ]
+        })
+      );
+
     routing.registerRoute(
         /\.(?:css|js|jsx|json)$/,  // Fixed regex
         new strategies.StaleWhileRevalidate({

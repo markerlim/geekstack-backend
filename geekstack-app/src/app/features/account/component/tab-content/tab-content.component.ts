@@ -81,7 +81,7 @@ export class TabContentComponent {
     });
   }
   private loadUserPosts() {
-    this.geekstackService.getUserPostById(10, 0).subscribe({
+    this.geekstackService.getUserPostByUserId(10, 0).subscribe({
       next: (list) => {
         this.listOfPostings = list;
         this.splitUserPosts()

@@ -47,7 +47,7 @@ export class DeckbuilderComponent implements OnInit {
   isOverLayActive: boolean = false;
   isDeckcoverSelect: boolean = false;
   isDeckLoadSelect: boolean = false;
-  deckcover: string = '/images/deckimage.jpg';
+  deckcover: string = '/images/gsdeckimage.jpg';
   deckuid: string = '';
   deckname: string = 'Deck Name';
   user: GSSqlUser;

@@ -7,7 +7,7 @@
     background-color: #26252d;
     border-radius: 20px;
     padding: 20px;
-    width: calc((var(--card-width) * 1.5));
+    width: calc(100% - 40px);
     height: 300px;
 }
 :root{
@@ -15,7 +15,7 @@
 }
 @media (max-width: 599px) {
     :root{
-        --card-width: 125px;
+        --card-width: 150px;
     }
   }
   

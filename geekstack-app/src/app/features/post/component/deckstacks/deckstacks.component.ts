@@ -7,6 +7,7 @@ import {
   AfterViewInit,
   OnDestroy,
   inject,
+  OnInit,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LeftstackComponent } from '../leftstack/leftstack.component';
@@ -17,9 +18,10 @@ import { Userpost } from '../../../../core/model/userpost.model';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
 import { MatIconModule } from '@angular/material/icon';
 import { UserStore } from '../../../../core/store/user.store';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { GSSqlUser } from '../../../../core/model/sql-user.model';
 import { debounceTime, Subject, switchMap, tap } from 'rxjs';
+import { SinglestackComponent } from '../singlestack/singlestack.component';
 
 @Component({
   selector: 'app-deckstacks',
@@ -31,6 +33,7 @@ import { debounceTime, Subject, switchMap, tap } from 'rxjs';
     LoaderComponent,
     LogoComponent,
     MatIconModule,
+    SinglestackComponent,
   ],
   templateUrl: './deckstacks.component.html',
   styleUrl: './deckstacks.component.css',
@@ -48,7 +51,7 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
     'ALL',
     'UNIONARENA',
     'ONEPIECE',
-    'COOKIERUN',
+    'COOKIERUNBRAVERSE',
     'DRAGONBALLZ',
   ];
   selectedContent: string = 'ALL';
@@ -56,6 +59,10 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
   leftUserpost: Userpost[] = [];
   rightUserpost: Userpost[] = [];
   isLoading: boolean = false;
+  postIdExist: boolean = false;
+  postIdContent!: Userpost;
+  postIdUser!: GSSqlUser;
+  initPostId!: string;
   user!: GSSqlUser;
   limit: number = 20;
   page: number = 0;
@@ -63,7 +70,7 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
   private geekstackService = inject(GeekstackService);
   private userStore = inject(UserStore);
   private router = inject(Router);
-
+  private route = inject(ActivatedRoute);
   private scrollSubject = new Subject<void>();
 
   constructor() {
@@ -72,6 +79,32 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
       displaypic: '',
       userId: '',
     };
+
+    this.initPostId = this.route.snapshot.paramMap.get('postId') ?? '';
+
+    this.route.paramMap.subscribe((params) => {
+      const postId = params.get('postId');
+      if (postId) {
+        this.geekstackService.getUserPostByPostId(postId).subscribe({
+          next: (response) => {
+            this.postIdContent = response;
+            this.postIdUser = {
+              userId: this.postIdContent.userId,
+              name: this.postIdContent.name,
+              displaypic: this.postIdContent.displaypic,
+            };
+            this.postIdExist = true;
+          },
+          error: (err) => {
+            console.error(err);
+            this.postIdExist = false;
+          },
+        });
+      } else {
+        this.postIdExist = false;
+        this.postIdContent = {} as Userpost;
+      }
+    });
   }
 
   ngAfterViewInit() {
@@ -92,44 +125,65 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
     }
 
     this.scrollSubject
-    .pipe(
-      tap(() => {
-        if (!this.isLoading) {
-          this.isLoading = true;
-          console.log(this.isLoading);
-        }
-      }),
-      debounceTime(1000), 
-      switchMap(async () => this.fetchUserlist())
-    )
-    .subscribe();
-  
+      .pipe(
+        tap(() => {
+          if (!this.isLoading) {
+            this.isLoading = true;
+            console.log(this.isLoading);
+          }
+        }),
+        debounceTime(1000),
+        switchMap(async () => this.fetchUserpost())
+      )
+      .subscribe();
   }
 
   ngOnInit() {
-    this.fetchUserlist();
+    this.fetchUserpost();
   }
 
   navigateToPostStacks() {
     this.router.navigate(['/poststacks']);
   }
 
-  fetchUserlist(): void {
-    this.geekstackService.getUserPost(this.limit, this.page).subscribe({
-      next: (data) => {
-        this.userpost = [...this.userpost, ...data];
-        this.splitUserPosts();
-        this.page += 1;
-      },
-      error: (err) => {
-        console.error('Failed to fetch user list:', err);
-      },
-      complete: () => {
-        this.isLoading = false;
-      }
-    });
+  onPostExit(result: boolean) {
+    console.log('POST EXIT>>>>>:' + result);
+    console.log('INIT: ');
+    this.postIdExist = result;
+    this.postIdContent = {} as Userpost;
   }
-  
+
+  fetchUserpost(): void {
+    if (this.selectedContent === 'ALL') {
+      this.geekstackService.getUserPost(this.limit, this.page).subscribe({
+        next: (data) => {
+          this.userpost = [...this.userpost, ...data];
+          this.splitUserPosts();
+          this.page += 1;
+        },
+        error: (err) => {
+          console.error('Failed to fetch user list:', err);
+        },
+        complete: () => {
+          this.isLoading = false;
+        },
+      });
+    } else {
+      this.geekstackService.getUserPostByType(this.limit, this.page, this.selectedContent.toLowerCase()).subscribe({
+        next: (data) => {
+          this.userpost = [...this.userpost, ...data];
+          this.splitUserPosts();
+          this.page += 1;
+        },
+        error: (err) => {
+          console.error('Failed to fetch user list:', err);
+        },
+        complete: () => {
+          this.isLoading = false;
+        },
+      });
+    }
+  }
 
   splitUserPosts(): void {
     this.leftUserpost = [];
@@ -146,6 +200,9 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
 
   clickContent(value: string) {
     this.selectedContent = value;
+    this.page = 0;
+    this.userpost = [];
+    this.fetchUserpost();
     this.centerSelectedItem();
   }
 
@@ -202,7 +259,7 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
   }
 
   onDeleteDataReceived(data: string) {
-    const index = this.userpost.findIndex(item => item.postId === data);
+    const index = this.userpost.findIndex((item) => item.postId === data);
     if (index !== -1) {
       this.userpost.splice(index, 1);
     }

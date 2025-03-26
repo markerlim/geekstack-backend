@@ -17,18 +17,31 @@
     </div>
     }
   </div>
-  <div
-    #stacksContent
-    class="stacks-content"
-  >
+  <div #stacksContent class="stacks-content">
     <div class="content">
-      <app-leftstack [userpost]="leftUserpost" [user]="user" (removeDeck)="onDeleteDataReceived($event)"></app-leftstack>
-      <app-rightstack [userpost]="rightUserpost" [user]="user" (removeDeck)="onDeleteDataReceived($event)"></app-rightstack>
+      <div class="content-seperate">
+        <app-leftstack
+          [userpost]="leftUserpost"
+          [user]="user"
+          (removeDeck)="onDeleteDataReceived($event)"
+        ></app-leftstack>
+        <app-rightstack
+          [userpost]="rightUserpost"
+          [user]="user"
+          (removeDeck)="onDeleteDataReceived($event)"
+        ></app-rightstack>
+      </div>
+      @if (postIdExist) {
+      <app-singlestack
+        [post]="postIdContent"
+        [user]="postIdUser"
+        (postClosed)="onPostExit($event)"
+      ></app-singlestack>
+      }
     </div>
-    <app-loader [ngClass]="{loading:isLoading}"></app-loader>
+    <app-loader [ngClass]="{ loading: isLoading }"></app-loader>
     <div class="post-content" (click)="navigateToPostStacks()">
-      <mat-icon >note_add</mat-icon>
+      <mat-icon>note_add</mat-icon>
+    </div>
   </div>
-  </div>
-
 </div>

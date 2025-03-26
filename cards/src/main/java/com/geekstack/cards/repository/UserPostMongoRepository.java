@@ -37,6 +37,16 @@ public class UserPostMongoRepository {
         return new PageImpl<>(posts, pageable, total).getContent();
     }
 
+    public List<UserPost> userPostingsByType(int page, int size, String type) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+        Query query = new Query(Criteria.where(F_USERPOST_TYPE).is(type)).with(pageable);
+    
+        List<UserPost> posts = mongoTemplate.find(query, UserPost.class, C_USERPOST);
+        long total = mongoTemplate.count(new Query(), UserPost.class, C_USERPOST);
+    
+        return new PageImpl<>(posts, pageable, total).getContent();
+    }
+
     public List<UserPost> userPostingsByUserId(String userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
         Query query = new Query(Criteria.where(F_USERID_REAL).is(userId)).with(pageable);
@@ -57,6 +67,10 @@ public class UserPostMongoRepository {
         return new PageImpl<>(posts, pageable, total).getContent();
     }
 
+    public UserPost getOnePost(String postId){
+        Query query = new Query(Criteria.where(F_USERPOST_ID).is(postId));
+        return mongoTemplate.findOne(query, UserPost.class,C_USERPOST);
+    }
     /**
      * db.userpost.insertOne({userpost object})
      * 
@@ -193,4 +207,5 @@ public class UserPostMongoRepository {
         Query query = new Query(Criteria.where(F_USERPOST_ID).is(postId));
         mongoTemplate.remove(query, UserPost.class, C_USERPOST);
     }
+
 }
