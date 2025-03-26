@@ -24,6 +24,7 @@ cards/.factorypath
 cards/.springBeans
 cards/.sts4-cache
 cards/src/main/resources/firebase/
+cards/src/main/resources/google
 !cards/.mvn/wrapper/maven-wrapper.jar
 !cards/**/src/main/**/target/
 !cards/**/src/test/**/target/
