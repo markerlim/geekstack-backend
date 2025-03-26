@@ -39,7 +39,7 @@
     flex-direction: row;
     overflow: hidden; /* Prevents horizontal scroll issues */
     margin-top: 10px;
-    height: 400px;
+    height: calc(100vh - 406px);
     width: 100%;
     position: relative; /* Needed to manage absolute/fixed child elements properly */
 }
@@ -52,8 +52,7 @@
     flex: 1; /* Ensures it takes full width */
     overflow-y: auto;
     width: 100%;
-    height: 155px;
-    padding-bottom: 100px;
+    height: 100%;
     gap: 10px;
     position: absolute;
     top: 0;
