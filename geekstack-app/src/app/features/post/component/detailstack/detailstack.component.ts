@@ -21,6 +21,7 @@ import { User } from 'firebase/auth';
 import { GSSqlUser } from '../../../../core/model/sql-user.model';
 import { MatDialog } from '@angular/material/dialog';
 import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
+import { LoginModalComponent } from '../../../../shared/component/login-modal/login-modal.component';
 
 @Component({
   selector: 'app-detailstack',
@@ -127,6 +128,19 @@ export class DetailstackComponent {
     }
   }
 
+  onSharePost() {
+    const url = window.location.href + '/' + this.post.postId;
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        console.log('URL copied to clipboard!');
+        alert('URL copied to clipboard!');
+      })
+      .catch((err) => {
+        console.error('Failed to copy URL: ', err);
+      });
+  }
+
   addEmoji(emoji: string, event: MouseEvent) {
     event.stopPropagation();
     const textarea = document.querySelector('textarea') as HTMLTextAreaElement;
@@ -151,6 +165,11 @@ export class DetailstackComponent {
 
   likePost(event: Event) {
     event.stopPropagation();
+    if (this.user.userId == 'error') {
+      alert('You are not signed in!')
+      this.dialog.open(LoginModalComponent, { width: 'fit-content' });
+      return;
+    }
     this.isLiked = !this.isLiked;
 
     if (this.isLiked) {
@@ -210,7 +229,11 @@ export class DetailstackComponent {
   }
 
   openCommentDrawer() {
-    console.log("trigger open")
+    if (this.user.userId == 'error') {
+      alert('You are not signed in!')
+      this.dialog.open(LoginModalComponent, { width: 'fit-content' });
+      return;
+    }
     this.isCommenting = true;
   }
   onClose() {
@@ -225,18 +248,22 @@ export class DetailstackComponent {
 
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
-        this.geekstackService.deleteCommentUserPost(this.post.postId,commentId).subscribe({
-          next: (res) => {
-            console.log(res);    
-            const index = this.listofcomments.findIndex(item => item.commentId === commentId);
-            if (index !== -1) {
-              this.listofcomments.splice(index, 1);
-            }
-          },
-          error: (err) => {
-            console.error(err);
-          },
-        });
+        this.geekstackService
+          .deleteCommentUserPost(this.post.postId, commentId)
+          .subscribe({
+            next: (res) => {
+              console.log(res);
+              const index = this.listofcomments.findIndex(
+                (item) => item.commentId === commentId
+              );
+              if (index !== -1) {
+                this.listofcomments.splice(index, 1);
+              }
+            },
+            error: (err) => {
+              console.error(err);
+            },
+          });
       } else {
         console.log('User canceled the delete');
       }

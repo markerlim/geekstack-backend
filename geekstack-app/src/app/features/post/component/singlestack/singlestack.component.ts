@@ -9,6 +9,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DeleteModalComponent } from '../delete-modal/delete-modal.component';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
 import { debounceTime, filter, Subject } from 'rxjs';
+import { LoginModalComponent } from '../../../../shared/component/login-modal/login-modal.component';
 
 @Component({
   selector: 'app-singlestack',
@@ -91,8 +92,15 @@ export class SinglestackComponent {
       });
   }
 
-  commentPost(event : Event){
+  commentPost(event: Event) {
     event.stopPropagation();
+
+    if (this.user.userId == 'error') {
+      alert('You are not signed in!')
+      this.dialog.open(LoginModalComponent, { width: 'fit-content' });
+      return;
+    }
+
     this.onClickPost(this.post.postId);
     setTimeout(() => {
       if (this.detailStack) {
@@ -106,8 +114,13 @@ export class SinglestackComponent {
 
   likePost(event: Event) {
     event.stopPropagation();
+    if (this.user.userId == 'error') {
+      alert('You are not signed in!')
+      this.dialog.open(LoginModalComponent, { width: 'fit-content' });
+      return;
+    }
     this.isLiked = !this.isLiked;
-    
+
     if (this.isLiked) {
       if (!this.post.listoflikes.includes(this.user.userId)) {
         this.post.listoflikes.push(this.user.userId);
@@ -123,6 +136,20 @@ export class SinglestackComponent {
 
   onLikingPost(bool: boolean) {
     this.isLiked = bool;
+  }
+
+  onSharePost(event: Event) {
+    event.stopPropagation();
+    const url = window.location.href + '/' + this.post.postId;
+    navigator.clipboard
+      .writeText(url)
+      .then(() => {
+        console.log('URL copied to clipboard!');
+        alert('URL copied to clipboard!');
+      })
+      .catch((err) => {
+        console.error('Failed to copy URL: ', err);
+      });
   }
 
   onClickPost(postId: string) {

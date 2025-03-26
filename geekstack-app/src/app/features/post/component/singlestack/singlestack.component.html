@@ -20,7 +20,7 @@
         >@if (isLiked) {favorite} @else {favorite_border}
       </mat-icon>
       <mat-icon (click)="commentPost($event)">comment</mat-icon>
-      <mat-icon>share</mat-icon>
+      <mat-icon (click)="onSharePost($event)">share</mat-icon>
     </div>
     @if (post.userId === user.userId) {
     <mat-icon class="del-icon" (click)="onOpenDeleteDialog($event)"
