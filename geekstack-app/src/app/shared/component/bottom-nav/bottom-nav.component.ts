@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
+import { TcgStore } from '../../../core/store/ctcg.store';
 
 @Component({
   selector: 'app-bottom-nav',
@@ -20,7 +21,7 @@ export class BottomNavComponent {
     {
       src: '/icons/bottomnav/DecklibrarySelected.svg',
       alt: 'library',
-      path: '/library',
+      path: '/poststacks',
     },
     {
       src: '/icons/bottomnav/DeckcreateSelected.svg',

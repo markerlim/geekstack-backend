@@ -1,5 +1,6 @@
 <div class="cardlistpage">
   <div class="action-bar">
+    <div class="action-bar-1">
     <div>
       <select id="color" [(ngModel)]="selectedColor" (ngModelChange)="filterCards()">
         <option value="">Color</option>
@@ -34,6 +35,7 @@
         }
       </select>
     </div>
+  </div>
     <div class="reset-btn" (click)="resetFilter()">X</div>
   </div>
   <div class="card-list" #cardListContainer>

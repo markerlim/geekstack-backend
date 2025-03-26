@@ -2,7 +2,9 @@ import {
   Component,
   inject,
   Input,
+  OnChanges,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import { Subject } from 'rxjs';
 import { ListOfDecks } from '../../../../core/model/listofdecks.model';
@@ -29,7 +31,7 @@ type GameCard =
   templateUrl: './deckload-select.component.html',
   styleUrl: './deckload-select.component.css',
 })
-export class DeckloadSelectComponent {
+export class DeckloadSelectComponent implements OnChanges  {
   @Input()
   isSmallScreen: boolean = false;
 
@@ -52,8 +54,17 @@ export class DeckloadSelectComponent {
   private router = inject(Router);
   constructor() {
   }
-
   ngOnInit(): void {
+    this.loadDecks();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['tcg'] && !changes['tcg'].firstChange) {
+      this.loadDecks();
+    }
+  }
+
+  private loadDecks(): void {
     this.cardDeckService.loadListOfDeckDirect(this.tcg).then(mappedDecks => {
       this.decksOfUser = mappedDecks;
     }).catch(error => {

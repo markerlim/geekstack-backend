@@ -3,9 +3,10 @@ import { UserStore } from '../../../../core/store/user.store';
 import { MatIconModule } from '@angular/material/icon';
 import { TabContentComponent } from '../tab-content/tab-content.component';
 import { GSSqlUser } from '../../../../core/model/sql-user.model';
-import { FormsModule } from '@angular/forms';
+import { FormGroup, FormsModule } from '@angular/forms';
 import { Subject, takeUntil } from 'rxjs';
 import { Userpost } from '../../../../core/model/userpost.model';
+import { GeekstackService } from '../../../../core/service/geekstackdata.service';
 
 @Component({
   selector: 'app-userdetails',
@@ -23,12 +24,15 @@ export class UserdetailsComponent {
 
   user!: GSSqlUser;
 
+  imageSrc!: string;
+  selectedFile: File | null = null;
+
   listOfPostings!: Userpost[];
 
   private destroy$ = new Subject<void>();
 
   private userStore = inject(UserStore);
-
+  private geekstackService = inject(GeekstackService);
   constructor() {}
 
   ngOnInit() {
@@ -36,12 +40,13 @@ export class UserdetailsComponent {
       next: (user) => {
         this.user = user ?? { userId: '', name: '', displaypic: '' };
         this.nameValue = this.user.name;
+        this.imageSrc = this.user.displaypic;
       },
     });
   }
 
   ngOnDestroy() {
-    this.destroy$.next();  // Triggers unsubscription
+    this.destroy$.next(); // Triggers unsubscription
     this.destroy$.complete();
   }
 
@@ -60,14 +65,64 @@ export class UserdetailsComponent {
     }, 0);
   }
 
+  upload() {
+    if (!this.selectedFile) {
+      return;
+    }
+
+    this.geekstackService
+      .editDisplayPicOfUser(this.user.userId, this.selectedFile)
+      .subscribe({
+        next: (result) => {
+          const resultObject = JSON.parse(JSON.stringify(result));
+          this.imageSrc = resultObject.fileUrl; // Assuming the fileUrl is returned
+          this.user.displaypic = this.imageSrc;
+          this.userStore.setGSSqlUser(this.user);
+        },
+        error: (err) => {
+          console.error('Upload failed:', err);
+        },
+      });
+  }
+
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+
+    if (input.files && input.files.length > 0) {
+      this.selectedFile = input.files[0]; // Store the File object directly
+      console.log(
+        'Selected file:',
+        this.selectedFile.name,
+        this.selectedFile.size,
+        this.selectedFile.type
+      );
+
+      // For preview only
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imageSrc = reader.result as string;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
   onSave(confirmation: boolean) {
     if (confirmation) {
-      // run save if fail return original name
-      this.user.name = this.nameValue;
+      if (this.user.name != this.nameValue) {
+        this.user.name = this.nameValue;
+        this.geekstackService.editNameOfUser(this.nameValue, this.user.userId).subscribe({
+          next: (response) =>{
+            console.log(response);
+            this.userStore.setGSSqlUser(this.user);
+          }
+        });
+      }
+      if (this.imageSrc != this.user.displaypic) {
+        this.upload();
+      }
     } else {
       this.nameValue = this.user.name;
     }
     this.isNameEdit = false;
-    
-  }  
+  }
 }

@@ -96,7 +96,7 @@ export class PostcontentComponent {
       return; // Stop submission
     }
 
-    if (!this.form.controls['headline'].valid) {
+    if (this.form.controls['headline'].valid) {
       alert("Your headline is invalid");
       return; // Stop submission
     }

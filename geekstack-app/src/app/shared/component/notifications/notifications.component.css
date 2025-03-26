@@ -1,7 +1,9 @@
 .notification-content {
   width: 100%;
+  height: 100%;
   max-width: 600px;
   flex: 0 0 auto;
+  overflow: auto;
 }
 .holder {
   display: flex;

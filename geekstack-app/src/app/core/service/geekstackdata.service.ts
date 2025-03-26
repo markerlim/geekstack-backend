@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CardUnionArena } from '../model/card-unionarena.model';
@@ -61,8 +61,8 @@ export class GeekstackService {
     );
   }
 
-  searchCard(tcg: string, term: string): Observable<CardUnionArena[]> {
-    return this.http.get<CardUnionArena[]>(
+  searchCard(tcg: string, term: string): Observable<any[]> {
+    return this.http.get<any[]>(
       this.baseURLdata + '/' + tcg + '/search/' + term
     );
   }
@@ -114,6 +114,22 @@ export class GeekstackService {
         page
     );
   }
+
+  editNameOfUser(name: any, userId: any) {
+    return this.http.post(
+      this.baseURLuser + '/upd/' + name + '/of/' + userId,
+      null
+    );
+  }
+
+  editDisplayPicOfUser(userId: string, file: File) {
+    const formData = new FormData();
+    formData.append('file', file);
+
+    return this.http.post<any>(`${this.baseURLuser}/update/image/${userId}`,formData);
+  }
+  
+  
 
   postByUser(payload: any) {
     return this.http.post(this.baseURLuserpost + '/post', payload);

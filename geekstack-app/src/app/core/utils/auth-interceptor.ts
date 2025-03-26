@@ -7,6 +7,10 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   const auth = getAuth();
   const user: User | null = auth.currentUser;
+  if (req.url.includes('/api/user/update/image')) {
+    console.log('Skipping authentication for:', req.url);
+    return next(req);
+  }
 
   if (!user) {
     console.warn('No authenticated user found.');

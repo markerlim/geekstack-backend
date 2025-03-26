@@ -32,10 +32,14 @@ export class UserStore extends ComponentStore<UserState> {
   constructor() {
     super({ gsMongoUser: null, gsSqlUser: null });
 
+    const storedUser = this.loadUserFromLocalStorage();
+
     authState(this.auth).subscribe((user: User | null) => {
       if (user) {
         console.log('User logged in:', user);
-        this.loadUserData(user);
+        if (!storedUser) {
+          this.loadUserData(user);
+        }
       } else {
         console.log('User logged out');
         this.clearAll();
@@ -86,15 +90,15 @@ export class UserStore extends ComponentStore<UserState> {
   }
 
   /** Loads user data from local storage on startup */
-  private loadUserFromLocalStorage() {
+  private loadUserFromLocalStorage() : boolean {
     const storedMongoUser = localStorage.getItem('mongoUser');
     const storedSqlUser = localStorage.getItem('sqlUser');
-    if (storedMongoUser) {
+    if (storedMongoUser && storedSqlUser) {
       this.setGSMongoUser(JSON.parse(storedMongoUser));
-    }
-    if (storedSqlUser) {
       this.setGSSqlUser(JSON.parse(storedSqlUser));
+      return true;
     }
+    return false;
   }
 
   login(response: CreateUserResponse) {

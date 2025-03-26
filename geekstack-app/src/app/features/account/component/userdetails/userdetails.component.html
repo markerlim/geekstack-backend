@@ -1,10 +1,22 @@
 <div class="user-page">
   <div class="user-image">
-    <img [src]="user.displaypic" />
+    <img [src]="imageSrc" />
+    @if (isNameEdit) {
+    <form class="upload">
+      <label for="fileInput" class="upload-button"> + </label>
+      <input
+        id="fileInput"
+        type="file"
+        accept="image/png"
+        class="hidden"
+        (change)="onFileChange($event)"
+      />
+    </form>
+    }
   </div>
   <div class="user-name">
     <input
-    #inputField
+      #inputField
       type="text"
       [(ngModel)]="nameValue"
       [disabled]="!isNameEdit"
@@ -14,10 +26,10 @@
   @if (isNameEdit) {
   <div class="edit-buttons">
     <div (click)="onSave(true)">
-        <mat-icon>save</mat-icon>
+      <mat-icon>save</mat-icon>
     </div>
     <div (click)="onSave(false)">
-        <mat-icon>cancel</mat-icon>
+      <mat-icon>cancel</mat-icon>
     </div>
   </div>
   }

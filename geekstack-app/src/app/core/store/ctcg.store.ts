@@ -6,7 +6,9 @@ export interface TcgState {
   currentTcg: string;
 }
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class TcgStore extends ComponentStore<TcgState> {
   readonly currentTcg$: Observable<string> = this.select(
     (state) => state.currentTcg

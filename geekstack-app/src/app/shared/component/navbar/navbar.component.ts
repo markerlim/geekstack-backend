@@ -8,11 +8,12 @@ import { FireAuthService } from '../../../core/service/fireauth.service';
 import { UserStore } from '../../../core/store/user.store';
 import { GSSqlUser } from '../../../core/model/sql-user.model';
 import { filter } from 'rxjs';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule,MatIconModule],
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.css'],
 })

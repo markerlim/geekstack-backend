@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.geekstack.cards.model.CookieRunDecklist;
 import com.geekstack.cards.model.DragonballzFWDecklist;
@@ -28,6 +29,7 @@ import com.geekstack.cards.repository.UserDetailsMongoRepository;
 import com.geekstack.cards.service.CurrencyConversionService;
 import com.geekstack.cards.service.EmailService;
 import com.geekstack.cards.service.FirebaseService;
+import com.geekstack.cards.service.GoogleCloudStorageService;
 import com.geekstack.cards.service.UserDetailService;
 import com.google.firebase.auth.FirebaseToken;
 
@@ -35,6 +37,7 @@ import com.google.firebase.auth.FirebaseToken;
 @RequestMapping("/api/user")
 public class UserDetailsController {
 
+    private final static Logger logger = LoggerFactory.getLogger(UserDetailsController.class);
     @Autowired
     private UserDetailsMongoRepository userDetailsMongoRepository;
 
@@ -46,6 +49,9 @@ public class UserDetailsController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private GoogleCloudStorageService googleCloudStorageService;
 
     @Autowired
     private CurrencyConversionService currencyConversionService;
@@ -88,7 +94,8 @@ public class UserDetailsController {
 
     // Union Arena save user deck endpoint
     @PostMapping("/save/unionarena/{userId}/deck")
-    public ResponseEntity<Map<String, Object>> saveUADeck(@PathVariable String userId,@RequestParam(required = false) String deckuid,
+    public ResponseEntity<Map<String, Object>> saveUADeck(@PathVariable String userId,
+            @RequestParam(required = false) String deckuid,
             @RequestBody UnionArenaDecklist decklist) {
         Map<String, Object> response = new HashMap<>();
         try {
@@ -211,8 +218,39 @@ public class UserDetailsController {
                 HttpStatus.OK);
     }
 
+    @PostMapping("/upd/{name}/of/{userId}")
+    public ResponseEntity<Map<String, Object>> updateName(@PathVariable String name, @PathVariable String userId) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            userDetailService.updateUserName(name, userId);
+            response.put("message", "Name change success!");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            response.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PostMapping("/update/image/{userId}")
+    public ResponseEntity<Map<String, Object>> updateImage(@PathVariable String userId,@RequestParam("file") MultipartFile file) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            String fileName = "profile-pic-" + System.currentTimeMillis() + ".png"; 
+            String fileUrl = googleCloudStorageService.uploadImage(file.getBytes(), userId, fileName);
+            userDetailService.updateDisplaypic(fileUrl, userId);
+            response.put("message", "Successfully Uploaded");
+            response.put("fileUrl", fileUrl);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            logger.error("Error uploading image", e);
+            response.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+    
+
     @PostMapping("/report-error")
-    public ResponseEntity<Map<String,Object>> reportError(@RequestBody String payload){
+    public ResponseEntity<Map<String, Object>> reportError(@RequestBody String payload) {
         Map<String, Object> response = new HashMap<>();
         try {
             emailService.sendReportEmail(payload);
@@ -225,9 +263,9 @@ public class UserDetailsController {
     }
 
     @GetMapping("/getExcRate")
-    public ResponseEntity<String> exchangeRate(@RequestParam(required = false,defaultValue = "SGD") String base, 
-    @RequestParam(required = false, defaultValue = "JPY") String symbol){
+    public ResponseEntity<String> exchangeRate(@RequestParam(required = false, defaultValue = "SGD") String base,
+            @RequestParam(required = false, defaultValue = "JPY") String symbol) {
         return new ResponseEntity<String>(currencyConversionService.getExchangeRate(base, symbol),
-        HttpStatus.OK);
+                HttpStatus.OK);
     }
 }

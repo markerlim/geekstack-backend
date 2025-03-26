@@ -56,6 +56,14 @@ public class UserDetailService {
         return holder;
     }
 
+    public boolean updateUserName(String name, String userId){
+        return userDetailsMySQLRepository.updateUserName(name, userId);
+    }
+
+    public boolean updateDisplaypic(String displaypic, String userId){
+        return userDetailsMySQLRepository.updateDisplayPic(displaypic, userId);
+    }
+
     public List<Notification> listNotifications(String payload, String limit) throws Exception {
         String userId = firebaseService.verifyIdToken(payload).getUid();
         logger.info(userId);

@@ -35,5 +35,5 @@ public class UserPostMySQLRepository {
 
         return resultList;
     }
-    
+
 }

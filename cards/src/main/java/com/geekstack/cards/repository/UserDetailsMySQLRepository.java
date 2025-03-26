@@ -20,6 +20,11 @@ public class UserDetailsMySQLRepository {
     private final static String SQL_SAVE_USER = """
             INSERT INTO users(userId, name, displaypic, email) VALUES (?,?,?,?)
             """;
+
+    private final static String SQL_UPDATE_NAME = "UPDATE users SET name = ? WHERE userId = ?";
+
+    private final static String SQL_UPDATE_DP = "UPDATE users SET displaypic = ? WHERE userId = ?";
+
     
     public int createUser(String userId, String name, String image, String email){
         int count = jdbcTemplate.update(SQL_SAVE_USER,userId,name,image,email);
@@ -37,4 +42,13 @@ public class UserDetailsMySQLRepository {
         return holder;
     }
     
+    public boolean updateUserName(String name, String userId) {
+        int rowsUpdated = jdbcTemplate.update(SQL_UPDATE_NAME, name, userId);
+        return rowsUpdated > 0;
+    }
+
+    public boolean updateDisplayPic(String displaypic, String userId) {
+        int rowsUpdated = jdbcTemplate.update(SQL_UPDATE_DP, displaypic, userId);
+        return rowsUpdated > 0;
+    }
 }

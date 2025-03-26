@@ -12,9 +12,13 @@
   width: 120px;
   height: 120px;
   overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 .user-image img {
   width: 100%;
+  position: relative;
 }
 .user-name {
   width: 250px;
@@ -76,4 +80,27 @@
 
 app-tab-content{
   width: 100%;
+}
+.upload{
+  position: absolute;
+  top:90px;
+  transform: translateX(90px);
+  z-index: 10;
+}
+
+.upload-button {
+  display: inline-block;
+  width: 40px;
+  height: 40px;
+  border: 2px dashed #000;
+  background-color: #7c4fff;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 40px;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+#fileInput {
+  display: none;
 }

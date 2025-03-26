@@ -1,7 +1,9 @@
 <!-- Navigation Bar -->
 <nav>
   @if (showBackInstead && isSmallScreen) {
-  <div class="back-btn" (click)="goBack()">⇽</div>
+  <div class="back-btn" (click)="goBack()">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </div>
   }
   <div class="logo">
     <img src="/icons/geekstackicon.svg" alt="Logo" />

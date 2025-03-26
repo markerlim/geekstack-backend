@@ -62,11 +62,6 @@
   padding: 10px;
 }
 
-.action-bar div {
-  display: flex;
-  flex-direction: column;
-}
-
 .action-bar label {
   font-weight: bold;
   margin-bottom: 5px;
@@ -78,7 +73,7 @@ select {
   font-size: 14px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  width: 150px;
+  width: 100px;
   background-color: white;
   transition: border-color 0.3s ease;
 }
@@ -87,10 +82,29 @@ option {
   padding: 10px;
   font-size: 14px;
 }
+.action-bar-1{
+  flex: 0 0 auto;
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: center;
+  gap:5px;
+}
 
 @media (max-width: 599px) {
   .card-item {
     width: 100px;
+  }
+
+  select{
+    width: 90px;
+  }
+  .action-bar-1{
+    flex: 0 0 auto;
+  }
+
+  .action-bar{
+    flex-wrap: wrap;
   }
 }
 

@@ -60,17 +60,18 @@ export class DeckbuilderComponent implements OnInit {
   private tcgStore = inject(TcgStore);
   
   constructor() {
-    this.route.params.subscribe((params) => {
-      const tcg = params['tcg'];
-      this.tcgStore.setTcg(tcg);
-    });
     this.user = this.userStore.getCurrentUser();
-    this.tcg = this.tcgStore.getCurrentTcg();
   }
 
   ngOnInit(): void {
     this.screenSizeService.isXSmallScreen$.subscribe((isSmall) => {
       this.isSmallScreen = isSmall;
+    });
+    this.route.params.subscribe((params) => {
+      const tcg = params['tcg'];
+      this.tcgStore.setTcg(tcg);
+      this.tcg = this.tcgStore.getCurrentTcg();
+      console.log("changed to: ",this.tcg);
     });
     this.isPwa = this.checkIfPwa();
   }
