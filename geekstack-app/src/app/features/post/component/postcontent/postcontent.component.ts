@@ -7,6 +7,7 @@ import { UserStore } from '../../../../core/store/user.store';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
 import { response } from 'express';
 import { CardRecord } from '../../../../core/model/card-record.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-postcontent',
@@ -23,6 +24,7 @@ export class PostcontentComponent {
 
   private cardDeckService = inject(CardDeckService);
   private geekstackService = inject(GeekstackService);
+  private router = inject(Router);
   private userStore = inject(UserStore);
   constructor() {
     this.form = new FormGroup({
@@ -96,7 +98,7 @@ export class PostcontentComponent {
       return; // Stop submission
     }
 
-    if (this.form.controls['headline'].valid) {
+    if (this.form.controls['headline'].invalid) {
       alert("Your headline is invalid");
       return; // Stop submission
     }
@@ -109,6 +111,7 @@ export class PostcontentComponent {
     this.geekstackService.postByUser(this.form.value).subscribe({
       next: (response) => {
         console.log(response);
+        this.router.navigate([`/stacks`])
       },
       error: (err) => {
         console.error(err);
