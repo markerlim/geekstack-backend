@@ -9,7 +9,7 @@ import com.geekstack.cards.model.CardPriceFULLA;
 import com.geekstack.cards.model.CardPriceYYT;
 import com.geekstack.cards.model.CookieRunCard;
 import com.geekstack.cards.model.DragonBallzFWCard;
-import com.geekstack.cards.model.DuelMasterCard;
+import com.geekstack.cards.model.DuelMastersCard;
 import com.geekstack.cards.model.OnePieceCard;
 import com.geekstack.cards.model.UnionArenaCard;
 import com.geekstack.cards.model.UnionArenaCardDTO;
@@ -47,16 +47,16 @@ public class CardListService {
 
     // Nested class for DuelMaster actions
     public class DuelMasterActions {
-        public List<DuelMasterCard> all() {
+        public List<DuelMastersCard> all() {
             return duelMasterRepository.getCards();
         }
 
-        public List<DuelMasterCard> byBooster(String booster) {
+        public List<DuelMastersCard> byBooster(String booster) {
             System.out.println(booster);
             return duelMasterRepository.getCardsByBooster(booster);
         }
 
-        public List<DuelMasterCard> searchDatabase(String term){
+        public List<DuelMastersCard> searchDatabase(String term){
             return duelMasterRepository.searchForCards(term);
         }
 

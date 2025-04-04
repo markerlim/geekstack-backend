@@ -30,6 +30,7 @@ cards/src/main/resources/google
 !cards/**/src/test/**/target/
 !cards/**/src/main/**/build/
 !cards/**/src/test/**/build/
+cards/users_202503201414.sql
 
 # Geekstack-app ignores
 geekstack-app/dist/
@@ -49,3 +50,4 @@ geekstack-app/typings/
 geekstack-app/src/environments/*
 geekstack-app/android/app/google-services.json
 geekstack-app/.vercel/
+geekstack-app/src/firebase-messaging-sw.js

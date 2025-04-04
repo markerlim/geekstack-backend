@@ -1,13 +1,4 @@
-import {
-  ChangeDetectorRef,
-  Component,
-  ElementRef,
-  HostListener,
-  inject,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, inject, Input, OnInit, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
@@ -21,6 +12,14 @@ import { CardDeckService } from '../../../../core/service/card-deck.service';
 import { TcgImageComponent } from '../../../../shared/component/tcg-image/tcg-image.component';
 import { MatIconModule } from '@angular/material/icon';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
+import { DuelmastersCard } from '../../../../core/model/card-duelmaster.model';
+
+type GameCard =
+  | CardUnionArena
+  | CardOnePiece
+  | CardDragonBallZFW
+  | CookieRunCard
+  | DuelmastersCard;
 
 @Component({
   selector: 'app-booster-list-deckbuilder',
@@ -36,16 +35,13 @@ export class BoosterListDeckbuilderComponent implements OnInit {
     imageSrc: string;
     imgWidth: number;
   }> = [];
-  filteredCards: Array<
-    CardUnionArena | CardOnePiece | CardDragonBallZFW | CookieRunCard
-  > = [];
+  duelmasterlist: any[] = [];
+  filteredCards: Array<GameCard> = [];
   showBoosterList: boolean = true; // Flag to track whether booster list is visible
   @Input()
   isSmallScreen: boolean = false;
   tcgPath: string = '';
-  cardList: Array<
-    CardUnionArena | CardOnePiece | CardDragonBallZFW | CookieRunCard
-  > = [];
+  cardList: Array<GameCard> = [];
   booster: string = '';
   colors: string[] = [];
   boosters: string[] = [];
@@ -103,14 +99,25 @@ export class BoosterListDeckbuilderComponent implements OnInit {
   }
 
   fetchBoosterList(): void {
-    this.geekstackService.getBoosterOfTcg(this.tcgPath).subscribe({
-      next: (data) => {
-        this.boosterList = data;
-      },
-      error: (err) => {
-        console.error('Failed to fetch booster list:', err);
-      },
-    });
+    if (this.tcgPath == 'duelmasters') {
+      this.geekstackService.getDuelmasterBtn().subscribe({
+        next: (response) =>{
+          this.duelmasterlist = response
+         },
+        error:(err) =>{
+          console.error(err);
+        } 
+      })
+    } else {
+      this.geekstackService.getBoosterOfTcg(this.tcgPath).subscribe({
+        next: (data) => {
+          this.boosterList = data;
+        },
+        error: (err) => {
+          console.error('Failed to fetch booster list:', err);
+        },
+      });
+    }
   }
 
   getUniqueColorsFromList(): string[] {
@@ -162,10 +169,19 @@ export class BoosterListDeckbuilderComponent implements OnInit {
       ...new Set(
         this.cardList
           .map((card) => {
-            if (this.tcgPath === 'onepiece' && 'category' in card && card.category === 'leader') {
+            if (
+              this.tcgPath === 'onepiece' &&
+              'category' in card &&
+              card.category === 'leader'
+            ) {
               return undefined;
             }
-            if (this.tcgPath === 'dragonballzfw' && 'cardtype' in card && (card.cardtype === 'LEADER' || card.cardtype === 'LEADER | AWAKEN')) {
+            if (
+              this.tcgPath === 'dragonballzfw' &&
+              'cardtype' in card &&
+              (card.cardtype === 'LEADER' ||
+                card.cardtype === 'LEADER | AWAKEN')
+            ) {
               return undefined;
             }
             switch (this.tcgPath) {
@@ -179,19 +195,21 @@ export class BoosterListDeckbuilderComponent implements OnInit {
                 return undefined;
             }
           })
-          .filter(
-            (item): item is string => item !== undefined
-          )
+          .filter((item): item is string => item !== undefined)
       ),
     ];
   }
 
   filterCards(): void {
     this.filteredCards = this.cardList.filter((card) => {
-      if ('category' in card && card.category === 'leader' || 'cardtype' in card && (card.cardtype === 'LEADER' || card.cardtype === 'LEADER | AWAKEN') ) {
+      if (
+        ('category' in card && card.category === 'leader') ||
+        ('cardtype' in card &&
+          (card.cardtype === 'LEADER' || card.cardtype === 'LEADER | AWAKEN'))
+      ) {
         return false;
       }
-      
+
       //selectedBooster is for category
       // One Piece specific filtering
       else if (this.tcgPath === 'onepiece') {
@@ -231,9 +249,7 @@ export class BoosterListDeckbuilderComponent implements OnInit {
             : true) &&
           (this.selectedRarity ? card.rarity === this.selectedRarity : true)
         );
-      }
-
-      else if ('energyType' in card && 'grade' in card) {
+      } else if ('energyType' in card && 'grade' in card) {
         return (
           (this.selectedColor
             ? card.energyType === this.selectedColor

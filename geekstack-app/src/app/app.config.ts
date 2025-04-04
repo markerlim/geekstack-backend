@@ -5,6 +5,7 @@ import { routes } from './app.routes';
 import { provideClientHydration } from '@angular/platform-browser';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { initializeApp, provideFirebaseApp } from '@angular/fire/app';
+import { provideMessaging, getMessaging } from '@angular/fire/messaging';
 import { environment } from '../environments/environment';
 import { getAuth, provideAuth } from '@angular/fire/auth';
 import { getFirestore, provideFirestore } from '@angular/fire/firestore';
@@ -15,11 +16,10 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideClientHydration(),
-    provideHttpClient(
-      withInterceptors([authInterceptor])
-    ),
-        provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideHttpClient(withInterceptors([authInterceptor])),
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideMessaging(() => getMessaging()),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
   ],
 };

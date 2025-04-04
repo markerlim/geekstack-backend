@@ -1,5 +1,24 @@
 <div class="holder">
   <div class="notification-content">
+    <div class="notification-instruct">
+      <span
+        >@if (notificationsEnabled) { Notifications Enabled} @else {
+        Notifications Disabled }</span
+      >
+      <label class="toggle-switch">
+        <input
+          type="checkbox"
+          [(ngModel)]="notificationsEnabled"
+          (change)="toggleNotification()"
+        />
+        <div class="toggle-switch-background">
+          <div class="toggle-switch-handle"></div>
+        </div>
+      </label>
+      @if (isLoading) {
+      <div class="loader"></div>
+      }
+    </div>
     @for (item of listofnotif; track $index) {
     <div class="notification-bubble" (click)="redirectToPost(item.postId)">
       <div class="actor-holder">

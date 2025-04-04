@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.geekstack.cards.model.CookieRunDecklist;
 import com.geekstack.cards.model.DragonballzFWDecklist;
+import com.geekstack.cards.model.DuelMasterDecklist;
 import com.geekstack.cards.model.Notification;
 import com.geekstack.cards.model.OnePieceDecklist;
 import com.geekstack.cards.model.UnionArenaDecklist;
@@ -192,6 +193,36 @@ public class UserDetailsController {
                 HttpStatus.OK);
     }
 
+    // Union Arena save user deck endpoint
+    @PostMapping("/save/duelmasters/{userId}/deck")
+    public ResponseEntity<Map<String, Object>> saveDMDeck(@PathVariable String userId,
+            @RequestParam(required = false) String deckuid,
+            @RequestBody DuelMasterDecklist decklist) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            if (deckuid == null || deckuid.isEmpty()) {
+                userDetailsMongoRepository.createDuelMasterDecklist(decklist, userId);
+            } else {
+                userDetailsMongoRepository.updateDuelMasterDecklist(decklist, userId, deckuid);
+            }
+
+            response.put("message", "Deck created successfully");
+
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            response.put("message", "Error adding deck: " + e.getMessage());
+            response.put("deckId", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // Union Arena load user deck endpoint
+    @GetMapping("/load/duelmasters/{userId}/deck")
+    public ResponseEntity<List<DuelMasterDecklist>> loadDMDeck(@PathVariable String userId) {
+        return new ResponseEntity<List<DuelMasterDecklist>>(userDetailsMongoRepository.loadDuelMasterDecklist(userId),
+                HttpStatus.OK);
+    }
+
     @DeleteMapping("/delete/{tcg}/{userId}/deck/{deckId}")
     public ResponseEntity<Map<String, Object>> deleteDeck(@PathVariable String tcg, @PathVariable String userId,
             @PathVariable String deckId) {
@@ -232,10 +263,11 @@ public class UserDetailsController {
     }
 
     @PostMapping("/update/image/{userId}")
-    public ResponseEntity<Map<String, Object>> updateImage(@PathVariable String userId,@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<Map<String, Object>> updateImage(@PathVariable String userId,
+            @RequestParam("file") MultipartFile file) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String fileName = "profile-pic-" + System.currentTimeMillis() + ".png"; 
+            String fileName = "profile-pic-" + System.currentTimeMillis() + ".png";
             String fileUrl = googleCloudStorageService.uploadImage(file.getBytes(), userId, fileName);
             userDetailService.updateDisplaypic(fileUrl, userId);
             response.put("message", "Successfully Uploaded");
@@ -247,7 +279,6 @@ public class UserDetailsController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-    
 
     @PostMapping("/report-error")
     public ResponseEntity<Map<String, Object>> reportError(@RequestBody String payload) {

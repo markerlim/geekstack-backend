@@ -16,28 +16,30 @@ import { UserStore } from '../../../../core/store/user.store';
 import { TcgStore } from '../../../../core/store/ctcg.store';
 import { ActivatedRoute } from '@angular/router';
 import { GSSqlUser } from '../../../../core/model/sql-user.model';
+import { DuelmastersCard } from '../../../../core/model/card-duelmaster.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
-  | CookieRunCard;
+  | CookieRunCard
+  | DuelmastersCard;
 
 @Component({
-    selector: 'app-deckbuilder',
-    standalone: true,
-    imports: [
-        BoosterListDeckbuilderComponent,
-        CardInDeckComponent,
-        DeckbuilderActionsComponent,
-        CommonModule,
-        DeckcoverSelectComponent,
-        DeckloadSelectComponent,
-        MatIconModule
-    ],
-    providers:[TcgStore],
-    templateUrl: './deckbuilder.component.html',
-    styleUrls: ['./deckbuilder.component.css']
+  selector: 'app-deckbuilder',
+  standalone: true,
+  imports: [
+    BoosterListDeckbuilderComponent,
+    CardInDeckComponent,
+    DeckbuilderActionsComponent,
+    CommonModule,
+    DeckcoverSelectComponent,
+    DeckloadSelectComponent,
+    MatIconModule,
+  ],
+  providers: [TcgStore],
+  templateUrl: './deckbuilder.component.html',
+  styleUrls: ['./deckbuilder.component.css'],
 })
 export class DeckbuilderComponent implements OnInit {
   title = 'geekstack-app';
@@ -52,13 +54,13 @@ export class DeckbuilderComponent implements OnInit {
   deckname: string = 'Deck Name';
   user: GSSqlUser;
   tcg: string = '';
-  
+
   private route = inject(ActivatedRoute);
   private cardDeckService = inject(CardDeckService);
   private screenSizeService = inject(ScreenSizeService);
   private userStore = inject(UserStore);
   private tcgStore = inject(TcgStore);
-  
+
   constructor() {
     this.user = this.userStore.getCurrentUser();
   }
@@ -71,7 +73,7 @@ export class DeckbuilderComponent implements OnInit {
       const tcg = params['tcg'];
       this.tcgStore.setTcg(tcg);
       this.tcg = this.tcgStore.getCurrentTcg();
-      console.log("changed to: ",this.tcg);
+      console.log('changed to: ', this.tcg);
     });
     this.isPwa = this.checkIfPwa();
   }
@@ -85,19 +87,18 @@ export class DeckbuilderComponent implements OnInit {
     this.cardDeckService.removeCard(card);
   }
 
-
   isDeckCoverClicked(result: boolean) {
     this.isDeckcoverSelect = result;
-    console.log("COVER: ",result)
+    console.log('COVER: ', result);
   }
 
   isDeckLoadClicked(result: boolean) {
     this.isDeckLoadSelect = result;
   }
 
-  isDeckSelected(event:{ card: GameCard; count: number }[]){
-    this.cardDeckService.loadDeckFromList(event,"unionarena");
-    const object = this.cardDeckService.getDeckDetails()
+  isDeckSelected(event: { card: GameCard; count: number }[]) {
+    this.cardDeckService.loadDeckFromList(event, 'unionarena');
+    const object = this.cardDeckService.getDeckDetails();
     this.deckcover = object.deckcover;
     this.deckname = object.deckname;
     this.deckuid = object.deckuid;
@@ -107,20 +108,20 @@ export class DeckbuilderComponent implements OnInit {
     this.deckcover = card.urlimage;
   }
 
-  openModal(result:boolean) {
+  openModal(result: boolean) {
     this.isCardListActive = result;
     this.isDeckLoadSelect = result;
     this.isDeckcoverSelect = result;
     this.toggleModalOpen(result);
   }
-  openCardList(result:boolean){
+  openCardList(result: boolean) {
     this.isCardListActive = result;
     this.toggleModalOpen(result);
   }
-  toggleModalOpen(result:boolean) {
+  toggleModalOpen(result: boolean) {
     this.isOverLayActive = result;
   }
-  handleCardlistActive(result:boolean){
+  handleCardlistActive(result: boolean) {
     this.isCardListActive = result;
     this.isOverLayActive = result;
   }

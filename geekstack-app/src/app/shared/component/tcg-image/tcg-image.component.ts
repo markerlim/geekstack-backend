@@ -6,12 +6,14 @@ import { CardOnePiece } from '../../../core/model/card-onepiece.model';
 import { CardDragonBallZFW } from '../../../core/model/card-dragonballzfw.model';
 import { CookieRunCard } from '../../../core/model/card-cookierunbraverse.model';
 import { CardRecord } from '../../../core/model/card-record.model';
+import { DuelmastersCard } from '../../../core/model/card-duelmaster.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
-  | CookieRunCard;
+  | CookieRunCard
+  | DuelmastersCard;
 
 @Component({
   selector: 'app-tcg-image',

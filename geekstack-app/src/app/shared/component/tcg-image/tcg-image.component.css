@@ -6,9 +6,19 @@
   margin: 0;
   padding: 0;
   line-height: 0;
+  overflow: hidden;
   display: inline-block;
 }
-
+@media (max-width:599px) {
+  .card{
+    border-radius: 6px;
+  }
+}
+@media (min-width:600px) {
+  .card{
+    border-radius: 8px;
+  }
+}
 .card img {
   width: 100%;
   display: block;

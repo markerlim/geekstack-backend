@@ -8,12 +8,14 @@ import { ListOfDecks } from '../model/listofdecks.model';
 import { GeekstackService } from './geekstackdata.service';
 import { GSMongoUser } from '../model/mongo-user.model';
 import { UserStore } from '../store/user.store';
+import { DuelmastersCard } from '../model/card-duelmaster.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
-  | CookieRunCard;
+  | CookieRunCard
+  | DuelmastersCard;
 
 @Injectable({
   providedIn: 'root',
@@ -94,49 +96,58 @@ export class CardDeckService {
     });
     return count;
   }
-  
+
   getColorCountForUnionArena(): number {
     let count = 0;
     const currentCards = this.cardsInDeckSubject.value;
-  
+
     currentCards.forEach((entry) => {
-      const gameCard = this.mapToGameCard(entry.card, 'unionarena') as CardUnionArena;
-      if (gameCard.triggerState == "color") {
+      const gameCard = this.mapToGameCard(
+        entry.card,
+        'unionarena'
+      ) as CardUnionArena;
+      if (gameCard.triggerState == 'color') {
         count += entry.count;
       }
     });
-  
+
     return count;
   }
 
   getFinalCountForUnionArena(): number {
     let count = 0;
     const currentCards = this.cardsInDeckSubject.value;
-  
+
     currentCards.forEach((entry) => {
-      const gameCard = this.mapToGameCard(entry.card, 'unionarena') as CardUnionArena;
-      if (gameCard.triggerState == "final") {
+      const gameCard = this.mapToGameCard(
+        entry.card,
+        'unionarena'
+      ) as CardUnionArena;
+      if (gameCard.triggerState == 'final') {
         count += entry.count;
       }
     });
-  
+
     return count;
   }
-  
+
   getSpecialCountForUnionArena(): number {
     let count = 0;
     const currentCards = this.cardsInDeckSubject.value;
-  
+
     currentCards.forEach((entry) => {
-      const gameCard = this.mapToGameCard(entry.card, 'unionarena') as CardUnionArena;
-      if (gameCard.triggerState == "special") {
+      const gameCard = this.mapToGameCard(
+        entry.card,
+        'unionarena'
+      ) as CardUnionArena;
+      if (gameCard.triggerState == 'special') {
         count += entry.count;
       }
     });
-  
+
     return count;
   }
-  
+
   getCardCount(card: GameCard): number {
     const currentCards = this.cardsInDeckSubject.value;
     const foundCard = currentCards.find((item) =>
@@ -149,68 +160,75 @@ export class CardDeckService {
     this.cardsInDeckSubject.next([]);
   }
 
-
-  loadDeckFromList(decklist: { card: GameCard; count: number }[], tcgType: string) {
-    const mappedDecklist = decklist.map(entry => ({
-      card:this.mapToGameCard(entry.card, tcgType), // Convert to correct type
+  loadDeckFromList(
+    decklist: { card: GameCard; count: number }[],
+    tcgType: string
+  ) {
+    const mappedDecklist = decklist.map((entry) => ({
+      card: this.mapToGameCard(entry.card, tcgType), // Convert to correct type
       count: entry.count ?? 0, // Ensure count is always present
     }));
-  
-    console.log("Mapped Deck List:", mappedDecklist);
+
+    console.log('Mapped Deck List:', mappedDecklist);
     this.cardsInDeckSubject.next(mappedDecklist);
   }
-  
-  loadListOfDeck( tcg: string) {
+
+  loadListOfDeck(tcg: string) {
     const storedMongoUser = localStorage.getItem('mongoUser');
-    
+
     if (storedMongoUser) {
       const mongoUser: GSMongoUser = JSON.parse(storedMongoUser);
-    
+
       const deckFieldMap: Record<string, keyof GSMongoUser> = {
-        "unionarena": "uadecks",
-        "onepiece": "opdecks",
-        "cookierunbraverse": "crbdecks",
-        "dragonballzfw": "dbzfwdecks"
+        unionarena: 'uadecks',
+        onepiece: 'opdecks',
+        cookierunbraverse: 'crbdecks',
+        dragonballzfw: 'dbzfwdecks',
       };
-    
-      const selectedDecks = mongoUser[deckFieldMap[tcg]]; 
+
+      const selectedDecks = mongoUser[deckFieldMap[tcg]];
       if (Array.isArray(selectedDecks) && selectedDecks.length > 0) {
-        console.log(`Using ${deckFieldMap[tcg]} from local storage:`, selectedDecks);
-    
-        const mappedDecks = selectedDecks.map(deck => ({
+        console.log(
+          `Using ${deckFieldMap[tcg]} from local storage:`,
+          selectedDecks
+        );
+
+        const mappedDecks = selectedDecks.map((deck) => ({
           ...deck,
           listofcards: deck.listofcards
             ? deck.listofcards.map((cardEntry: any) => ({
                 card: this.mapToGameCard(cardEntry, tcg),
-                count: cardEntry.count ?? 1
+                count: cardEntry.count ?? 1,
               }))
-            : []
+            : [],
         }));
-    
+
         console.log('Mapped decks:', mappedDecks);
         this.decksInListSubject.next(mappedDecks);
         return;
       }
     }
-    
-  
+
     this.geekstackService.userLoadListOfDeck(this.userId, tcg).subscribe({
       next: (response) => {
         if (response.length > 0) {
-          const mappedDecks = response.map(deck => ({
+          const mappedDecks = response.map((deck) => ({
             ...deck,
             listofcards: deck.listofcards
               ? deck.listofcards.map((cardEntry: any) => ({
                   card: this.mapToGameCard(cardEntry, tcg),
-                  count: cardEntry.count ?? 1
+                  count: cardEntry.count ?? 1,
                 }))
-              : []
+              : [],
           }));
-  
+
           console.log('Fetched decks from API:', mappedDecks);
           this.decksInListSubject.next(mappedDecks);
-          
-          const updatedMongoUser = { ...JSON.parse(storedMongoUser || '{}'), uaDecks: mappedDecks };
+
+          const updatedMongoUser = {
+            ...JSON.parse(storedMongoUser || '{}'),
+            uaDecks: mappedDecks,
+          };
           localStorage.setItem('mongoUser', JSON.stringify(updatedMongoUser));
         }
       },
@@ -223,57 +241,63 @@ export class CardDeckService {
   loadListOfDeckDirect(tcg: string): Promise<any[]> {
     return new Promise((resolve, reject) => {
       const storedMongoUser = localStorage.getItem('mongoUser');
-      
+
       const deckFieldMap: Record<string, keyof GSMongoUser> = {
-        "unionarena": "uadecks",
-        "onepiece": "opdecks",
-        "cookierunbraverse": "crbdecks",
-        "dragonballzfw": "dbzfwdecks"
+        unionarena: 'uadecks',
+        onepiece: 'opdecks',
+        cookierunbraverse: 'crbdecks',
+        dragonballzfw: 'dbzfwdecks',
       };
-      
+
       if (storedMongoUser) {
         const mongoUser: GSMongoUser = JSON.parse(storedMongoUser);
-      
-        const selectedDecks = mongoUser[deckFieldMap[tcg]]; 
+
+        const selectedDecks = mongoUser[deckFieldMap[tcg]];
         if (Array.isArray(selectedDecks) && selectedDecks.length > 0) {
-          console.log(`Using ${deckFieldMap[tcg]} from local storage:`, selectedDecks);
-      
-          const mappedDecks = selectedDecks.map(deck => ({
+          console.log(
+            `Using ${deckFieldMap[tcg]} from local storage:`,
+            selectedDecks
+          );
+
+          const mappedDecks = selectedDecks.map((deck) => ({
             ...deck,
             listofcards: deck.listofcards
               ? deck.listofcards.map((cardEntry: any) => ({
                   card: this.mapToGameCard(cardEntry, tcg),
-                  count: cardEntry.count ?? 1
+                  count: cardEntry.count ?? 1,
                 }))
-              : []
+              : [],
           }));
-      
+
           console.log('Mapped decks:', mappedDecks);
           resolve(mappedDecks); // Return the decks directly
           return;
         }
       }
-  
+
       // If decks not found in local storage, fetch from API
       this.geekstackService.userLoadListOfDeck(this.userId, tcg).subscribe({
         next: (response) => {
           if (response.length > 0) {
-            const mappedDecks = response.map(deck => ({
+            const mappedDecks = response.map((deck) => ({
               ...deck,
               listofcards: deck.listofcards
                 ? deck.listofcards.map((cardEntry: any) => ({
                     card: this.mapToGameCard(cardEntry, tcg),
-                    count: cardEntry.count ?? 1
+                    count: cardEntry.count ?? 1,
                   }))
-                : []
+                : [],
             }));
-    
+
             console.log('Fetched decks from API:', mappedDecks);
-            
+
             // Update local storage if needed
-            const updatedMongoUser = { ...JSON.parse(storedMongoUser || '{}'), [deckFieldMap[tcg]]: mappedDecks };
+            const updatedMongoUser = {
+              ...JSON.parse(storedMongoUser || '{}'),
+              [deckFieldMap[tcg]]: mappedDecks,
+            };
             localStorage.setItem('mongoUser', JSON.stringify(updatedMongoUser));
-  
+
             resolve(mappedDecks); // Return the decks directly
           } else {
             reject('No decks found');
@@ -286,15 +310,19 @@ export class CardDeckService {
       });
     });
   }
-  
-  setDeckDetails(deckuid: string, deckname: string, deckcover: string){
-    this.deckuid = deckuid
-    this.deckcover = deckcover
-    this.deckname = deckname
+
+  setDeckDetails(deckuid: string, deckname: string, deckcover: string) {
+    this.deckuid = deckuid;
+    this.deckcover = deckcover;
+    this.deckname = deckname;
   }
 
-  getDeckDetails() : {deckuid: string, deckname: string, deckcover: string}{
-    return {deckuid: this.deckuid, deckname: this.deckname, deckcover: this.deckcover};
+  getDeckDetails(): { deckuid: string; deckname: string; deckcover: string } {
+    return {
+      deckuid: this.deckuid,
+      deckname: this.deckname,
+      deckcover: this.deckcover,
+    };
   }
 
   mapToGameCard(rawCard: any, tcgType: string): GameCard {
@@ -308,6 +336,8 @@ export class CardDeckService {
         return rawCard as CardDragonBallZFW;
       case 'cookierunbraverse':
         return rawCard as CookieRunCard;
+      case 'duelmasters':
+        return rawCard as DuelmastersCard;
       default:
         console.warn('Unknown card type:', rawCard);
         return rawCard as GameCard;

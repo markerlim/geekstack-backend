@@ -28,10 +28,6 @@ export class TimeAgoPipe implements PipeTransform {
       date = new Date(timestamp);
     }
 
-    // Debug logs (UTC normalized)
-    console.log("INPUT (UTC): ", date.toISOString());
-    console.log("CURRENT (UTC): ", new Date().toISOString());
-
     // Calculate difference in UTC to avoid timezone issues
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);

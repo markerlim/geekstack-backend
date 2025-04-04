@@ -40,7 +40,8 @@
         </td>
       </tr>
     </table>
-    } @if (getCardType() === "onepiece") {
+    } 
+    @if (getCardType() === "onepiece") {
     <div class="image-container">
       <img
         class="modal-img"
@@ -76,11 +77,52 @@
         </td>
       </tr>
     </table>
-    } @if (getCardType() === "cookierunbraverse") {
+    } 
+    @if (getCardType() === "cookierunbraverse") {
     <div class="zoom-overlay" (click)="onCloseModal()">
       <img [src]="getCookieRunCard()?.urlimage" class="zoomed-image" />
     </div>
-    }
+    } 
+    @if (getCardType() === "duelmasters") {
+      <div class="image-container">
+        <img
+          class="modal-img"
+          [src]="getDuelmastersCard()?.urlimage"
+          (click)="onClickZoomIn()"
+        />
+      </div>
+      <table class="card-table">
+        <tr>
+          <td>Name:</td>
+          <td>{{ getDuelmastersCard()?.cardName }}</td>
+        </tr>
+        <tr>
+          <td>Id:</td>
+          <td>{{ getDuelmastersCard()?.cardUid }}</td>
+        </tr>
+        <tr>
+          <td>Type:</td>
+          <td>{{ getDuelmastersCard()?.type }}</td>
+        </tr>
+        <tr>
+          <td>Effect:</td>
+          <td>
+            @for (line of getDuelmastersCard()?.effects?.split('\\n');let i = $index; track $index)
+            {
+            <ng-container>
+              <span
+                class="tcg-text"
+                [innerHTML]="replaceTagsWithIcons(line)"
+              ></span>
+              @if (i !== getUnionArenaCard()?.effect?.split('\\n')!.length - 1) {
+                <br />
+                }
+            </ng-container>
+            }
+          </td>
+        </tr>
+      </table>
+      }
     <div class="error-btn" (click)="openErrorDialog()">
       <mat-icon>error</mat-icon>
     </div>
@@ -93,6 +135,10 @@
   <div class="zoom-overlay" (click)="onClickZoomIn()">
     <img [src]="getOnePieceCard()?.urlimage" class="zoomed-image" />
   </div>
-  }
+  } @if (isZoomIn && getCardType()==="duelmasters") {
+    <div class="zoom-overlay" (click)="onClickZoomIn()">
+      <img [src]="getDuelmastersCard()?.urlimage" class="zoomed-image" />
+    </div>
+    }
   <a class="close-btn" (click)="onCloseModal()">X</a>
 </div>

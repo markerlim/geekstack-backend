@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.geekstack.cards.model.DuelMasterCard;
+import com.geekstack.cards.model.DuelMastersCard;
 import com.geekstack.cards.service.CardListService;
 
 @RestController
@@ -22,25 +22,25 @@ public class RestControllerDuelMaster {
     @Autowired
     private CardListService cardListService;
 
-    // http//localhost:8080/data/duelmaster
+    // http//localhost:8080/api/data/duelmasters
     @GetMapping
-    public ResponseEntity<List<DuelMasterCard>> allDuelMasterPage() {
-        return new ResponseEntity<List<DuelMasterCard>>(cardListService.listofduelmaster().all(), HttpStatus.OK);
+    public ResponseEntity<List<DuelMastersCard>> allDuelMasterPage() {
+        return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().all(), HttpStatus.OK);
     }
 
-    // http//localhost:8080/data/duelmaster/{booster}
+    // http//localhost:8080/api/data/duelmasters/{booster}
     @GetMapping("/{booster}")
-    public ResponseEntity<List<DuelMasterCard>> allDuelMasterPageByBooster(@PathVariable String booster) {
-        return new ResponseEntity<List<DuelMasterCard>>(cardListService.listofduelmaster().byBooster(booster),
+    public ResponseEntity<List<DuelMastersCard>> allDuelMasterPageByBooster(@PathVariable String booster) {
+        return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().byBooster(booster),
                 HttpStatus.OK);
     }
-        // http//localhost:8080/data/duelmaster/search/{phrase to search for}
+        // http//localhost:8080/api/data/duelmasters/search/{phrase to search for}
     @GetMapping("/search/{term}")
-    public ResponseEntity<List<DuelMasterCard>> searchDuelMaster(@PathVariable String term) {
-        return new ResponseEntity<List<DuelMasterCard>>(cardListService.listofduelmaster().searchDatabase(term),
+    public ResponseEntity<List<DuelMastersCard>> searchDuelMaster(@PathVariable String term) {
+        return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().searchDatabase(term),
                 HttpStatus.OK);
     }
-    // http//localhost:8080/data/duelmaster/filter/{civilization or cardtype}/{booster}
+    // http//localhost:8080/api/data/duelmaster/filter/{civilization or cardtype}/{booster}
     @GetMapping("/filter/{field}/{booster}")
     public ResponseEntity<List<String>> DuelMasterFiltersByBooster(@PathVariable String field,
             @PathVariable String booster) {

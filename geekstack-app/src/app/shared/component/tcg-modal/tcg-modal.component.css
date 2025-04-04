@@ -33,6 +33,7 @@
 .modal-img {
   width: 200px;
   cursor: pointer;
+  border-radius: 10px;
   transition: transform 0.3s ease-in-out;
 }
 
@@ -59,7 +60,7 @@
 .zoomed-image {
   max-width: 90%;
   max-height: 90%;
-  border-radius: 8px;
+  border-radius: 5%;
   transition: transform 0.3s ease-in-out;
   cursor: pointer;
 }

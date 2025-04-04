@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geekstack.cards.model.BoosterButton;
+import com.geekstack.cards.model.DuelMasterBtn;
 import com.geekstack.cards.model.FiltersButton;
 import com.geekstack.cards.model.UnionArenaBooster;
-import com.geekstack.cards.service.BoosterListService;
-import com.geekstack.cards.service.CardListService;
+import com.geekstack.cards.repository.BoosterListRepositoryV2;
 import com.geekstack.cards.service.FiltersButtonService;
 import com.geekstack.cards.service.UABoosterService;
 
@@ -26,16 +26,14 @@ public class BoosterController {
     @Autowired
     private UABoosterService uaBoosterService;
     @Autowired
-    private BoosterListService boosterListService;
-    @Autowired
     private FiltersButtonService filtersButtonService;
     @Autowired
-    private CardListService cardListService;
+    private BoosterListRepositoryV2 boosterListRepositoryV2;
 
 
     @GetMapping("/{tcg}")
     public ResponseEntity<List<BoosterButton>> getUAList(@PathVariable String tcg){
-        return new ResponseEntity<List<BoosterButton>>(boosterListService.allBoosterByTcg(tcg),HttpStatus.OK);
+        return new ResponseEntity<List<BoosterButton>>(boosterListRepositoryV2.findByTcg(tcg),HttpStatus.OK);
     }
 
     @GetMapping("/unionarena/{animecode}")
@@ -50,7 +48,7 @@ public class BoosterController {
     }
 
     @GetMapping("/duelmasters")
-    public ResponseEntity<List<String>> getDMList(){
-        return new ResponseEntity<List<String>>(cardListService.listofduelmaster().boosterFilters(),HttpStatus.OK);
+    public ResponseEntity<List<DuelMasterBtn>> getDMList(){
+        return new ResponseEntity<List<DuelMasterBtn>>(boosterListRepositoryV2.getDuelMasterBooster(),HttpStatus.OK);
     }
 }

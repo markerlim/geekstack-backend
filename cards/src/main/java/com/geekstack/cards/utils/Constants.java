@@ -8,7 +8,7 @@ public class Constants {
 
     //MongoDB
     public static final String C_UNIONARENA="CL_unionarena_v2";
-    public static final String C_DUELMASTER="CL_duelmaster";
+    public static final String C_DUELMASTER="CL_duelmasters";
     public static final String C_ONEPIECE="CL_onepiece";
     public static final String C_DRAGONBALLZFW="CL_dragonballzfw";
     public static final String C_COOKIERUN="CL_cookierunbraverse";
@@ -25,6 +25,7 @@ public class Constants {
     public static final String F_OPDECKS="opdeck";
     public static final String F_DBZFWDECKS="dbzfwdecks";
     public static final String F_CRBDECKS="crbdecks";
+    public static final String F_DMDECKS="dmdecks";
     public static final String F_DECKUID="deckuid";
 
     public static final String T_UA="unionarena";

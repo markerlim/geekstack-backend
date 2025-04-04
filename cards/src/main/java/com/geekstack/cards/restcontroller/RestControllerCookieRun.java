@@ -35,7 +35,7 @@ public class RestControllerCookieRun {
 
             // http//localhost:8080/data/cookierunbraverse/search/{phrase to search for}
     @GetMapping("/search/{term}")
-    public ResponseEntity<List<CookieRunCard>> searchDuelMaster(@PathVariable String term) {
+    public ResponseEntity<List<CookieRunCard>> searchCookieRun(@PathVariable String term) {
         return new ResponseEntity<List<CookieRunCard>>(cardListService.listofcookierun().searchDatabase(term),
                 HttpStatus.OK);
     }

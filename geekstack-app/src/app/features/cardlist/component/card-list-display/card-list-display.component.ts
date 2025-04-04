@@ -5,7 +5,6 @@ import {
   ViewChild,
   inject,
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { FormsModule } from '@angular/forms';
@@ -15,6 +14,14 @@ import { CardDragonBallZFW } from '../../../../core/model/card-dragonballzfw.mod
 import { CookieRunCard } from '../../../../core/model/card-cookierunbraverse.model';
 import { TcgImageComponent } from '../../../../shared/component/tcg-image/tcg-image.component';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
+import { DuelmastersCard } from '../../../../core/model/card-duelmaster.model';
+
+type GameCard =
+  | CardUnionArena
+  | CardOnePiece
+  | CardDragonBallZFW
+  | CookieRunCard
+  | DuelmastersCard;
 
 @Component({
   selector: 'app-card-list-display',
@@ -27,9 +34,7 @@ export class CardListDisplayComponent implements OnInit {
   @ViewChild('cardListContainer', { static: true })
   cardListContainer!: ElementRef;
 
-  cardList: Array<
-    CardUnionArena | CardOnePiece | CardDragonBallZFW | CookieRunCard
-  > = [];
+  cardList: Array<GameCard> = [];
   tcgPath: string = '';
   booster: string = '';
   colors: string[] = [];
@@ -38,9 +43,7 @@ export class CardListDisplayComponent implements OnInit {
   selectedColor = '';
   selectedBooster = '';
   selectedRarity = '';
-  filteredCards: Array<
-    CardUnionArena | CardOnePiece | CardDragonBallZFW | CookieRunCard
-  > = [];
+  filteredCards: Array<GameCard> = [];
   isLoading = false;
 
   private geekstackService = inject(GeekstackService);
@@ -158,6 +161,7 @@ export class CardListDisplayComponent implements OnInit {
       .subscribe({
         next: (response) => {
           // Replace the card list with the fetched data
+          console.log(response);
           this.cardList = response || [];
           this.fetchFilterOptions();
           this.filterCards(); // Apply filters

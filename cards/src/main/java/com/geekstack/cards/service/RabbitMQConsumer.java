@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +17,9 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geekstack.cards.model.Notification;
 import com.geekstack.cards.repository.NotificationRepository;
+import com.geekstack.cards.repository.UserDetailsMySQLRepository;
 import com.geekstack.cards.repository.UserPostMongoRepository;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 @Service
 public class RabbitMQConsumer {
@@ -28,6 +31,12 @@ public class RabbitMQConsumer {
 
     @Autowired
     private NotificationRepository notificationRepository;
+
+    @Autowired
+    private UserDetailsMySQLRepository userDetailsMySQLRepository;
+
+    @Autowired
+    private FirebaseCloudMessagingService firebaseCloudMessagingService;
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -72,7 +81,7 @@ public class RabbitMQConsumer {
     }
 
     private void bulkInsertIntoDatabase(List<String> likes) {
-        
+
         Map<String, List<String>> holder = new HashMap<>();
 
         for (String entry : likes) {
@@ -103,9 +112,35 @@ public class RabbitMQConsumer {
             }
         }
 
+        List<String> userIds = notificationList.stream()
+                .map(Notification::getUserId)
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<Map<String, Object>> tokens = userDetailsMySQLRepository.batchGetTokens(userIds);
+
         if (!notificationList.isEmpty()) {
             notificationRepository.batchWriteNotification(notificationList);
             System.out.println("Batch writing " + notificationList.size() + " notifications to database.");
         }
+
+        for (Notification notification : notificationList) {
+            String userId = notification.getUserId();
+            Map<String, Object> tokenMap = tokens.stream()
+                    .filter(map -> userId.equals(map.get("user_id")))
+                    .findFirst()
+                    .orElse(null);
+
+            if (tokenMap != null) {
+                String token = (String) tokenMap.get("token");
+                // Associate the token with the notification (you can modify Notification class
+                // to hold token if needed)
+                // Optionally, send the notification after associating the token
+                firebaseCloudMessagingService.sendFcmNotification(token,notification.getPostId(),userId,notification.getSenderName(),notification.getMessage());
+            } else {
+                System.out.println("No FCM token found for userId: " + userId);
+            }
+        }
     }
+
 }

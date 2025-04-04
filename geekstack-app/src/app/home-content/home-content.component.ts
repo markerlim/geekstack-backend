@@ -8,6 +8,7 @@ import { CardOnePiece } from '../core/model/card-onepiece.model';
 import { CardDragonBallZFW } from '../core/model/card-dragonballzfw.model';
 import { CookieRunCard } from '../core/model/card-cookierunbraverse.model';
 import { TcgImageComponent } from "../shared/component/tcg-image/tcg-image.component";
+import { DuelmastersCard } from '../core/model/card-duelmaster.model';
 
 @Component({
     selector: 'app-home-content',
@@ -42,16 +43,16 @@ export class HomeContentComponent {
       path: '/tcg/duelmasters',
     },
     {
-      img: '/images/homePKMNbtn.jpg',
+      img: '/images/homePTCGPbtn.jpg',
       alt: 'Pokemon',
-      path: '/tcg/dragonballz',
+      path: '/tcg/ptcgpocket',
     },
   ];
 
   searchValue: string = '';
   exchangeRate: string = '';
   cardList: Array<
-    CardUnionArena | CardOnePiece | CardDragonBallZFW | CookieRunCard
+    CardUnionArena | CardOnePiece | CardDragonBallZFW | CookieRunCard | DuelmastersCard
   > = [];
 
   private geekstackService = inject(GeekstackService);

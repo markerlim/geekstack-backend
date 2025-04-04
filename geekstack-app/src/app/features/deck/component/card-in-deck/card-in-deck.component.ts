@@ -8,12 +8,14 @@ import { CookieRunCard } from '../../../../core/model/card-cookierunbraverse.mod
 import { CardDeckService } from '../../../../core/service/card-deck.service';
 import { TcgImageComponent } from '../../../../shared/component/tcg-image/tcg-image.component';
 import { MatIconModule } from '@angular/material/icon';
+import { DuelmastersCard } from '../../../../core/model/card-duelmaster.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
-  | CookieRunCard;
+  | CookieRunCard
+  | DuelmastersCard;
 
 @Component({
   selector: 'app-card-in-deck',
@@ -63,10 +65,25 @@ export class CardInDeckComponent {
             const cardLevelB = b.card.cardLevel ?? '';
             return cardLevelA.localeCompare(cardLevelB);
           }
+
+          if (this.isDuelmastersCard(a.card) && this.isDuelmastersCard(b.card)) {
+            const parseCost = (cost: string | undefined) => {
+              if (cost === '∞') return Infinity; // Handle the infinity symbol
+              const parsed = parseInt(cost ?? '', 10);
+              return isNaN(parsed) ? Infinity : parsed; // Default non-numeric values to Infinity
+            };
+          
+            const cardCostA = parseCost(a.card.cost);
+            const cardCostB = parseCost(b.card.cost);
+          
+            return cardCostA - cardCostB;
+          }
+          
           return a.card.cardUid
             .toString()
             .localeCompare(b.card.cardUid.toString());
         });
+
         console.log('Sorted Cards:', sortedCards); // Log the sorted data
         return sortedCards;
       })
@@ -111,5 +128,9 @@ export class CardInDeckComponent {
 
   protected isCookieRunCard(card: GameCard): card is CookieRunCard {
     return (card as CookieRunCard).cardLevel !== undefined;
+  }
+
+  protected isDuelmastersCard(card: GameCard): card is DuelmastersCard {
+    return (card as DuelmastersCard).cost !== undefined;
   }
 }

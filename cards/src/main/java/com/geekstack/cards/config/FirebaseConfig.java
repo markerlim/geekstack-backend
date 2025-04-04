@@ -3,6 +3,7 @@ package com.geekstack.cards.config;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.auth.oauth2.GoogleCredentials;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,4 +38,5 @@ public class FirebaseConfig {
 
         return FirebaseAuth.getInstance();
     }
+
 }

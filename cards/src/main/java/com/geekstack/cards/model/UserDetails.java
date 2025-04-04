@@ -24,6 +24,9 @@ public class UserDetails {
     @Field(F_DBZFWDECKS)
     private List<DragonballzFWDecklist> dbzfwdecks;
 
+    @Field(F_DMDECKS)
+    private List<DuelMasterDecklist> dmdecks;
+
     public UserDetails(){
         
     }
@@ -66,6 +69,14 @@ public class UserDetails {
 
     public void setDbzfwdecks(List<DragonballzFWDecklist> dbzfwdecks) {
         this.dbzfwdecks = dbzfwdecks;
+    }
+
+    public List<DuelMasterDecklist> getDmdecks() {
+        return dmdecks;
+    }
+
+    public void setDmdecks(List<DuelMasterDecklist> dmdecks) {
+        this.dmdecks = dmdecks;
     }
 
 

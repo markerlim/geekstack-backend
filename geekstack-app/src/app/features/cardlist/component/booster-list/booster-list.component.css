@@ -104,3 +104,7 @@
 .booster-item button:active {
   background-color: #d0d0d0;
 }
+
+.pocket-list{
+  line-height: 0;
+}

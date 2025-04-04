@@ -4,7 +4,6 @@ import java.io.StringReader;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +19,7 @@ import com.geekstack.cards.model.Comment;
 import com.geekstack.cards.model.UserPost;
 import com.geekstack.cards.repository.UserPostMongoRepository;
 import com.geekstack.cards.repository.UserPostMySQLRepository;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;

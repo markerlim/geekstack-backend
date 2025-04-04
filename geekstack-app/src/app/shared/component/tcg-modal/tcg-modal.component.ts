@@ -9,12 +9,14 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { ErrorReportModalComponent } from '../error-report-modal/error-report-modal.component';
 import { UserStore } from '../../../core/store/user.store';
+import { DuelmastersCard } from '../../../core/model/card-duelmaster.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
-  | CookieRunCard;
+  | CookieRunCard
+  | DuelmastersCard;
   
 @Component({
   selector: 'app-tcg-modal',
@@ -80,12 +82,13 @@ export class TcgModalComponent {
 
   getCardType(): string {
     if ('costlife' in this.Card) return 'onepiece';
+    if ('civilization' in this.Card) return 'duelmasters';
     if ('elementId' in this.Card) return 'cookierunbraverse';
-
     if ('cardName' in this.Card) {
       if ('anime' in this.Card) return 'unionarena';
       if ('saga' in this.Card) return 'dragonballzfw';
     }
+
     return 'Unknown';
   }
 
@@ -126,6 +129,9 @@ export class TcgModalComponent {
     return this.getCardType() === 'onepiece' ? (this.Card as CardOnePiece) : null;
   }
   
+  getDuelmastersCard(): DuelmastersCard | null {
+    return this.getCardType() === 'duelmasters' ? (this.Card as DuelmastersCard) : null;
+  }
   getDragonBallZCard(): CardDragonBallZFW | null {
     return this.getCardType() === 'dragonballzfw' ? (this.Card as CardDragonBallZFW) : null;
   }

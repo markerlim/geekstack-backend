@@ -13,12 +13,14 @@ import { CookieRunCard } from '../../../../core/model/card-cookierunbraverse.mod
 import { CommonModule } from '@angular/common';
 import { TcgImageComponent } from '../../../../shared/component/tcg-image/tcg-image.component';
 import { CardDeckService } from '../../../../core/service/card-deck.service';
+import { DuelmastersCard } from '../../../../core/model/card-duelmaster.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
-  | CookieRunCard;
+  | CookieRunCard
+  | DuelmastersCard;
 
 @Component({
   selector: 'app-deckcover-select',

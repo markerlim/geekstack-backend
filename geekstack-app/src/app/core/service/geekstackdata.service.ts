@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CardUnionArena } from '../model/card-unionarena.model';
@@ -10,6 +10,14 @@ import { CreateUserResponse } from '../model/create-user-response.model';
 import { GSSqlUser } from '../model/sql-user.model';
 import { Notifications } from '../model/notifications.model';
 import { environment } from '../../../environments/environment';
+import { DuelmastersCard } from '../model/card-duelmaster.model';
+
+type GameCard =
+  | CardUnionArena
+  | CardOnePiece
+  | CardDragonBallZFW
+  | CookieRunCard
+  | DuelmastersCard;
 
 @Injectable({
   providedIn: 'root',
@@ -21,6 +29,7 @@ export class GeekstackService {
   private baseURL = environment.baseUrl;
   private baseURLdata = `${this.baseURL}/data`;
   private baseURLuser = `${this.baseURL}/user`;
+  private baseURLfcm = `${this.baseURL}/fcm`;
   private baseURLboosterlist = `${this.baseURL}/boosterlist`;
   private baseURLuserpost = `${this.baseURL}/userpost`;
 
@@ -43,12 +52,10 @@ export class GeekstackService {
   getCardlistOfTcgOfBooster(
     tcgPath: string,
     booster: string
-  ): Observable<
-    Array<CardUnionArena | CardOnePiece | CardDragonBallZFW | CookieRunCard>
-  > {
-    return this.http.get<
-      Array<CardUnionArena | CardOnePiece | CardDragonBallZFW | CookieRunCard>
-    >(this.baseURLdata + '/' + tcgPath + '/' + booster);
+  ): Observable<Array<GameCard>> {
+    return this.http.get<Array<GameCard>>(
+      this.baseURLdata + '/' + tcgPath + '/' + booster
+    );
   }
 
   getTcgSetFilter(
@@ -126,10 +133,11 @@ export class GeekstackService {
     const formData = new FormData();
     formData.append('file', file);
 
-    return this.http.post<any>(`${this.baseURLuser}/update/image/${userId}`,formData);
+    return this.http.post<any>(
+      `${this.baseURLuser}/update/image/${userId}`,
+      formData
+    );
   }
-  
-  
 
   postByUser(payload: any) {
     return this.http.post(this.baseURLuserpost + '/post', payload);
@@ -241,5 +249,19 @@ export class GeekstackService {
 
   getExchangeRate(): Observable<string> {
     return this.http.get<string>(this.baseURLuser + '/getExcRate');
+  }
+
+  getDuelmasterBtn(): Observable<any[]> {
+    return this.http.get<any[]>(this.baseURLboosterlist + '/duelmasters');
+  }
+
+  updateFCMToken(userId: string, token: string) {
+    return this.http.post(
+      this.baseURLfcm,
+      {
+        userId:userId,
+        token:token
+      }
+    );
   }
 }

@@ -37,6 +37,7 @@ export class AppComponent implements OnInit {
 
     this.isPwa = this.checkIfPwa();
   }
+
   shouldHideNavbar(): boolean {
     if(this.router.url.includes('/stacks') && this.isSmallScreen){
       return true
