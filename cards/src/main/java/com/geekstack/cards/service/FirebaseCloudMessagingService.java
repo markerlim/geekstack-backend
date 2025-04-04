@@ -3,6 +3,7 @@ package com.geekstack.cards.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.geekstack.cards.repository.UserDetailsMySQLRepository;
@@ -23,18 +24,24 @@ public class FirebaseCloudMessagingService {
     @Autowired
     private UserDetailsMySQLRepository userDetailsMySQLRepository;
 
+    @Value("${fcm.title}")
+    private String notficationTitle;
+
+    @Value("${fcm.icon}")
+    private String notificationImageUrl;
+
     public void sendFcmNotification(String token, String postId, String userId, String sender, String action) {
         String body = String.format("%s has %s",sender,action);
 
         Notification notificationPayload = Notification.builder()
-                .setTitle("Geekstack")
-                .setImage("https://cards.geekstack.dev/icons/geekstackicon.svg")
+                .setTitle(notficationTitle)
                 .setBody(body)
                 .build();
 
         Message message = Message.builder()
                 .setNotification(notificationPayload)
                 .setToken(token)
+                .putData("icon", notificationImageUrl)
                 .putData("clickAction", "/stacks/" + postId)
                 .build();
 

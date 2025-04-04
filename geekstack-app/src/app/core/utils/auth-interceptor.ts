@@ -35,7 +35,6 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
           'X-Requested-With': 'XMLHttpRequest',
         },
       });
-      console.log("Cloned Request Headers: ", clonedRequest.headers);
       return next(clonedRequest);
     })
   );
