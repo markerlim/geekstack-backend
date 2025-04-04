@@ -4,9 +4,10 @@ import { GeekstackService } from '../../../core/service/geekstackdata.service';
 import { Notifications } from '../../../core/model/notifications.model';
 import { TimeAgoPipe } from '../../../core/pipe/time-ago.pipe';
 import { Router } from '@angular/router';
-import { FireCloudMessaging } from '../../../core/service/fcm.service';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
+import { UserStore } from '../../../core/store/user.store';
+import { FireCloudMessaging } from '../../../core/service/fcm.service';
 
 @Component({
   selector: 'app-notifications',
@@ -24,7 +25,8 @@ export class NotificationsComponent {
   notificationsEnabled = false;
 
   private geekstackService = inject(GeekstackService);
-  private fireCloudMessaging = inject(FireCloudMessaging);
+  private fcm = inject(FireCloudMessaging);
+  private userStore = inject(UserStore);
   private router = inject(Router);
 
   constructor() {
@@ -44,16 +46,16 @@ export class NotificationsComponent {
   }
 
   private checkNotificationStatus() {
-    this.notificationsEnabled = Notification.permission === 'granted';
+    this.notificationsEnabled = true;
   }
 
   async toggleNotification() {
     this.isLoading = true;
     try {
       if (this.notificationsEnabled) {
-        await this.requestNotificationPermission();
+        await this.enableNotificationsBackend();
       } else {
-        await this.removeNotificationPermission();
+        await this.disableNotificationsBackend();
       }
     } catch (err) {
       console.error('Error toggling notifications:', err);
@@ -62,24 +64,39 @@ export class NotificationsComponent {
     }
   }
 
-  async requestNotificationPermission(): Promise<void> {
-    const token = await this.fireCloudMessaging.requestPermission();
-    if (token) {
-      console.log('Notifications enabled, token:', token);
-      this.notificationsEnabled = true;
-    } else {
-      console.warn('Notifications are not enabled');
+  async enableNotificationsBackend(): Promise<void> {
+    try {
+      const token = await this.fcm.requestPermission();
+      if (token) {
+        this.geekstackService
+          .updateFCMToken(this.userStore.getCurrentUser().userId, token)
+          .subscribe({
+            next: (response) => {
+              console.log('Notifications enabled on the backend:', response);
+              this.notificationsEnabled = true;
+            },
+            error: (err) => {
+              console.error('Error enabling notifications:', err);
+            },
+          });
+      } else {
+        console.log('No token found');
+      }
+    } catch (err) {
+      console.error('Error enabling notifications:', err);
     }
   }
 
-  async removeNotificationPermission(): Promise<void> {
-    try {
-      await this.fireCloudMessaging.deleteToken();
-      console.log('Notifications disabled, token removed');
-      this.notificationsEnabled = false;
-    } catch (error) {
-      console.error('Error removing notification token:', error);
-    }
+  async disableNotificationsBackend(): Promise<void> {
+    this.geekstackService.removeFCMToken(this.userStore.getCurrentUser().userId).subscribe({
+      next: (response) => {
+        console.log('Notifications disabled on the backend:', response);
+        this.notificationsEnabled = false;
+      },
+      error: (err) => {
+        console.error('Error disabling notifications:', err);
+      },
+    });
   }
 
   groupNotifications(notifications: any[]): any[] {

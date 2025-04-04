@@ -33,7 +33,7 @@ public class UserDetailsMySQLRepository {
             """;
 
     private final static String SQL_REMOVE_FCM_BYUSERID = """
-            DELETE FROM fcm_tokens WHERE userId = ?
+            DELETE FROM fcm_tokens WHERE user_id = ?
             """;
     private final static String SQL_BATCHGET_TOKENS = "SELECT user_id,token FROM fcm_tokens WHERE user_id IN (%s)";
 

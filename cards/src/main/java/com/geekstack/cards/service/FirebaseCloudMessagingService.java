@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.geekstack.cards.model.UserSQL;
 import com.geekstack.cards.repository.UserDetailsMySQLRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
@@ -28,6 +27,8 @@ public class FirebaseCloudMessagingService {
         String body = String.format("%s has %s",sender,action);
 
         Notification notificationPayload = Notification.builder()
+                .setTitle("Geekstack")
+                .setImage("https://cards.geekstack.dev/icons/geekstackicon.svg")
                 .setBody(body)
                 .build();
 

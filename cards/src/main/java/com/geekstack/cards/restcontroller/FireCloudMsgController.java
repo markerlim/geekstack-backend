@@ -1,9 +1,7 @@
 package com.geekstack.cards.restcontroller;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ResponseStatusException;
 
 import com.geekstack.cards.model.FCMTokenRequest;
 import com.geekstack.cards.service.FirebaseCloudMessagingService;
@@ -33,11 +30,14 @@ public class FireCloudMsgController {
     @PostMapping
     public ResponseEntity<Map<String, Object>> updateFCMtoken(@RequestBody FCMTokenRequest fcmTokenRequest) {
         Map<String, Object> response = new HashMap<>();
+        logger.info(fcmTokenRequest.getUserId());
+        logger.info(fcmTokenRequest.getToken());
         try {
             if (fcmTokenRequest.getToken() == null || fcmTokenRequest.getToken().isEmpty()) {
                 response.put("message", "Token unavailable");
                 return ResponseEntity.status(400).body(response);
             }
+
             firebaseCloudMessagingService.updateFCMToken(fcmTokenRequest.getUserId(), fcmTokenRequest.getToken());
 
             response.put("message", "Notification enabled");
@@ -49,17 +49,22 @@ public class FireCloudMsgController {
     }
 
     @DeleteMapping
-    public void removeFCMToken(@RequestParam(required = false) String userId,
+    public ResponseEntity<Map<String, Object>> removeFCMToken(@RequestParam(required = false) String userId,
             @RequestParam(required = false) String token) {
+        Map<String, Object> response = new HashMap<>();
+        logger.info(userId);
         if (token != null) {
             firebaseCloudMessagingService.deleteFCMToken(token);
-            ;
+
         } else if (userId != null) {
             firebaseCloudMessagingService.deleteFCMTokenByUserId(userId);
-            ;
+
         } else {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Either userId or token must be provided.");
-        }
+            response.put("message", "Must provide either UserId or Token");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);        }
+
+        response.put("message", "Notification disabled");
+        return ResponseEntity.status(HttpStatus.OK).body(response);
     }
 
 }

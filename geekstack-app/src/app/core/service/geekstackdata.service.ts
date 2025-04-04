@@ -264,4 +264,8 @@ export class GeekstackService {
       }
     );
   }
+
+  removeFCMToken(userId:string){
+    return this.http.delete(this.baseURLfcm + '?userId='+userId);
+  }
 }
