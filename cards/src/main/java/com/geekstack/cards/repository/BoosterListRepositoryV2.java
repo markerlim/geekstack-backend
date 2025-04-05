@@ -26,6 +26,6 @@ public class BoosterListRepositoryV2 {
 
     public List<DuelMasterBtn> getDuelMasterBooster(){
         Query query = new Query();
-        return mongoTemplate.find(query, DuelMasterBtn.class, "NewList");
+        return mongoTemplate.find(query.with(Sort.by(Sort.Direction.DESC,"timestamp")), DuelMasterBtn.class, "NewList");
     }
 }

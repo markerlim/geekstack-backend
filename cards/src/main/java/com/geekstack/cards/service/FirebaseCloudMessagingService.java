@@ -31,29 +31,24 @@ public class FirebaseCloudMessagingService {
     private String notificationImageUrl;
 
     public void sendFcmNotification(String token, String postId, String userId, String sender, String action) {
-        String body = String.format("%s has %s",sender,action);
-
-        Notification notificationPayload = Notification.builder()
-                .setTitle(notficationTitle)
-                .setBody(body)
-                .build();
 
         Message message = Message.builder()
-                .setNotification(notificationPayload)
-                .setToken(token)
+                .putData("title", notficationTitle)
+                .putData("body", String.format("%s has %s", sender, action))
                 .putData("icon", notificationImageUrl)
                 .putData("clickAction", "/stacks/" + postId)
+                .setToken(token)
                 .build();
 
         try {
             String response = firebaseMessaging.send(message);
-            logger.info("Successfully sent FCM: {}",response);
+            logger.info("Successfully sent FCM: {}", response);
         } catch (FirebaseMessagingException e) {
             logger.error("Failed to send FCM alert to {} for {}: Code={}, Message={}");
 
             MessagingErrorCode errorCode = e.getMessagingErrorCode();
             if (errorCode == MessagingErrorCode.UNREGISTERED || errorCode == MessagingErrorCode.INVALID_ARGUMENT) {
-                logger.warn("FCM Token for user {} is invalid or unregistered. Removing token from DB.",userId);
+                logger.warn("FCM Token for user {} is invalid or unregistered. Removing token from DB.", userId);
                 try {
                     userDetailsMySQLRepository.removeFcmToken(userId);
                 } catch (Exception removeEx) {
@@ -67,15 +62,15 @@ public class FirebaseCloudMessagingService {
         }
     }
 
-    public void updateFCMToken(String userId, String token){
+    public void updateFCMToken(String userId, String token) {
         userDetailsMySQLRepository.updateFcmToken(userId, token);
     }
 
-    public void deleteFCMToken(String token){
+    public void deleteFCMToken(String token) {
         userDetailsMySQLRepository.removeFcmToken(token);
     }
 
-    public void deleteFCMTokenByUserId(String userId){
+    public void deleteFCMTokenByUserId(String userId) {
         userDetailsMySQLRepository.removeFcmTokensByUserId(userId);
     }
 }
