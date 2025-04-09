@@ -22,7 +22,7 @@ public class CL_UnionArenaRepository {
     private MongoTemplate mongoTemplate;
 
     public List<UnionArenaCard> getCards() {
-        return mongoTemplate.findAll(UnionArenaCard.class);
+        return mongoTemplate.findAll(UnionArenaCard.class,C_UNIONARENA);
     }
 
     /* Return cards by anime code */

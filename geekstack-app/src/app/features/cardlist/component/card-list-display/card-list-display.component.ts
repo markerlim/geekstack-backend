@@ -15,13 +15,16 @@ import { CookieRunCard } from '../../../../core/model/card-cookierunbraverse.mod
 import { TcgImageComponent } from '../../../../shared/component/tcg-image/tcg-image.component';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
 import { DuelmastersCard } from '../../../../core/model/card-duelmaster.model';
+import { TCGTYPE } from '../../../../core/utils/constants';
+import { HololiveCard } from '../../../../core/model/card-hololive.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
   | CookieRunCard
-  | DuelmastersCard;
+  | DuelmastersCard
+  | HololiveCard;
 
 @Component({
   selector: 'app-card-list-display',
@@ -194,7 +197,7 @@ export class CardListDisplayComponent implements OnInit {
 
       //selectedBooster is for category
       // One Piece specific filtering
-      else if (this.tcgPath === 'onepiece') {
+      else if (this.tcgPath === TCGTYPE.ONEPIECE) {
         const onePieceCard = card as {
           color?: string;
           rarity?: string;
@@ -210,7 +213,7 @@ export class CardListDisplayComponent implements OnInit {
       }
       //selectedBooster is for cardType
       // Dragonballzfw specific filtering
-      else if (this.tcgPath === 'dragonballzfw') {
+      else if (this.tcgPath === TCGTYPE.DRAGONBALLZFW) {
         const dragonballzfw = card as {
           color?: string;
           rarity?: string;

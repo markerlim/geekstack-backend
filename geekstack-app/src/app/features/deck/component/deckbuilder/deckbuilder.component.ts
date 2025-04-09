@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { BoosterListDeckbuilderComponent } from '../booster-list-deckbuilder/booster-list-deckbuilder.component';
 import { CommonModule } from '@angular/common';
 import { CardUnionArena } from '../../../../core/model/card-unionarena.model';
@@ -17,13 +17,17 @@ import { TcgStore } from '../../../../core/store/ctcg.store';
 import { ActivatedRoute } from '@angular/router';
 import { GSSqlUser } from '../../../../core/model/sql-user.model';
 import { DuelmastersCard } from '../../../../core/model/card-duelmaster.model';
+import { ListOfDecks } from '../../../../core/model/listofdecks.model';
+import { Subject, takeUntil } from 'rxjs';
+import { HololiveCard } from '../../../../core/model/card-hololive.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
   | CookieRunCard
-  | DuelmastersCard;
+  | DuelmastersCard
+  | HololiveCard;
 
 @Component({
   selector: 'app-deckbuilder',
@@ -41,7 +45,7 @@ type GameCard =
   templateUrl: './deckbuilder.component.html',
   styleUrls: ['./deckbuilder.component.css'],
 })
-export class DeckbuilderComponent implements OnInit {
+export class DeckbuilderComponent implements OnInit, OnDestroy {
   title = 'geekstack-app';
   isSmallScreen: boolean = false;
   isPwa: boolean = false;
@@ -52,8 +56,9 @@ export class DeckbuilderComponent implements OnInit {
   deckcover: string = '/images/gsdeckimage.jpg';
   deckuid: string = '';
   deckname: string = 'Deck Name';
-  user: GSSqlUser;
+  user!: GSSqlUser;
   tcg: string = '';
+  private destroy$ = new Subject<void>();
 
   private route = inject(ActivatedRoute);
   private cardDeckService = inject(CardDeckService);
@@ -61,23 +66,39 @@ export class DeckbuilderComponent implements OnInit {
   private userStore = inject(UserStore);
   private tcgStore = inject(TcgStore);
 
-  constructor() {
-    this.user = this.userStore.getCurrentUser();
-  }
+  constructor() {}
 
   ngOnInit(): void {
-    this.screenSizeService.isXSmallScreen$.subscribe((isSmall) => {
-      this.isSmallScreen = isSmall;
-    });
-    this.route.params.subscribe((params) => {
+    // Safe subscription that auto-unsubscribes
+    this.screenSizeService.isXSmallScreen$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((isSmall) => {
+        this.isSmallScreen = isSmall;
+      });
+
+    // Safe route params subscription
+    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       const tcg = params['tcg'];
       this.tcgStore.setTcg(tcg);
       this.tcg = this.tcgStore.getCurrentTcg();
-      console.log('changed to: ', this.tcg);
     });
+
+    this.userStore.gsSqlUser$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.user = res
+          ? res
+          : { userId: 'noUserId', name: 'error', displaypic: 'string' };
+      },
+    });
+
     this.isPwa = this.checkIfPwa();
   }
 
+  ngOnDestroy() {
+    this.destroy$.next(); // Triggers unsubscription
+    this.destroy$.complete(); // Cleans up the Subject
+    this.cardDeckService.clearList(); // Your existing cleanup
+  }
   // Update methods to handle any card type
   addCardToDeck(card: GameCard): void {
     this.cardDeckService.addCard(card);
@@ -96,8 +117,11 @@ export class DeckbuilderComponent implements OnInit {
     this.isDeckLoadSelect = result;
   }
 
-  isDeckSelected(event: { card: GameCard; count: number }[]) {
-    this.cardDeckService.loadDeckFromList(event, 'unionarena');
+  isDeckSelected(event: ListOfDecks) {
+    this.cardDeckService.loadDeckFromList(
+      event.listofcards,
+      this.tcgStore.getCurrentTcg()
+    );
     const object = this.cardDeckService.getDeckDetails();
     this.deckcover = object.deckcover;
     this.deckname = object.deckname;

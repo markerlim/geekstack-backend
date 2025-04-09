@@ -13,6 +13,7 @@ import { TcgImageComponent } from '../../../../shared/component/tcg-image/tcg-im
 import { MatIconModule } from '@angular/material/icon';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
 import { DuelmastersCard } from '../../../../core/model/card-duelmaster.model';
+import { TCGTYPE } from '../../../../core/utils/constants';
 
 type GameCard =
   | CardUnionArena
@@ -50,6 +51,7 @@ export class BoosterListDeckbuilderComponent implements OnInit {
   selectedBooster = '';
   selectedRarity = '';
 
+  TCGTYPE = TCGTYPE;
   @Output()
   onCardListActive = new Subject<boolean>();
 

@@ -1,11 +1,5 @@
 import { CommonModule } from '@angular/common';
-import {
-  Component,
-  HostListener,
-  inject,
-  Input,
-  Output,
-} from '@angular/core';
+import { Component, HostListener, inject, Input, Output } from '@angular/core';
 import { first, map, Subject, takeUntil } from 'rxjs';
 import { CardDeckService } from '../../../../core/service/card-deck.service';
 import { MatIconModule } from '@angular/material/icon';
@@ -49,6 +43,7 @@ export class DeckbuilderActionsComponent {
   costMap: Record<number, number> = {};
 
   userId: string = '';
+  private destroy$ = new Subject<void>();
 
   @Output()
   onDeckcoverSelect = new Subject<boolean>();
@@ -60,15 +55,18 @@ export class DeckbuilderActionsComponent {
   private geekstackService = inject(GeekstackService);
   private userStore = inject(UserStore);
   private tcgStore = inject(TcgStore);
-  private destroy$ = new Subject<void>();
   constructor() {}
 
   ngOnInit() {
-    this.userId = this.userStore.getCurrentUser().userId;
+    this.userStore.gsSqlUser$.subscribe({
+      next: (res) => {
+        this.userId = res?.userId || 'noUserId';
+      },
+    });
     this.tcgStore.currentTcg$.subscribe({
       next: (res) => {
         this.tcg = res;
-      }
+      },
     });
     this.initializeDeckDetails();
   }
@@ -120,10 +118,10 @@ export class DeckbuilderActionsComponent {
 
     if (this.tcg === 'onepiece') {
       this.cardDeckService.cardsInDeck$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.totalCount = this.cardDeckService.getTotalCount();
-      });
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.totalCount = this.cardDeckService.getTotalCount();
+        });
       this.cardDeckService.cardsInDeck$
         .pipe(
           map((cardsInDeck) => {
@@ -134,13 +132,13 @@ export class DeckbuilderActionsComponent {
                 entry.card,
                 'onepiece'
               ) as CardOnePiece;
-              const costlife = parseInt(gameCard.costlife) || 0;
+              const lifecost = parseInt(gameCard.lifecost) || 0;
 
-              if (!costMap[costlife]) {
-                costMap[costlife] = 0;
+              if (!costMap[lifecost]) {
+                costMap[lifecost] = 0;
               }
 
-              costMap[costlife] += entry.count;
+              costMap[lifecost] += entry.count;
             });
             return costMap;
           }),
@@ -153,10 +151,10 @@ export class DeckbuilderActionsComponent {
 
     if (this.tcg === 'cookierunbraverse') {
       this.cardDeckService.cardsInDeck$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.totalCount = this.cardDeckService.getTotalCount();
-      });
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.totalCount = this.cardDeckService.getTotalCount();
+        });
       this.cardDeckService.cardsInDeck$
         .pipe(
           map((cardsInDeck) => {
@@ -186,10 +184,10 @@ export class DeckbuilderActionsComponent {
 
     if (this.tcg === 'dragonballzfw') {
       this.cardDeckService.cardsInDeck$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.totalCount = this.cardDeckService.getTotalCount();
-      });
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(() => {
+          this.totalCount = this.cardDeckService.getTotalCount();
+        });
       this.cardDeckService.cardsInDeck$
         .pipe(
           map((cardsInDeck) => {
@@ -225,7 +223,7 @@ export class DeckbuilderActionsComponent {
   getKeysFrom0To7(): number[] {
     return Array.from({ length: 8 }, (_, i) => i);
   }
-  
+
   getKeysFrom0To10(): number[] {
     return Array.from({ length: 11 }, (_, i) => i);
   }
@@ -240,6 +238,10 @@ export class DeckbuilderActionsComponent {
 
   saveDecklist() {
     console.log('Saving decklist...');
+    if (this.userId === 'noUserId') {
+      alert('User id failure, please refresh or relog page');
+      return;
+    }
     this.cardDeckService.cardsInDeck$.pipe(first()).subscribe((cardsInDeck) => {
       const decklistPayload = {
         deckname: this.deckname,
@@ -253,8 +255,16 @@ export class DeckbuilderActionsComponent {
         .userSaveDeck(this.userId, decklistPayload, this.tcg, this.deckuid)
         .subscribe({
           next: (response) => {
-            console.log('Deck saved successfully:', response);
-            alert('Deck saved successfully!');
+            const object = JSON.parse(JSON.stringify(response));
+            const deckuid = object.deckuid;
+            const deckObject = {
+              deckuid: deckuid,
+              deckcover: decklistPayload.deckcover,
+              deckname: decklistPayload.deckname,
+              listofcards: decklistPayload.listofcards,
+            };
+            this.userStore.saveDeck({ deck: deckObject, tcg: this.tcg });
+            alert(object.message);
           },
           error: (error) => {
             console.error('Error saving deck:', error);

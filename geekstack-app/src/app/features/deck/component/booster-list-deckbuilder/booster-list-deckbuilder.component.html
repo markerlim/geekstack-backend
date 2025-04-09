@@ -4,27 +4,46 @@
 <div [ngClass]="{ 'db-cardlist-mobile': isSmallScreen }">
   @if (showBoosterList) {
   <div class="booster-list">
-    @if (tcgPath !== 'duelmasters') { @for (booster of boosterList; track
-    $index) {
-    <div class="booster-item" (click)="onBoosterClick(booster.pathname)">
-      <img
-        [src]="booster.imageSrc"
-        alt="{{ booster.alt }}"
-        [style.width.px]="booster.imgWidth"
-      />
-    </div>
-    } } @if (tcgPath === 'duelmasters') { @for (dm of duelmasterlist; track
-    $index) {
-    <ng-container>
-      <div>
+    @switch (tcgPath) { 
+      @case(TCGTYPE.HOLOLIVE) { 
+        @for (booster of boosterList; track $index) {
+      <ng-container>
+        <div>
+          <img
+            [src]="booster.imageSrc"
+            (click)="onBoosterClick(booster.pathname)"
+            width="110px"
+          />
+        </div>
+      </ng-container>
+        } 
+      }
+      @case(TCGTYPE.DUELMASTERS) { 
+        @for (dm of duelmasterlist; track $index) {
+      <ng-container>
+        <div>
+          <img
+            [src]="dm.urlimage"
+            (click)="onBoosterClick(dm.booster)"
+            width="110px"
+          />
+        </div>
+      </ng-container>
+        } 
+      }  
+    @default { 
+      @for (booster of boosterList;
+      track $index) {
+      <div class="booster-item" (click)="onBoosterClick(booster.pathname)">
         <img
-          [src]="dm.urlimage"
-          (click)="onBoosterClick(dm.booster)"
-          width="110px"
+          [src]="booster.imageSrc"
+          alt="{{ booster.alt }}"
+          [style.width.px]="booster.imgWidth"
         />
       </div>
-    </ng-container>
-    } }
+      } 
+    }  
+  }
   </div>
   } @if (!showBoosterList && cardList.length > 0) {
   <div class="card-list">

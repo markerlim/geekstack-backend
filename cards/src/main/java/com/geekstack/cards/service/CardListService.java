@@ -10,12 +10,14 @@ import com.geekstack.cards.model.CardPriceYYT;
 import com.geekstack.cards.model.CookieRunCard;
 import com.geekstack.cards.model.DragonBallzFWCard;
 import com.geekstack.cards.model.DuelMastersCard;
+import com.geekstack.cards.model.HololiveCard;
 import com.geekstack.cards.model.OnePieceCard;
 import com.geekstack.cards.model.UnionArenaCard;
 import com.geekstack.cards.model.UnionArenaCardDTO;
 import com.geekstack.cards.repository.CL_CookieRunRepository;
 import com.geekstack.cards.repository.CL_DragonBallzFWRepository;
 import com.geekstack.cards.repository.CL_DuelMasterRepository;
+import com.geekstack.cards.repository.CL_HololiveRepository;
 import com.geekstack.cards.repository.CL_OnePieceRepository;
 import com.geekstack.cards.repository.CL_UnionArenaRepository;
 import com.geekstack.cards.repository.PR_FullaheadRepository;
@@ -38,6 +40,9 @@ public class CardListService {
 
     @Autowired
     private CL_DragonBallzFWRepository dragonBallzFWRepository;
+
+    @Autowired
+    private CL_HololiveRepository hololiveRepository;
 
     @Autowired
     private PR_FullaheadRepository fullaheadRepository;
@@ -167,6 +172,16 @@ public class CardListService {
         }
     }
 
+    //Nested class for Hololive actions
+    public class HololiveActions{
+        public List<HololiveCard> all() {
+            return hololiveRepository.getCards();
+        }
+
+        public List<HololiveCard> byBooster(String booster) {
+            return hololiveRepository.getCardsByBooster(booster);
+        }
+    }
     public class CardPriceActions{
         public CardPriceFULLA byFulla(String id){
             return fullaheadRepository.findCardById(id);
@@ -198,6 +213,10 @@ public class CardListService {
         return new DragonBallzFWActions();
     }
 
+    public HololiveActions listofhololive(){
+        return new HololiveActions();
+    }
+    
     public CardPriceActions cardprices(){
         return new CardPriceActions();
     }

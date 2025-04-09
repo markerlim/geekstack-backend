@@ -2,6 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
+import { TCGTYPE } from '../../../../core/utils/constants';
 
 @Component({
   selector: 'app-booster-list',
@@ -18,6 +19,7 @@ export class BoosterListComponent implements OnInit {
     imgWidth: number;
   }> = [];
   duelmasterlist: any[] = [];
+  TCGTYPE = TCGTYPE;
   tcgPath: string = '';
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -32,7 +34,7 @@ export class BoosterListComponent implements OnInit {
   }
 
   fetchBoosterList(): void {
-    if (this.tcgPath == 'duelmasters') {
+    if (this.tcgPath == TCGTYPE.DUELMASTERS) {
       this.geekstackService.getDuelmasterBtn().subscribe({
         next: (response) =>{
           this.duelmasterlist = response

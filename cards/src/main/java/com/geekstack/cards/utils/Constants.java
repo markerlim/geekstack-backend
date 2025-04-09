@@ -9,9 +9,10 @@ public class Constants {
     //MongoDB
     public static final String C_UNIONARENA="CL_unionarena_v2";
     public static final String C_DUELMASTER="CL_duelmasters";
-    public static final String C_ONEPIECE="CL_onepiece";
+    public static final String C_ONEPIECE="CL_onepiece_v2";
     public static final String C_DRAGONBALLZFW="CL_dragonballzfw";
     public static final String C_COOKIERUN="CL_cookierunbraverse";
+    public static final String C_HOLOLIVE="CL_hololiveocg";
     public static final String C_FULLAHEAD="cardprices_fulla";
     public static final String C_YUYUTEI="cardprices_yyt";
     public static final String C_USERPOST="userpost";

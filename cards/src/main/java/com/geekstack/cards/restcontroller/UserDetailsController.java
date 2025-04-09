@@ -99,14 +99,16 @@ public class UserDetailsController {
             @RequestParam(required = false) String deckuid,
             @RequestBody UnionArenaDecklist decklist) {
         Map<String, Object> response = new HashMap<>();
+        String uuid = "";
         try {
             if (deckuid == null || deckuid.isEmpty()) {
-                userDetailsMongoRepository.createUnionArenaDecklist(decklist, userId);
+                uuid = userDetailsMongoRepository.createUnionArenaDecklist(decklist, userId);
             } else {
-                userDetailsMongoRepository.updateUnionArenaDecklist(decklist, userId, deckuid);
+                uuid = userDetailsMongoRepository.updateUnionArenaDecklist(decklist, userId, deckuid);
             }
 
             response.put("message", "Deck created successfully");
+            response.put("deckuid",uuid);
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {

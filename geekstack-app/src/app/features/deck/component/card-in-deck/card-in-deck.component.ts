@@ -9,13 +9,15 @@ import { CardDeckService } from '../../../../core/service/card-deck.service';
 import { TcgImageComponent } from '../../../../shared/component/tcg-image/tcg-image.component';
 import { MatIconModule } from '@angular/material/icon';
 import { DuelmastersCard } from '../../../../core/model/card-duelmaster.model';
+import { HololiveCard } from '../../../../core/model/card-hololive.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
   | CookieRunCard
-  | DuelmastersCard;
+  | DuelmastersCard
+  | HololiveCard;
 
 @Component({
   selector: 'app-card-in-deck',
@@ -46,8 +48,8 @@ export class CardInDeckComponent {
           }
 
           if (this.isOnePieceCard(a.card) && this.isOnePieceCard(b.card)) {
-            const costLifeA = a.card.costlife ?? '';
-            const costLifeB = b.card.costlife ?? '';
+            const costLifeA = a.card.lifecost ?? '';
+            const costLifeB = b.card.lifecost ?? '';
             return costLifeA.localeCompare(costLifeB);
           }
 
@@ -119,7 +121,7 @@ export class CardInDeckComponent {
   }
 
   protected isOnePieceCard(card: GameCard): card is CardOnePiece {
-    return (card as CardOnePiece).costlife !== undefined;
+    return (card as CardOnePiece).lifecost !== undefined;
   }
 
   protected isDragonBallZFWCard(card: GameCard): card is CardDragonBallZFW {

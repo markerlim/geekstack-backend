@@ -33,13 +33,17 @@
 .card-item-holder {
   position: relative;
   display: flex;
+  height: calc(var(--decksize) * 1.42);
   flex-direction: column;
+  justify-content: center;
   align-items: center;
 }
 
 .deckname {
   display: block;
   width: 150px;
+  padding-top: 10px;
+  padding-bottom: 10px;
   word-wrap: break-word;
 }
 .card-item-cover {
@@ -47,7 +51,7 @@
   top: 0;
   flex:0 0 auto;
   width: 100%;
-  height: calc(var(--decksize) * 1.4);
+  height: calc(var(--decksize) * 1.42);
   border-radius: 7px 7px 7px 7px;
 }
 .card-item-cover img{
@@ -101,6 +105,9 @@ mat-icon:hover {
 .card-item img {
   width: var(--decksize);
   border-radius: 7px 7px 7px 7px;
+}
+#cover-img{
+  width: calc(var(--decksize) + 6px);
 }
 
 /* Styling the scrollbar for WebKit-based browsers (Chrome, Safari) */

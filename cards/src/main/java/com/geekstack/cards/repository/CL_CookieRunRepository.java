@@ -21,7 +21,7 @@ public class CL_CookieRunRepository {
     private MongoTemplate mongoTemplate;
 
     public List<CookieRunCard> getCards() {
-        return mongoTemplate.findAll(CookieRunCard.class);
+        return mongoTemplate.findAll(CookieRunCard.class,C_COOKIERUN);
     }
 
     public List<CookieRunCard> getCardsByBooster(String booster) {

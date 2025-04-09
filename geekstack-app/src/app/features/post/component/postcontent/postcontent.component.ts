@@ -1,13 +1,21 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ListOfDecks } from '../../../../core/model/listofdecks.model';
 import { CardDeckService } from '../../../../core/service/card-deck.service';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserStore } from '../../../../core/store/user.store';
 import { GeekstackService } from '../../../../core/service/geekstackdata.service';
 import { response } from 'express';
 import { CardRecord } from '../../../../core/model/card-record.model';
 import { Router } from '@angular/router';
+import { Subject, takeUntil } from 'rxjs';
+import { GSSqlUser } from '../../../../core/model/sql-user.model';
 
 @Component({
   selector: 'app-postcontent',
@@ -15,12 +23,14 @@ import { Router } from '@angular/router';
   templateUrl: './postcontent.component.html',
   styleUrl: './postcontent.component.css',
 })
-export class PostcontentComponent {
+export class PostcontentComponent implements OnInit, OnDestroy {
   decksOfUser: ListOfDecks[] = [];
   selectedDeck: ListOfDecks | null = null;
   tcg: string = 'unionarena';
+  user!: GSSqlUser;
   selectedDeckIndex: number | null = null;
   form!: FormGroup;
+  private destroy$ = new Subject<void>();
 
   private cardDeckService = inject(CardDeckService);
   private geekstackService = inject(GeekstackService);
@@ -33,8 +43,8 @@ export class PostcontentComponent {
       name: new FormControl(''),
       displaypic: new FormControl(''),
       headline: new FormControl('', [
-        Validators.required,         
-        Validators.maxLength(100)
+        Validators.required,
+        Validators.maxLength(100),
       ]),
       content: new FormControl(''),
       deckName: new FormControl(''),
@@ -45,6 +55,14 @@ export class PostcontentComponent {
   }
 
   ngOnInit() {
+    this.userStore.gsSqlUser$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.user = res
+          ? res
+          : { userId: 'noUserId', name: 'error', displaypic: 'string' };
+      },
+    });
+
     this.cardDeckService
       .loadListOfDeckDirect(this.tcg)
       .then((mappedDecks) => {
@@ -55,10 +73,16 @@ export class PostcontentComponent {
       });
   }
 
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   onTcgChange(): void {
-    this.cardDeckService.loadListOfDeckDirect(this.tcg)
+    this.cardDeckService
+      .loadListOfDeckDirect(this.tcg)
       .then((mappedDecks) => {
-        this.decksOfUser = mappedDecks
+        this.decksOfUser = mappedDecks;
         this.selectedDeck = null;
         this.selectedDeckIndex = null;
       })
@@ -67,7 +91,6 @@ export class PostcontentComponent {
         this.decksOfUser = [];
       });
   }
-  
 
   selectDeck(index: number): void {
     this.selectedDeckIndex = this.selectedDeckIndex === index ? null : index;
@@ -93,16 +116,19 @@ export class PostcontentComponent {
   }
 
   onSubmit(): void {
-    if (!this.form.controls['listofcards'].value || this.form.controls['listofcards'].value.length === 0) {
-      alert("Cannot submit: Deck not selected");
+    if (
+      !this.form.controls['listofcards'].value ||
+      this.form.controls['listofcards'].value.length === 0
+    ) {
+      alert('Cannot submit: Deck not selected');
       return; // Stop submission
     }
 
     if (this.form.controls['headline'].invalid) {
-      alert("Your headline is invalid");
+      alert('Your headline is invalid');
       return; // Stop submission
     }
-    const user = this.userStore.getCurrentUser();
+    const user = this.user;
     this.form.controls['userId'].setValue(user.userId);
     this.form.controls['displaypic'].setValue(user.displaypic);
     this.form.controls['name'].setValue(user.name);
@@ -111,7 +137,7 @@ export class PostcontentComponent {
     this.geekstackService.postByUser(this.form.value).subscribe({
       next: (response) => {
         console.log(response);
-        this.router.navigate([`/stacks`])
+        this.router.navigate([`/stacks`]);
       },
       error: (err) => {
         console.error(err);

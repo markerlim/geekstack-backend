@@ -1,5 +1,5 @@
-import { inject, Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { inject, Injectable, OnDestroy, OnInit } from '@angular/core';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { CardUnionArena } from '../model/card-unionarena.model';
 import { CardOnePiece } from '../model/card-onepiece.model';
 import { CardDragonBallZFW } from '../model/card-dragonballzfw.model';
@@ -9,22 +9,26 @@ import { GeekstackService } from './geekstackdata.service';
 import { GSMongoUser } from '../model/mongo-user.model';
 import { UserStore } from '../store/user.store';
 import { DuelmastersCard } from '../model/card-duelmaster.model';
+import { HololiveCard } from '../model/card-hololive.model';
+import { TCGTYPE } from '../utils/constants';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
   | CookieRunCard
-  | DuelmastersCard;
+  | DuelmastersCard
+  | HololiveCard;
 
 @Injectable({
   providedIn: 'root',
 })
-export class CardDeckService {
+export class CardDeckService implements OnInit, OnDestroy {
   private cardsInDeckSubject = new BehaviorSubject<
     { card: GameCard; count: number }[]
   >([]);
   private decksInListSubject = new BehaviorSubject<ListOfDecks[]>([]);
+  private destroy$ = new Subject<void>();
 
   cardsInDeck$ = this.cardsInDeckSubject.asObservable();
   decksOfUser$ = this.decksInListSubject.asObservable();
@@ -38,8 +42,22 @@ export class CardDeckService {
   decks: ListOfDecks[] | null = [];
   private geekstackService = inject(GeekstackService);
   private userStore = inject(UserStore);
-  constructor() {
-    this.userId = this.userStore.getCurrentUser().userId;
+  constructor() {}
+
+  ngOnInit() {
+    this.userStore.gsSqlUser$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.userId = res?.userId || ''; // Fallback to empty string if undefined
+      },
+      error: (err) => {
+        console.error('Error loading user:', err);
+        this.userId = ''; // Reset on error
+      },
+    });
+  }
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private readonly MAX_CARD_COUNT = 4;
@@ -161,15 +179,18 @@ export class CardDeckService {
   }
 
   loadDeckFromList(
-    decklist: { card: GameCard; count: number }[],
+    decklist: (GameCard & { count: number })[],
     tcgType: string
   ) {
-    const mappedDecklist = decklist.map((entry) => ({
-      card: this.mapToGameCard(entry.card, tcgType), // Convert to correct type
-      count: entry.count ?? 0, // Ensure count is always present
+    console.log('CHECKING MAPPER:', decklist);
+
+    const mappedDecklist = decklist.map((card) => ({
+      card: this.mapToGameCard(card, tcgType),
+      count: card.count ?? 1, // fallback if count somehow missing
     }));
 
-    console.log('Mapped Deck List:', mappedDecklist);
+    console.log('AFTER MAPPING:', mappedDecklist);
+
     this.cardsInDeckSubject.next(mappedDecklist);
   }
 
@@ -328,16 +349,18 @@ export class CardDeckService {
   mapToGameCard(rawCard: any, tcgType: string): GameCard {
     if (!rawCard) return {} as GameCard;
     switch (tcgType) {
-      case 'unionarena':
+      case TCGTYPE.UNIONARENA:
         return rawCard as CardUnionArena;
-      case 'onepiece':
+      case TCGTYPE.ONEPIECE:
         return rawCard as CardOnePiece;
-      case 'dragonballzfw':
+      case TCGTYPE.DRAGONBALLZFW:
         return rawCard as CardDragonBallZFW;
-      case 'cookierunbraverse':
+      case TCGTYPE.COOKIERUN:
         return rawCard as CookieRunCard;
-      case 'duelmasters':
+      case TCGTYPE.DUELMASTERS:
         return rawCard as DuelmastersCard;
+      case TCGTYPE.HOLOLIVE:
+        return rawCard as HololiveCard;
       default:
         console.warn('Unknown card type:', rawCard);
         return rawCard as GameCard;

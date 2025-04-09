@@ -24,7 +24,6 @@ public class FiltersButton {
         
     }
 
-
     public FiltersButton(String id, String code, String param, ArrayList<String> listofboosters,
             ArrayList<String> listofcolors, ArrayList<String> listofrarities) {
         this.id = id;

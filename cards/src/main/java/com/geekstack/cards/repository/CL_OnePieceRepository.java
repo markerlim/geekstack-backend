@@ -21,11 +21,11 @@ public class CL_OnePieceRepository {
     private MongoTemplate mongoTemplate;
 
     public List<OnePieceCard> getCards() {
-        return mongoTemplate.findAll(OnePieceCard.class);
+        return mongoTemplate.findAll(OnePieceCard.class,C_ONEPIECE);
     }
 
     public List<OnePieceCard> getCardsByBooster(String booster) {
-        Criteria criteria = Criteria.where(F_BOOSTER).is(booster);
+        Criteria criteria = Criteria.where(F_BOOSTER).is(booster.toUpperCase());
 
         Query query = new Query(criteria);
 

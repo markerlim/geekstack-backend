@@ -14,13 +14,15 @@ import { CommonModule } from '@angular/common';
 import { TcgImageComponent } from '../../../../shared/component/tcg-image/tcg-image.component';
 import { CardDeckService } from '../../../../core/service/card-deck.service';
 import { DuelmastersCard } from '../../../../core/model/card-duelmaster.model';
+import { HololiveCard } from '../../../../core/model/card-hololive.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
   | CookieRunCard
-  | DuelmastersCard;
+  | DuelmastersCard
+  | HololiveCard;
 
 @Component({
   selector: 'app-deckcover-select',

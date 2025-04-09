@@ -13,12 +13,10 @@
       "
     >
       <div class="card-item-holder">
-        <div class="card-item-cover">
-          <img src="/images/deckcovertemplate.png" />
-        </div>
+          <img  class="card-item-cover" id="cover-img" src="/images/deckcovertemplate.png" />
         <div class="card-item-function">
           <mat-icon (click)="shareDeck()">share</mat-icon>
-          <mat-icon (click)="deleteDeck(deckdata.deckuid)">delete</mat-icon>
+          <mat-icon (click)="deleteDeck(deckdata.deckuid, $event)">delete</mat-icon>
         </div>
         <img [src]="deckdata.deckcover" />
       </div>

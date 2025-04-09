@@ -1,23 +1,18 @@
-  export interface CardOnePiece {
-    _id: string;
-    booster: string;
-    cardfrom: string;
-    cardname: string;
-    cardname_lower: string;
-    cardId: string;
-    cardUid: string;
-    rarity: string;
-    category: string;
-    costlife: string;
-    attribute: string;
-    power: string;
-    counter: string;
-    color: string;
-    typing: string;
-    typing_lower: string;
-    effects: string;
-    trigger: string;
-    image: string;
-    urlimage: string;
-  }
-  
+export interface CardOnePiece {
+  _id: string;
+  cardName: string;
+  cardId: string;
+  rarity: string;
+  category: string;
+  lifecost: string;
+  attribute: string;
+  power: string;
+  counter: string;
+  color: string;
+  typing: string;
+  effects: string;
+  trigger: string;
+  urlimage: string;
+  cardUid: string;
+  booster: string;
+}

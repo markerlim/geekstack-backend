@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import { getToken, Messaging } from '@angular/fire/messaging';
 import { inject } from '@angular/core';
-import { GeekstackService } from './geekstackdata.service';
-import { UserStore } from '../store/user.store';
 import { environment } from '../../../environments/environment';
 
 @Injectable({

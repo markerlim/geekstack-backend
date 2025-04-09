@@ -49,6 +49,7 @@ geekstack-app/testem.log
 geekstack-app/typings/
 geekstack-app/src/environments/*
 geekstack-app/public/service-worker.js
+geekstack-app/public/firebase-messaging-sw.js
 geekstack-app/android/app/google-services.json
 geekstack-app/.vercel/
 geekstack-app/src/firebase-messaging-sw.js

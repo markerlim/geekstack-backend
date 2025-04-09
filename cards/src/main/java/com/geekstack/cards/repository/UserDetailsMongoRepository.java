@@ -37,19 +37,22 @@ public class UserDetailsMongoRepository {
         return user;
     }
 
-    public void createUnionArenaDecklist(UnionArenaDecklist decklist, String userId) {
+    public String createUnionArenaDecklist(UnionArenaDecklist decklist, String userId) {
         Query query = new Query(Criteria.where(F_USERID).is(userId));
-        decklist.setDeckuid(UUID.randomUUID().toString());
+        String uuid = UUID.randomUUID().toString();
+        decklist.setDeckuid(uuid);
         Update update = new Update().push(F_UADECKS, decklist);
         mongoTemplate.updateFirst(query, update, UserDetails.class, C_USER);
+        return uuid;
     }
 
-    public void updateUnionArenaDecklist(UnionArenaDecklist decklist, String userId, String deckuid) {
+    public String updateUnionArenaDecklist(UnionArenaDecklist decklist, String userId, String deckuid) {
         Query query = new Query(
                 Criteria.where(F_USERID).is(userId).and(F_UADECKS).elemMatch(Criteria.where(F_DECKUID).is(deckuid)));
         decklist.setDeckuid(deckuid);
         Update update = new Update().set(F_UADECKS + ".$", decklist);
         mongoTemplate.updateFirst(query, update, UserDetails.class, C_USER);
+        return deckuid;
     }
 
     public List<UnionArenaDecklist> loadUnionArenaDecklist(String userId) {

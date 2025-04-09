@@ -7,13 +7,15 @@ import { CardDragonBallZFW } from '../../../core/model/card-dragonballzfw.model'
 import { CookieRunCard } from '../../../core/model/card-cookierunbraverse.model';
 import { CardRecord } from '../../../core/model/card-record.model';
 import { DuelmastersCard } from '../../../core/model/card-duelmaster.model';
+import { HololiveCard } from '../../../core/model/card-hololive.model';
 
 type GameCard =
   | CardUnionArena
   | CardOnePiece
   | CardDragonBallZFW
   | CookieRunCard
-  | DuelmastersCard;
+  | DuelmastersCard
+  | HololiveCard;
 
 @Component({
   selector: 'app-tcg-image',

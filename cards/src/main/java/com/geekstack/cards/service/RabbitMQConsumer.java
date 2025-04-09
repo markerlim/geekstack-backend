@@ -126,18 +126,24 @@ public class RabbitMQConsumer {
 
         for (Notification notification : notificationList) {
             String userId = notification.getUserId();
-            Map<String, Object> tokenMap = tokens.stream()
-                    .filter(map -> userId.equals(map.get("user_id")))
-                    .findFirst()
-                    .orElse(null);
+            List<String> userTokens = tokens.stream()
+            .filter(map -> userId.equals(map.get("user_id")))
+            .map(map -> (String) map.get("token"))
+            .collect(Collectors.toList());
 
-            if (tokenMap != null) {
-                String token = (String) tokenMap.get("token");
-                // Associate the token with the notification (you can modify Notification class
-                // to hold token if needed)
-                // Optionally, send the notification after associating the token
-                firebaseCloudMessagingService.sendFcmNotification(token,notification.getPostId(),userId,notification.getSenderName(),notification.getMessage());
-            } else {
+            if (!userTokens.isEmpty()) {
+                System.out.println("Sending notification to " + userTokens.size() + " devices for userId: " + userId);
+                
+                for (String token : userTokens) {
+                    firebaseCloudMessagingService.sendFcmNotification(
+                        token,
+                        notification.getPostId(),
+                        userId,
+                        notification.getSenderName(),
+                        notification.getMessage()
+                    );
+                }
+             } else {
                 System.out.println("No FCM token found for userId: " + userId);
             }
         }

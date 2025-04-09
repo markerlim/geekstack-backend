@@ -16,6 +16,7 @@ export class NavigationTabsComponent {
     { icon: '/icons/onepieceicon.png', alt: 'Decks', label: 'Deckbuilder', path: '/deckbuilder/onepiece' },
     { icon: '/icons/cookierun.png', alt: 'Decks', label: 'Deckbuilder', path: '/deckbuilder/cookierunbraverse' },
     { icon: '/icons/duelmastericon.ico', alt: 'Decks', label: 'Deckbuilder', path: '/deckbuilder/duelmasters' },
+    { icon: '/icons/hololiveicon.png', alt: 'Decks', label: 'Deckbuilder', path: '/deckbuilder/hololive' },
     { icon: '/icons/dragonballz.ico', alt: 'Decks', label: 'Deckbuilder', path: '/deckbuilder/dragonballzfw' },
     { icon: '/icons/bottomnav/NewsSelected.svg', alt: 'Stacks', label: 'Stacks', path: '/stacks' },
   ];

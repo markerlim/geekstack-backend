@@ -1,64 +1,263 @@
 package com.geekstack.cards.model;
 
-import org.bson.types.ObjectId;
+import java.util.List;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "CL_hololiveocg")
 public class HololiveCard {
     @Id
-    private ObjectId _id;
-    
-    private String cardId;
-
-    @Field("cardUid")
-    private String cardUid;
+    private String id;
+    @TextIndexed
+    private String cardName;
+    private String urlimage;
+    private String detailUrl;
     private String cardNameJP;
-    private String cardNameEN;
-    private String cardNameEN_lower;
-    private String type;
+    private String cardType;
+    private String cardTypeJP;
     private String rarity;
+    private String includedProducts;
     private String color;
-    private String lifehp;
-    private String tags;
-    private String text;
-    private String image;
-
-    @Field("booster")
+    private String life;
+    private String hp;
+    private String bloomLevel;
+    private String passingBaton;
+    private String spArts;
+    private List<String> tags;
+    private String skillJP;
+    private String skill;
+    private String keywordJP;
+    private String keyword;
+    private String spSkillJP;
+    private String spSkill;
+    private String illustrator;
+    private String cardId;
+    private String cardUid;
     private String booster;
-    private String setfrom;
-
+    
     public HololiveCard(){
 
     }
-    
-    public HololiveCard(ObjectId _id, String cardId, String cardUid, String cardNameJP, String cardNameEN,
-            String cardNameEN_lower, String type, String rarity, String color, String lifehp, String tags, String text,
-            String image, String booster, String setfrom) {
-        this._id = _id;
+
+    public HololiveCard(String id, String cardName, String urlimage, String detailUrl, String cardNameJP,
+            String cardType, String cardTypeJP, String rarity, String includedProducts, String color, String life,
+            String hp, String bloomLevel, String passingBaton, String spArts, List<String> tags, String skillJP,
+            String skill, String keywordJP, String keyword, String spSkillJP, String spSkill, String illustrator,
+            String cardId, String cardUid, String booster) {
+        this.id = id;
+        this.cardName = cardName;
+        this.urlimage = urlimage;
+        this.detailUrl = detailUrl;
+        this.cardNameJP = cardNameJP;
+        this.cardType = cardType;
+        this.cardTypeJP = cardTypeJP;
+        this.rarity = rarity;
+        this.includedProducts = includedProducts;
+        this.color = color;
+        this.life = life;
+        this.hp = hp;
+        this.bloomLevel = bloomLevel;
+        this.passingBaton = passingBaton;
+        this.spArts = spArts;
+        this.tags = tags;
+        this.skillJP = skillJP;
+        this.skill = skill;
+        this.keywordJP = keywordJP;
+        this.keyword = keyword;
+        this.spSkillJP = spSkillJP;
+        this.spSkill = spSkill;
+        this.illustrator = illustrator;
         this.cardId = cardId;
         this.cardUid = cardUid;
-        this.cardNameJP = cardNameJP;
-        this.cardNameEN = cardNameEN;
-        this.cardNameEN_lower = cardNameEN_lower;
-        this.type = type;
-        this.rarity = rarity;
-        this.color = color;
-        this.lifehp = lifehp;
-        this.tags = tags;
-        this.text = text;
-        this.image = image;
         this.booster = booster;
-        this.setfrom = setfrom;
     }
 
-    public ObjectId get_id() {
-        return _id;
+
+
+    public String getId() {
+        return id;
     }
 
-    public void set_id(ObjectId _id) {
-        this._id = _id;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCardName() {
+        return cardName;
+    }
+
+    public void setCardName(String cardName) {
+        this.cardName = cardName;
+    }
+
+    public String getUrlimage() {
+        return urlimage;
+    }
+
+    public void setUrlimage(String urlimage) {
+        this.urlimage = urlimage;
+    }
+
+    public String getDetailUrl() {
+        return detailUrl;
+    }
+
+    public void setDetailUrl(String detailUrl) {
+        this.detailUrl = detailUrl;
+    }
+
+    public String getCardNameJP() {
+        return cardNameJP;
+    }
+
+    public void setCardNameJP(String cardNameJP) {
+        this.cardNameJP = cardNameJP;
+    }
+
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+
+    public String getCardTypeJP() {
+        return cardTypeJP;
+    }
+
+    public void setCardTypeJP(String cardTypeJP) {
+        this.cardTypeJP = cardTypeJP;
+    }
+
+    public String getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(String rarity) {
+        this.rarity = rarity;
+    }
+
+    public String getIncludedProducts() {
+        return includedProducts;
+    }
+
+    public void setIncludedProducts(String includedProducts) {
+        this.includedProducts = includedProducts;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
+    }
+
+    public String getLife() {
+        return life;
+    }
+
+    public void setLife(String life) {
+        this.life = life;
+    }
+
+    public String getHp() {
+        return hp;
+    }
+
+    public void setHp(String hp) {
+        this.hp = hp;
+    }
+
+    public String getBloomLevel() {
+        return bloomLevel;
+    }
+
+    public void setBloomLevel(String bloomLevel) {
+        this.bloomLevel = bloomLevel;
+    }
+
+    public String getPassingBaton() {
+        return passingBaton;
+    }
+
+    public void setPassingBaton(String passingBaton) {
+        this.passingBaton = passingBaton;
+    }
+
+    public String getSpArts() {
+        return spArts;
+    }
+
+    public void setSpArts(String spArts) {
+        this.spArts = spArts;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    public String getSkillJP() {
+        return skillJP;
+    }
+
+    public void setSkillJP(String skillJP) {
+        this.skillJP = skillJP;
+    }
+
+    public String getSkill() {
+        return skill;
+    }
+
+    public void setSkill(String skill) {
+        this.skill = skill;
+    }
+
+    public String getKeywordJP() {
+        return keywordJP;
+    }
+
+    public void setKeywordJP(String keywordJP) {
+        this.keywordJP = keywordJP;
+    }
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
+
+    public String getSpSkillJP() {
+        return spSkillJP;
+    }
+
+    public void setSpSkillJP(String spSkillJP) {
+        this.spSkillJP = spSkillJP;
+    }
+
+    public String getSpSkill() {
+        return spSkill;
+    }
+
+    public void setSpSkill(String spSkill) {
+        this.spSkill = spSkill;
+    }
+
+    public String getIllustrator() {
+        return illustrator;
+    }
+
+    public void setIllustrator(String illustrator) {
+        this.illustrator = illustrator;
     }
 
     public String getCardId() {
@@ -77,86 +276,6 @@ public class HololiveCard {
         this.cardUid = cardUid;
     }
 
-    public String getCardNameJP() {
-        return cardNameJP;
-    }
-
-    public void setCardNameJP(String cardNameJP) {
-        this.cardNameJP = cardNameJP;
-    }
-
-    public String getCardNameEN() {
-        return cardNameEN;
-    }
-
-    public void setCardNameEN(String cardNameEN) {
-        this.cardNameEN = cardNameEN;
-    }
-
-    public String getCardNameEN_lower() {
-        return cardNameEN_lower;
-    }
-
-    public void setCardNameEN_lower(String cardNameEN_lower) {
-        this.cardNameEN_lower = cardNameEN_lower;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public String getRarity() {
-        return rarity;
-    }
-
-    public void setRarity(String rarity) {
-        this.rarity = rarity;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getLifehp() {
-        return lifehp;
-    }
-
-    public void setLifehp(String lifehp) {
-        this.lifehp = lifehp;
-    }
-
-    public String getTags() {
-        return tags;
-    }
-
-    public void setTags(String tags) {
-        this.tags = tags;
-    }
-
-    public String getText() {
-        return text;
-    }
-
-    public void setText(String text) {
-        this.text = text;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
-    }
-
     public String getBooster() {
         return booster;
     }
@@ -165,13 +284,5 @@ public class HololiveCard {
         this.booster = booster;
     }
 
-    public String getSetfrom() {
-        return setfrom;
-    }
 
-    public void setSetfrom(String setfrom) {
-        this.setfrom = setfrom;
-    }
-
-    
 }

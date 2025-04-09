@@ -1,5 +1,5 @@
-import { Component, inject, Output } from '@angular/core';
-import { Subject } from 'rxjs';
+import { Component, inject, OnDestroy, OnInit, Output } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { GeekstackService } from '../../../core/service/geekstackdata.service';
 import { Notifications } from '../../../core/model/notifications.model';
 import { TimeAgoPipe } from '../../../core/pipe/time-ago.pipe';
@@ -15,7 +15,7 @@ import { FireCloudMessaging } from '../../../core/service/fcm.service';
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.css',
 })
-export class NotificationsComponent {
+export class NotificationsComponent implements OnInit, OnDestroy{
   @Output()
   onCloseNotification = new Subject<boolean>();
 
@@ -23,6 +23,9 @@ export class NotificationsComponent {
 
   isLoading = false;
   notificationsEnabled = false;
+  userId!: string;
+
+  private destroy$ = new Subject<void>();
 
   private geekstackService = inject(GeekstackService);
   private fcm = inject(FireCloudMessaging);
@@ -42,7 +45,23 @@ export class NotificationsComponent {
   }
 
   ngOnInit() {
+        this.userStore.gsSqlUser$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (res) => {
+            this.userId = res?.userId || ''; // Fallback to empty string if undefined
+          },
+          error: (err) => {
+            console.error('Error loading user:', err);
+            this.userId = ''; // Reset on error
+          }
+        });
     this.checkNotificationStatus();
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   private checkNotificationStatus() {
@@ -69,7 +88,7 @@ export class NotificationsComponent {
       const token = await this.fcm.requestPermission();
       if (token) {
         this.geekstackService
-          .updateFCMToken(this.userStore.getCurrentUser().userId, token)
+          .updateFCMToken(this.userId, token)
           .subscribe({
             next: (response) => {
               console.log('Notifications enabled on the backend:', response);
@@ -88,7 +107,7 @@ export class NotificationsComponent {
   }
 
   async disableNotificationsBackend(): Promise<void> {
-    this.geekstackService.removeFCMToken(this.userStore.getCurrentUser().userId).subscribe({
+    this.geekstackService.removeFCMToken(this.userId).subscribe({
       next: (response) => {
         console.log('Notifications disabled on the backend:', response);
         this.notificationsEnabled = false;

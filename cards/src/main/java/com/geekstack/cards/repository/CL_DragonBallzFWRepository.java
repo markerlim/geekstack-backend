@@ -21,7 +21,7 @@ public class CL_DragonBallzFWRepository {
     private MongoTemplate mongoTemplate;
 
     public List<DragonBallzFWCard> getCards() {
-        return mongoTemplate.findAll(DragonBallzFWCard.class);
+        return mongoTemplate.findAll(DragonBallzFWCard.class,C_DRAGONBALLZFW);
     }
 
     public List<DragonBallzFWCard> getCardsByBooster(String booster) {

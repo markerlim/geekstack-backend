@@ -6,4 +6,6 @@ export interface GSMongoUser{
     uadecks: ListOfDecks[];
     opdecks: ListOfDecks[];
     dbzfwdecks: ListOfDecks[];
+    dmdecks: ListOfDecks[];
+    hocgdecks:ListOfDecks[];
 }

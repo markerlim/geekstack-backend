@@ -20,7 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { UserStore } from '../../../../core/store/user.store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { GSSqlUser } from '../../../../core/model/sql-user.model';
-import { debounceTime, Subject, switchMap, tap } from 'rxjs';
+import { debounceTime, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { SinglestackComponent } from '../singlestack/singlestack.component';
 
 @Component({
@@ -38,7 +38,7 @@ import { SinglestackComponent } from '../singlestack/singlestack.component';
   templateUrl: './deckstacks.component.html',
   styleUrl: './deckstacks.component.css',
 })
-export class DeckstacksComponent implements AfterViewInit, OnDestroy {
+export class DeckstacksComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('scrollContainer') scrollContainer!: ElementRef;
   @ViewChild('contentSlide') contentSlide!: ElementRef;
   @ViewChild('stacksContent') stacksContent!: ElementRef;
@@ -66,6 +66,7 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
   user!: GSSqlUser;
   limit: number = 20;
   page: number = 0;
+  private destroy$ = new Subject<void>();
 
   private geekstackService = inject(GeekstackService);
   private userStore = inject(UserStore);
@@ -74,12 +75,6 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
   private scrollSubject = new Subject<void>();
 
   constructor() {
-    this.user = this.userStore.getCurrentUser() ?? {
-      name: 'error',
-      displaypic: '',
-      userId: '',
-    };
-
     this.initPostId = this.route.snapshot.paramMap.get('postId') ?? '';
 
     this.route.paramMap.subscribe((params) => {
@@ -106,6 +101,15 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
       }
     });
   }
+  ngOnInit() {
+    this.fetchUserpost();
+    this.userStore.gsSqlUser$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (res) => {
+        this.user = res
+          ? res
+          : { userId: 'noUserId', name: 'error', displaypic: 'string' };
+      },
+    });  }
 
   ngAfterViewInit() {
     setTimeout(() => this.centerSelectedItem(), 0);
@@ -136,10 +140,6 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
         switchMap(async () => this.fetchUserpost())
       )
       .subscribe();
-  }
-
-  ngOnInit() {
-    this.fetchUserpost();
   }
 
   navigateToPostStacks() {
@@ -279,5 +279,7 @@ export class DeckstacksComponent implements AfterViewInit, OnDestroy {
       );
       scrollContainer.removeEventListener('scroll', this.onScroll.bind(this));
     }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }
