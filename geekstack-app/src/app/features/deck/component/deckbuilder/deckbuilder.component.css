@@ -14,15 +14,14 @@
 .db-cardlist-mobile{
     width: 100% !important;
     height: calc(100%);
-    transform: translateY(100%);
     position: fixed;
-    bottom:0;
+    bottom: -100vh;
     z-index: 100;
-    transition: 0.3s ease-in-out;
+    transition: bottom 0.3s ease-in-out;
     overflow: hidden;
 }
 .active{
-    transform: translateY(0);
+    bottom:0;
 }
 
 .overlay{

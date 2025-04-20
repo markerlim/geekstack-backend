@@ -181,6 +181,11 @@ public class CardListService {
         public List<HololiveCard> byBooster(String booster) {
             return hololiveRepository.getCardsByBooster(booster);
         }
+
+
+        public List<HololiveCard> searchDatabase(String term){
+            return hololiveRepository.searchForCards(term);
+        }
     }
     public class CardPriceActions{
         public CardPriceFULLA byFulla(String id){

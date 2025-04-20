@@ -28,50 +28,67 @@
 }
 .card-game-option {
   position: absolute;
-  width: 80px;
-  height: 60px;
+  width: calc(100% - 20px);
+  height: 250px;
   overflow: hidden;
-  bottom: 0;
-  left: 50%;
-  z-index: 1;
+  bottom:-250px;
+  left: 0;
+  z-index: 100;
+  padding-left:10px;
+  padding-right:10px;
   background-color: #29333e;
-  border-radius: 10px;
-  transform: translateX(-50%);
-  transition: bottom 0.5s ease-in-out, transform 0.5s ease-in-out;
+  border-radius: 10px 10px 0px 0px;
+  display: none;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap:5px;
+  justify-content: start;
+  align-items: center;
+  animation: slideOut 0.4s ease forwards;
+  transition: bottom 0.5s ease-in-out, transform 0.5s ease-in-out,display 0.5s ease-in-out;
 }
+
+.card-game-option div {
+  display: flex;
+  flex: 0 0 auto;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  overflow: hidden;
+  height: 100%;
+}
+
 
 .card-game-option img {
   width: 80px;
   height: 60px;
 }
 
-/* Neutral position */
-.slide-neutral {
-  bottom: 0;
-  transform: translateX(-50%);
+.slide-in {
+  display: flex;
+  animation: slideIn 0.4s ease forwards;
 }
 
-/* First slide-in */
-.slide-in-1 {
-  bottom: 70px;
-  transform: translateX(calc(-50% - 70px));
+@keyframes slideIn {
+  from {
+    opacity: 0%;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 100%;
+    transform: translateY(-250px);
+  }
 }
 
-/* Second slide-in */
-.slide-in-2 {
-  bottom: 70px;
-  transform: translate(calc(-50% - 45px), -70px);
+@keyframes slideOut {
+  from {
+    opacity: 100%;
+    transform: translateY(-250px);
+  }
+  to {
+    opacity: 0%;
+    transform: translateY(0);
+  }
 }
 
-/* Third slide-in */
-.slide-in-3 {
-  bottom: 70px;
-  transform: translate(calc(-50% + 45px), -70px);
-}
-
-/* Fourth slide-in */
-.slide-in-4 {
-  bottom: 70px;
-  transform: translateX(calc(-50% + 70px));
-}
 

@@ -1,29 +1,53 @@
 <div class="options-selector"> 
-  <div>Select Card Game:</div>
-  <select [(ngModel)]="tcg" (change)="onTcgChange()">
-    <option value="unionarena" selected>Union Arena</option>
-    <option value="onepiece">One Piece</option>
-    <option value="cookierunbraverse">Cookie Run</option>
-    <option value="dragonballzfw">Dragon Ball Z</option>
-  </select>
+  <div class="custom-select" (click)="handleSelectTcg()">
+    <div class="selected-option">
+      <img [src]="selectedTcg.icon" [alt]="selectedTcg.label" />
+      <span>{{ selectedTcg.label }}</span>
+    </div>
+    @if (dropdownOpen) {
+    <div class="dropdown-options">
+      @for (item of selectTcg; track $index) {
+      <div
+        class="option"
+        (click)="selectTcgOption(item,$event)"
+      >
+        <img [src]="item.icon" [alt]="item.label" />
+        <span>{{ item.label }}</span>
+      </div>
+    }
+    </div>
+  }
+  </div>
+  <div class="search-deck">
+    <input
+      type="text"
+      placeholder="Search Deck"
+      [(ngModel)]="deckSearchQuery"
+      (input)="searchDeck()"
+    />
+  </div>
 </div>
 
 <form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div class="decks-holder">
-    @if (decksOfUser && decksOfUser.length > 0) { @for (item of decksOfUser; let i = $index; track
+    @if (filteredDecks && filteredDecks.length > 0) { @for (item of filteredDecks; let i = $index; track
     item.deckuid) {
     <div class="deck-item" (click)="selectDeck(i)">
       <img class="cover" src="/images/deckcovertemplate.png" />
       <img class="cover-dp" [src]="item.deckcover" />
       @if (selectedDeckIndex === i) {
-      <div class="deckSelected">Selected</div>
+      <div class="deckSelected"><code>Selected</code></div>
       }
+      <div class="deck-name">
+        {{item.deckname}}
+      </div>
     </div>
     }} @else {
     <div class="nodecks">No Decks found</div>
     }
   </div>
   <br />
+  <div class="selected-deckname">Deck Name: {{selectedDeck?.deckname}}</div>
   <input type="text" placeholder="Add a headline!" formControlName="headline" />
   <div class="line-sep"></div>
   <textarea

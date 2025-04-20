@@ -114,7 +114,9 @@ button:disabled {
   width: 100%;
   position: absolute;
   text-align: center;
-  bottom: 10px;
+  bottom: 25px;
+  font-size: 12px;
+  color: aquamarine;
 }
 
 .tabs {
@@ -140,4 +142,76 @@ button:disabled {
 .highlight {
   background-color: #2f1a71;
   color: #f2f3f8 !important;
+}
+.deck-name{
+  font-size: 12px;
+  text-align: center;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  width:80px;
+}
+
+.selected-deckname{
+  color: #f2f3f8;
+  padding: 10px;
+  font-size: 12px;
+}
+
+.custom-select {
+  position: relative;
+  border: 1px solid #757575;
+  color: #f2f3f8;
+  padding: 8px;
+  cursor: pointer;
+  width: 150px;
+  border-radius: 6px;
+  background: #111418;
+}
+
+.selected-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  z-index: 10;
+  background: #111418;
+  border: 1px solid #757575;
+  border-radius: 6px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.option {
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.option:hover {
+  background-color: #3a2870;
+}
+.options-selector img{
+  width: 30px;
+}
+.options-selector{
+  padding-top: 20px;
+  padding-left:15px;
+  padding-right: 15px;
+  display: flex;
+  gap:15px;
+  width: calc(100% - 30px);
+}
+
+.search-deck{
+  width: calc(100% - 150px);
+  border: 1px solid #757575;
+  border-radius: 6px;
 }

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, HostListener, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Subject } from 'rxjs';
+import { TCGTYPE } from '../../../core/utils/constants';
 
 @Component({
   selector: 'app-search-bar',
@@ -13,27 +14,40 @@ import { Subject } from 'rxjs';
 export class SearchBarComponent {
   games = [
     {
-      name: 'unionarena',
+      name: TCGTYPE.UNIONARENA,
       icon: '/icons/unionarenaicon.ico',
       label: 'Union Arena',
     },
-    { name: 'onepiece', icon: '/icons/onepieceicon.png', label: 'One Piece' },
     {
-      name: 'dragonballzfw',
+      name: TCGTYPE.ONEPIECE,
+      icon: '/icons/onepieceicon.png',
+      label: 'One Piece',
+    },
+    {
+      name: TCGTYPE.DRAGONBALLZFW,
       icon: '/icons/dragonballz.ico',
       label: 'DBZ Fusion World',
     },
     {
-      name: 'cookierunbraverse',
+      name: TCGTYPE.COOKIERUN,
       icon: '/icons/cookierun.png',
       label: 'Cookie Run',
     },
     {
-      name: 'duelmasters',
+      name: TCGTYPE.DUELMASTERS,
       icon: '/icons/duelmastericon.ico',
       label: 'Duel Masters',
     },
-    { name: 'ptcgpocket', icon: '/icons/ptcgicon.png', label: 'PTCG Pocket' },
+    {
+      name: TCGTYPE.HOLOLIVE,
+      icon: '/icons/hololiveicon.png',
+      label: 'Hololive OCG',
+    },
+    {
+      name: TCGTYPE.PKMNPOCKET,
+      icon: '/icons/ptcgicon.png',
+      label: 'PTCG Pocket',
+    },
   ];
 
   selectedGame = this.games[0];
@@ -46,7 +60,7 @@ export class SearchBarComponent {
     this.isDropdownOpen = !this.isDropdownOpen;
   }
 
-  selectGame(game: { name: string; icon: string, label: string }) {
+  selectGame(game: { name: string; icon: string; label: string }) {
     this.selectedGame = game;
     this.toggleDropdown();
   }

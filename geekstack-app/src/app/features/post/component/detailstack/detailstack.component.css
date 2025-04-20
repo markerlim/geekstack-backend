@@ -55,6 +55,7 @@
 
 .textcontent{
   padding:10px;
+  white-space: pre-line;
 }
 .detail-stack.slide-in {
   right: 0;

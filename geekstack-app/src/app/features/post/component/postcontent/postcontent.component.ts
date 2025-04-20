@@ -1,6 +1,5 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnDestroy, OnInit } from '@angular/core';
 import { ListOfDecks } from '../../../../core/model/listofdecks.model';
-import { CardDeckService } from '../../../../core/service/card-deck.service';
 import {
   FormControl,
   FormGroup,
@@ -16,6 +15,8 @@ import { CardRecord } from '../../../../core/model/card-record.model';
 import { Router } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { GSSqlUser } from '../../../../core/model/sql-user.model';
+import { TCGTYPE } from '../../../../core/utils/constants';
+import { CardDeckService } from '../../../../core/service/card-deck.service';
 
 @Component({
   selector: 'app-postcontent',
@@ -26,17 +27,53 @@ import { GSSqlUser } from '../../../../core/model/sql-user.model';
 export class PostcontentComponent implements OnInit, OnDestroy {
   decksOfUser: ListOfDecks[] = [];
   selectedDeck: ListOfDecks | null = null;
-  tcg: string = 'unionarena';
   user!: GSSqlUser;
   selectedDeckIndex: number | null = null;
   form!: FormGroup;
+  selectTcg = [
+    {
+      value: TCGTYPE.UNIONARENA,
+      label: 'Union Arena',
+      icon: '/icons/unionarenaicon.ico',
+    },
+    {
+      value: TCGTYPE.ONEPIECE,
+      label: 'One Piece',
+      icon: '/icons/onepieceicon.png',
+    },
+    {
+      value: TCGTYPE.COOKIERUN,
+      label: 'Cookie Run',
+      icon: '/icons/cookierun.png',
+    },
+    {
+      value: TCGTYPE.HOLOLIVE,
+      label: 'Hololive OCG',
+      icon: '/icons/hololiveicon.png',
+    },
+    {
+      value: TCGTYPE.DUELMASTERS,
+      label: 'Duelmasters',
+      icon: '/icons/duelmastericon.ico',
+    },
+    {
+      value: TCGTYPE.DRAGONBALLZFW,
+      label: 'Dragon Ball Z',
+      icon: '/icons/dragonballz.ico',
+    },
+  ];
+  dropdownOpen = false;
+  selectedTcg = this.selectTcg[0];
+  deckSearchQuery: string = '';
+filteredDecks: any[] = [];
+
   private destroy$ = new Subject<void>();
 
-  private cardDeckService = inject(CardDeckService);
   private geekstackService = inject(GeekstackService);
   private router = inject(Router);
   private userStore = inject(UserStore);
   constructor() {
+    
     this.form = new FormGroup({
       postType: new FormControl(''),
       userId: new FormControl(''),
@@ -57,20 +94,19 @@ export class PostcontentComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.userStore.gsSqlUser$.pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {
-        this.user = res
-          ? res
-          : { userId: 'noUserId', name: 'error', displaypic: 'string' };
+        this.user = res || { userId: '', name: '', displaypic: '' };
+      },
+      error: (err) => {
+        console.error('Error loading user:', err);
       },
     });
 
-    this.cardDeckService
-      .loadListOfDeckDirect(this.tcg)
-      .then((mappedDecks) => {
-        this.decksOfUser = mappedDecks;
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-      });
+    this.userStore.getDecks(this.selectedTcg.value).subscribe({
+      next: (res) => {
+        this.decksOfUser = res;
+        this.filteredDecks = this.decksOfUser;
+      },
+    });
   }
 
   ngOnDestroy(): void {
@@ -78,18 +114,35 @@ export class PostcontentComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
+  selectTcgOption(item: any, event:Event) {
+    event.stopPropagation();
+    this.dropdownOpen = false;
+    this.selectedTcg = item;
+    this.onTcgChange();
+  }
   onTcgChange(): void {
-    this.cardDeckService
-      .loadListOfDeckDirect(this.tcg)
-      .then((mappedDecks) => {
-        this.decksOfUser = mappedDecks;
-        this.selectedDeck = null;
-        this.selectedDeckIndex = null;
-      })
-      .catch((error) => {
-        console.error('Error:', error);
-        this.decksOfUser = [];
-      });
+    this.userStore.getDecks(this.selectedTcg.value).subscribe({
+      next: (res) => {
+        this.decksOfUser = res;
+        this.filteredDecks = this.decksOfUser;
+      },
+    });
+  }
+
+  handleSelectTcg(){
+    this.dropdownOpen = !this.dropdownOpen;
+  }
+
+  searchDeck(): void {
+    const query = this.deckSearchQuery.toLowerCase().trim();
+    if (!query) {
+      this.filteredDecks = this.decksOfUser;
+      return;
+    }
+  
+    this.filteredDecks = this.decksOfUser.filter(deck =>
+      deck.deckname.toLowerCase().includes(query)
+    );
   }
 
   selectDeck(index: number): void {
@@ -99,15 +152,24 @@ export class PostcontentComponent implements OnInit, OnDestroy {
         ? this.decksOfUser[this.selectedDeckIndex]
         : null;
 
+    console.log(this.selectedDeck);
+
     const mappedCards: CardRecord[] = this.selectedDeck?.listofcards
-      ? Object.values(this.selectedDeck.listofcards).map(({ card, count }) => ({
-          _id: card?._id || '',
-          imageSrc: card?.urlimage || '',
-          cardName: card?.name || '',
-          count: count || 1,
-        }))
+      ? this.selectedDeck.listofcards.map(
+          ({ _id, urlimage, cardName, title, count }) => {
+            return {
+              _id: _id || '',
+              imageSrc: urlimage || '',
+              cardName: cardName || title || '',
+              count: count || 1,
+            };
+          }
+        )
       : [];
 
+    console.log('CHECKING MAPPED CARDS', mappedCards);
+
+    // Set form values
     this.form.controls['selectedCards'].setValue([
       { imageSrc: this.selectedDeck?.deckcover },
     ]);
@@ -132,7 +194,7 @@ export class PostcontentComponent implements OnInit, OnDestroy {
     this.form.controls['userId'].setValue(user.userId);
     this.form.controls['displaypic'].setValue(user.displaypic);
     this.form.controls['name'].setValue(user.name);
-    this.form.controls['postType'].setValue(this.tcg);
+    this.form.controls['postType'].setValue(this.selectedTcg.value);
     console.log(this.form.value);
     this.geekstackService.postByUser(this.form.value).subscribe({
       next: (response) => {
@@ -144,4 +206,12 @@ export class PostcontentComponent implements OnInit, OnDestroy {
       },
     });
   }
+
+    @HostListener('document:click', ['$event'])
+    onClick(event: MouseEvent) {
+      const dropdownElement = document.querySelector('.custom-select');
+      if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
+        this.dropdownOpen = false;
+      }
+    }
 }

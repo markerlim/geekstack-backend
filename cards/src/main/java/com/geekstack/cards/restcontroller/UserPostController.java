@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -24,6 +26,8 @@ import com.geekstack.cards.service.UserPostService;
 @RestController
 @RequestMapping("/api/userpost")
 public class UserPostController {
+
+        private final static Logger logger = LoggerFactory.getLogger(UserDetailsController.class);
 
     @Autowired
     private UserPostService userPostService;
@@ -66,6 +70,7 @@ public class UserPostController {
     public ResponseEntity<Map<String, Object>> userMakePost(
             @RequestBody UserPost userPost) {
         Map<String, Object> response = new HashMap<>();
+        logger.info(userPost.getPostId());
         try {
             userPostService.createPost(userPost);
             response.put("message", "Post successfully");

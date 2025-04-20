@@ -30,4 +30,10 @@ public class RestControllerHololive {
         return new ResponseEntity<List<HololiveCard>>(cardListService.listofhololive().byBooster(booster),
                 HttpStatus.OK);
     }
+
+    @GetMapping("/search/{term}")
+    public ResponseEntity<List<HololiveCard>> searchHololiveCard(@PathVariable String term) {
+        return new ResponseEntity<List<HololiveCard>>(cardListService.listofhololive().searchDatabase(term),
+                HttpStatus.OK);
+    }
 }

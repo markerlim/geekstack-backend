@@ -19,7 +19,6 @@ import com.geekstack.cards.model.Comment;
 import com.geekstack.cards.model.UserPost;
 import com.geekstack.cards.repository.UserPostMongoRepository;
 import com.geekstack.cards.repository.UserPostMySQLRepository;
-import com.google.firebase.messaging.FirebaseMessaging;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;

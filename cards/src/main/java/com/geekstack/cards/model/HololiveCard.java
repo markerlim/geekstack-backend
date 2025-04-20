@@ -9,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "CL_hololiveocg")
 public class HololiveCard {
     @Id
-    private String id;
+    private String _id;
     @TextIndexed
     private String cardName;
     private String urlimage;
@@ -41,12 +41,12 @@ public class HololiveCard {
 
     }
 
-    public HololiveCard(String id, String cardName, String urlimage, String detailUrl, String cardNameJP,
+    public HololiveCard(String _id, String cardName, String urlimage, String detailUrl, String cardNameJP,
             String cardType, String cardTypeJP, String rarity, String includedProducts, String color, String life,
             String hp, String bloomLevel, String passingBaton, String spArts, List<String> tags, String skillJP,
             String skill, String keywordJP, String keyword, String spSkillJP, String spSkill, String illustrator,
             String cardId, String cardUid, String booster) {
-        this.id = id;
+        this._id = _id;
         this.cardName = cardName;
         this.urlimage = urlimage;
         this.detailUrl = detailUrl;
@@ -72,16 +72,6 @@ public class HololiveCard {
         this.cardId = cardId;
         this.cardUid = cardUid;
         this.booster = booster;
-    }
-
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getCardName() {
@@ -282,6 +272,14 @@ public class HololiveCard {
 
     public void setBooster(String booster) {
         this.booster = booster;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
 
 

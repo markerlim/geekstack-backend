@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { TcgStore } from '../../../core/store/ctcg.store';
+import { TCGTYPE } from '../../../core/utils/constants';
 
 @Component({
   selector: 'app-bottom-nav',
@@ -39,6 +40,16 @@ export class BottomNavComponent {
       path: '/notifications',
     },
   ];
+
+  games = [
+    {value:TCGTYPE.UNIONARENA,label:'Union Arena', icon:"/images/ua.jpg"},
+    {value:TCGTYPE.ONEPIECE, label:'One Piece',icon:'/images/opc.jpg'},
+    {value:TCGTYPE.HOLOLIVE, label:'Hololive',icon:'/images/opc.jpg'},
+    {value:TCGTYPE.DUELMASTERS, label:'Duel Masters',icon:'/images/opc.jpg'},
+    {value:TCGTYPE.COOKIERUN, label:'Cookie Run',icon:'/images/crb.jpg'},
+    {value:TCGTYPE.DRAGONBALLZFW, label:'Dragonballz',icon:'/images/dbzfw.jpg'},
+
+  ]
 
   isActive(path: string): boolean {
     return this.router.url.includes(path);

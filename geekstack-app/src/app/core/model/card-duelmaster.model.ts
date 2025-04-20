@@ -19,5 +19,16 @@ export interface DuelmastersCard {
   cardUid: string;
   cardId:string;
   booster: string;
-
+  type2: string;
+  type2JP: string;
+  civilization2: string[]; 
+  civilization2JP: string[];
+  power2: string;
+  cost2: string;
+  mana2: string;
+  race2: string[];
+  race2JP: string[];
+  effects2: string;
+  effects2JP: string;
+  cardName2: string;
 }

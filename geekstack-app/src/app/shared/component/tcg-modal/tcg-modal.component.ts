@@ -43,6 +43,7 @@ export class TcgModalComponent implements OnInit, OnDestroy {
 
   TCGTYPE = TCGTYPE;
   isZoomIn: boolean = false;
+  isFlipped:boolean = false;
   zoomImageUrl: string = '';
 
   userId!: string;
@@ -103,6 +104,7 @@ export class TcgModalComponent implements OnInit, OnDestroy {
   }
 
   onCloseModal() {
+    this.isFlipped = false;
     this.onCloseTcgModal.next(false);
   }
 
@@ -122,7 +124,9 @@ export class TcgModalComponent implements OnInit, OnDestroy {
 
     return 'Unknown';
   }
-
+  handleFlip(){
+    this.isFlipped = !this.isFlipped;
+  }
   openErrorDialog(): void {
     const dialogRef = this.dialog.open(ErrorReportModalComponent, {
       width: '300px',

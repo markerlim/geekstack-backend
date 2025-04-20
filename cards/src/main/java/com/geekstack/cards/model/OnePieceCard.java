@@ -20,7 +20,10 @@ public class OnePieceCard {
     private String power;
     private String counter;
     private String color;
+
+    @TextIndexed
     private String typing;
+    
     private String effects;
     private String trigger;
     private String urlimage;

@@ -14,32 +14,13 @@
   </div>
   }
 </div>
-
 <div
   class="card-game-option"
-  [ngClass]="{ 'slide-in-1': showDeckBuilderOptions, 'slide-neutral':!showDeckBuilderOptions }"
-  (click)="selectCardGame('unionarena')"
+  [ngClass]="{ 'slide-in': showDeckBuilderOptions }"
 >
-  <img src="/images/ua.jpg" alt="Union Arena" />
-</div>
-<div
-  class="card-game-option"
-  [ngClass]="{ 'slide-in-2': showDeckBuilderOptions, 'slide-neutral':!showDeckBuilderOptions }"
-  (click)="selectCardGame('onepiece')"
->
-  <img src="/images/opc.jpg" alt="One Piece" />
-</div>
-<div
-  class="card-game-option"
-  [ngClass]="{ 'slide-in-3': showDeckBuilderOptions, 'slide-neutral':!showDeckBuilderOptions }"
-  (click)="selectCardGame('cookierunbraverse')"
->
-  <img src="/images/crb.jpg" alt="Cookie Run" />
-</div>
-<div
-  class="card-game-option"
-  [ngClass]="{ 'slide-in-4': showDeckBuilderOptions, 'slide-neutral':!showDeckBuilderOptions }"
-  (click)="selectCardGame('dragonballzfw')"
->
-  <img src="/images/dbzfw.jpg" alt="Dragon Ball Z FW" />
+  @for (item of games; track $index) {
+  <div>
+    <img src="{{ item.icon }}" (click)="selectCardGame(item.value)"/>
+  </div>
+  }
 </div>

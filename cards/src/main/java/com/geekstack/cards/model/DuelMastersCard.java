@@ -10,7 +10,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class DuelMastersCard {
 
     @Id
-    private String id;
+    private String _id;
     private String cardUid;
     private String booster;
     private String cost;
@@ -26,22 +26,33 @@ public class DuelMastersCard {
     private String detailurl;
     private String effects;
     private String effectsJP;
+    
     @TextIndexed
     private String cardName;
     private String cardNameJP;
     private String type;
     private String typeJP;
+
+    private String effects2;
+    private String effects2JP;
+
+    @TextIndexed
+    private String cardName2;
+    private String cardName2JP;
+
+    private String type2;
+    private String type2JP;
+    private List<String> race2;
+    private List<String> race2JP;
+    private List<String> civilization2;
+    private List<String> civilization2JP;
+    private String cost2;
+    private String power2;
+    private String mana2;
+
     private int count;
 
     public DuelMastersCard(){}
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getCardUid() {
         return cardUid;
@@ -195,12 +206,124 @@ public class DuelMastersCard {
         this.typeJP = typeJP;
     }
 
+    public String getEffects2() {
+        return effects2;
+    }
+
+    public void setEffects2(String effects2) {
+        this.effects2 = effects2;
+    }
+
+    public String getEffects2JP() {
+        return effects2JP;
+    }
+
+    public void setEffects2JP(String effects2jp) {
+        effects2JP = effects2jp;
+    }
+
+    public String getCardName2() {
+        return cardName2;
+    }
+
+    public void setCardName2(String cardName2) {
+        this.cardName2 = cardName2;
+    }
+
+    public String getCardName2JP() {
+        return cardName2JP;
+    }
+
+    public void setCardName2JP(String cardName2JP) {
+        this.cardName2JP = cardName2JP;
+    }
+
+    public String getType2() {
+        return type2;
+    }
+
+    public void setType2(String type2) {
+        this.type2 = type2;
+    }
+
+    public String getType2JP() {
+        return type2JP;
+    }
+
+    public void setType2JP(String type2jp) {
+        type2JP = type2jp;
+    }
+
+    public List<String> getRace2() {
+        return race2;
+    }
+
+    public void setRace2(List<String> race2) {
+        this.race2 = race2;
+    }
+
+    public List<String> getRace2JP() {
+        return race2JP;
+    }
+
+    public void setRace2JP(List<String> race2jp) {
+        race2JP = race2jp;
+    }
+
+    public List<String> getCivilization2() {
+        return civilization2;
+    }
+
+    public void setCivilization2(List<String> civilization2) {
+        this.civilization2 = civilization2;
+    }
+
+    public List<String> getCivilization2JP() {
+        return civilization2JP;
+    }
+
+    public void setCivilization2JP(List<String> civilization2jp) {
+        civilization2JP = civilization2jp;
+    }
+
+    public String getCost2() {
+        return cost2;
+    }
+
+    public void setCost2(String cost2) {
+        this.cost2 = cost2;
+    }
+
+    public String getPower2() {
+        return power2;
+    }
+
+    public void setPower2(String power2) {
+        this.power2 = power2;
+    }
+
+    public String getMana2() {
+        return mana2;
+    }
+
+    public void setMana2(String mana2) {
+        this.mana2 = mana2;
+    }
+
     public int getCount() {
         return count;
     }
 
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public String get_id() {
+        return _id;
+    }
+
+    public void set_id(String _id) {
+        this._id = _id;
     }
     
     

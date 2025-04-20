@@ -4,11 +4,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+@Document(collection = "userpost")
 public class UserPost {
 
     @Id
     private String postId;
+
     private String postType;//c
     private String code;//c
     private String userId;//c
@@ -27,6 +30,28 @@ public class UserPost {
     public UserPost() {
 
     }
+
+    public UserPost(String postId, String postType, String code, String userId, String headline, String content,
+            String deckName, Boolean isTournamentDeck, LocalDateTime timestamp, List<CardDetails> selectedCards,
+            List<CardDetails> listofcards, List<String> listoflikes, List<Comment> listofcomments, String name,
+            String displaypic) {
+        this.postId = postId;
+        this.postType = postType;
+        this.code = code;
+        this.userId = userId;
+        this.headline = headline;
+        this.content = content;
+        this.deckName = deckName;
+        this.isTournamentDeck = isTournamentDeck;
+        this.timestamp = timestamp;
+        this.selectedCards = selectedCards;
+        this.listofcards = listofcards;
+        this.listoflikes = listoflikes;
+        this.listofcomments = listofcomments;
+        this.name = name;
+        this.displaypic = displaypic;
+    }
+
 
     public String getName() {
         return name;

@@ -22,6 +22,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { GSSqlUser } from '../../../../core/model/sql-user.model';
 import { debounceTime, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { SinglestackComponent } from '../singlestack/singlestack.component';
+import { TCGTYPE } from '../../../../core/utils/constants';
 
 @Component({
   selector: 'app-deckstacks',
@@ -49,10 +50,12 @@ export class DeckstacksComponent implements OnInit, AfterViewInit, OnDestroy {
 
   listofcontent: string[] = [
     'ALL',
-    'UNIONARENA',
-    'ONEPIECE',
-    'COOKIERUNBRAVERSE',
-    'DRAGONBALLZ',
+    TCGTYPE.UNIONARENA.toUpperCase(),
+    TCGTYPE.ONEPIECE.toUpperCase(),
+    TCGTYPE.COOKIERUN.toUpperCase(),
+    TCGTYPE.HOLOLIVE.toUpperCase(),
+    TCGTYPE.DUELMASTERS.toUpperCase(),
+    TCGTYPE.DRAGONBALLZFW.toUpperCase(),
   ];
   selectedContent: string = 'ALL';
   userpost: Userpost[] = [];
