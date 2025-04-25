@@ -30,13 +30,15 @@ type GameCard =
   styleUrls: ['./booster-list-deckbuilder.component.css'],
 })
 export class BoosterListDeckbuilderComponent implements OnInit {
-  boosterList: Array<{
+  boosterList!: Array<{
     pathname: string;
     alt: string;
     imageSrc: string;
     imgWidth: number;
-  }> = [];
-  duelmasterlist: any[] = [];
+    category: string;
+  }>;
+  duelmasterlist!: any[];
+  filteredList!: any[];
   filteredCards: Array<GameCard> = [];
   showBoosterList: boolean = true; // Flag to track whether booster list is visible
   @Input()
@@ -50,6 +52,7 @@ export class BoosterListDeckbuilderComponent implements OnInit {
   selectedColor = '';
   selectedBooster = '';
   selectedRarity = '';
+  activeTab: 'expansion' | 'deck' = 'expansion';
 
   TCGTYPE = TCGTYPE;
   @Output()
@@ -66,6 +69,7 @@ export class BoosterListDeckbuilderComponent implements OnInit {
       this.booster = params.get('booster') || '';
       this.cardList = [];
       this.filteredCards = [];
+      this.showBoosterList = true;
       this.fetchBoosterList();
     });
   }
@@ -101,10 +105,12 @@ export class BoosterListDeckbuilderComponent implements OnInit {
   }
 
   fetchBoosterList(): void {
+    console.log("fetching")
     if (this.tcgPath == 'duelmasters') {
       this.geekstackService.getDuelmasterBtn().subscribe({
         next: (response) =>{
           this.duelmasterlist = response
+          this.updateFilteredList()
          },
         error:(err) =>{
           console.error(err);
@@ -114,6 +120,7 @@ export class BoosterListDeckbuilderComponent implements OnInit {
       this.geekstackService.getBoosterOfTcg(this.tcgPath).subscribe({
         next: (data) => {
           this.boosterList = data;
+          this.updateFilteredList();
         },
         error: (err) => {
           console.error('Failed to fetch booster list:', err);
@@ -282,6 +289,19 @@ export class BoosterListDeckbuilderComponent implements OnInit {
           this.showBoosterList = false;
         },
       });
+  }
+
+  updateFilteredList(): void {
+    if(this.tcgPath == 'duelmasters'){
+    this.filteredList = this.duelmasterlist.filter(dm => dm.category === this.activeTab);
+    } else {
+      this.filteredList = this.boosterList.filter(bt => bt.category === this.activeTab);
+    }
+  }
+
+  setActiveTab(tab: 'expansion' | 'deck') {
+    this.activeTab = tab;
+    this.updateFilteredList(); 
   }
 
   onBoosterClick(pathname: string): void {

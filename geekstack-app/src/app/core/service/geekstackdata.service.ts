@@ -37,7 +37,7 @@ export class GeekstackService {
   getBoosterOfTcg(
     tcgPath: string
   ): Observable<
-    Array<{ pathname: string; alt: string; imageSrc: string; imgWidth: number }>
+    Array<{ pathname: string; alt: string; imageSrc: string; imgWidth: number; category: string }>
   > {
     return this.http.get<
       Array<{
@@ -45,6 +45,7 @@ export class GeekstackService {
         alt: string;
         imageSrc: string;
         imgWidth: number;
+        category: string;
       }>
     >(this.baseURLboosterlist + '/' + tcgPath);
   }

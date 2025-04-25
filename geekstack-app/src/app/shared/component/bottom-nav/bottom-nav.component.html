@@ -14,9 +14,14 @@
   </div>
   }
 </div>
+@if (showDeckBuilderOptions) {
+<div class="overlay" (click)="closeOptions()">
+</div>
+}
 <div
   class="card-game-option"
-  [ngClass]="{ 'slide-in': showDeckBuilderOptions }"
+  [ngClass]="{ 'slide-in': showDeckBuilderOptions,'slide-out': isAnimatingOut}"
+  (animationend)="onAnimationDone($event)"
 >
   @for (item of games; track $index) {
   <div>

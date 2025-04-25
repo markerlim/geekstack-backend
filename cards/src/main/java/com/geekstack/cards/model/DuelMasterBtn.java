@@ -14,6 +14,7 @@ public class DuelMasterBtn {
     private String booster;
     private String japtext;
     private LocalDateTime timestamp;
+    private String category;
     private String detailLink;
 
     public DuelMasterBtn(){
@@ -55,6 +56,14 @@ public class DuelMasterBtn {
     }
     public void setDetailLink(String detailLink) {
         this.detailLink = detailLink;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     

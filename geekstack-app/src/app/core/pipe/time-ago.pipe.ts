@@ -33,25 +33,27 @@ export class TimeAgoPipe implements PipeTransform {
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
 
     if (diffInSeconds < 60) {
-      return `${diffInSeconds} sec ago`;
+      return `${diffInSeconds}s`;
     }
     const diffInMinutes = Math.floor(diffInSeconds / 60);
     if (diffInMinutes < 60) {
-      return `${diffInMinutes} min ago`;
+      return `${diffInMinutes}min`;
     }
     const diffInHours = Math.floor(diffInMinutes / 60);
     if (diffInHours < 24) {
-      return `${diffInHours} hr ago`;
+      return `${diffInHours}ho`;
     }
     const diffInDays = Math.floor(diffInHours / 24);
     if (diffInDays < 30) {
-      return `${diffInDays} days ago`;
+      return `${diffInDays}d`;
     }
     const diffInMonths = Math.floor(diffInDays / 30);
+    //${diffInMonths > 1 ? 's' : ''} ago add it for checking for s
     if (diffInMonths < 12) {
-      return `${diffInMonths} month${diffInMonths > 1 ? 's' : ''} ago`;
+      return `${diffInMonths}m`;
     }
+    //${diffInYears > 1 ? 's' : ''} ago add it for checking for s
     const diffInYears = Math.floor(diffInMonths / 12);
-    return `${diffInYears} year${diffInYears > 1 ? 's' : ''} ago`;
+    return `${diffInYears}y`;
   }
 }

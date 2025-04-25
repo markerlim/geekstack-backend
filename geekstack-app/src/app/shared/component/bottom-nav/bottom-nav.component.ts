@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, HostListener, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { TcgStore } from '../../../core/store/ctcg.store';
 import { TCGTYPE } from '../../../core/utils/constants';
 
 @Component({
@@ -12,9 +11,10 @@ import { TCGTYPE } from '../../../core/utils/constants';
   styleUrl: './bottom-nav.component.css',
 })
 export class BottomNavComponent {
-  showDeckBuilderOptions: boolean = false;
-
+  showDeckBuilderOptions = false;
+  isAnimatingOut = false;
   private router = inject(Router);
+  private elementRef = inject(ElementRef);
   constructor() {}
 
   bottoms = [
@@ -42,14 +42,21 @@ export class BottomNavComponent {
   ];
 
   games = [
-    {value:TCGTYPE.UNIONARENA,label:'Union Arena', icon:"/images/ua.jpg"},
-    {value:TCGTYPE.ONEPIECE, label:'One Piece',icon:'/images/opc.jpg'},
-    {value:TCGTYPE.HOLOLIVE, label:'Hololive',icon:'/images/opc.jpg'},
-    {value:TCGTYPE.DUELMASTERS, label:'Duel Masters',icon:'/images/opc.jpg'},
-    {value:TCGTYPE.COOKIERUN, label:'Cookie Run',icon:'/images/crb.jpg'},
-    {value:TCGTYPE.DRAGONBALLZFW, label:'Dragonballz',icon:'/images/dbzfw.jpg'},
-
-  ]
+    { value: TCGTYPE.UNIONARENA, label: 'Union Arena', icon: '/images/ua.jpg' },
+    { value: TCGTYPE.ONEPIECE, label: 'One Piece', icon: '/images/opc.jpg' },
+    { value: TCGTYPE.HOLOLIVE, label: 'Hololive', icon: '/images/hocg.jpg' },
+    {
+      value: TCGTYPE.DUELMASTERS,
+      label: 'Duel Masters',
+      icon: '/images/dm.jpg',
+    },
+    { value: TCGTYPE.COOKIERUN, label: 'Cookie Run', icon: '/images/crb.jpg' },
+    {
+      value: TCGTYPE.DRAGONBALLZFW,
+      label: 'Dragonballz',
+      icon: '/images/dbzfw.jpg',
+    },
+  ];
 
   isActive(path: string): boolean {
     return this.router.url.includes(path);
@@ -67,7 +74,18 @@ export class BottomNavComponent {
 
   selectCardGame(cardGame: string): void {
     console.log(`Selected card game: ${cardGame}`);
-    this.showDeckBuilderOptions = false;
+    this.closeOptions();
     this.router.navigate([`/deckbuilder/${cardGame.toLowerCase()}`]);
+  }
+
+  onAnimationDone(event: AnimationEvent) {
+    console.log(event.animationName);
+    if (event.animationName.endsWith('slideOut')) {
+      this.isAnimatingOut = false;
+    }
+  }
+  closeOptions() {
+    this.showDeckBuilderOptions = false;
+    this.isAnimatingOut = true;
   }
 }

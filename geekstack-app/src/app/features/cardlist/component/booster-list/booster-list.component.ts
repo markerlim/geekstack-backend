@@ -17,9 +17,12 @@ export class BoosterListComponent implements OnInit {
     alt: string;
     imageSrc: string;
     imgWidth: number;
+    category: string;
   }> = [];
   duelmasterlist: any[] = [];
+  filteredList: any[] = [];
   TCGTYPE = TCGTYPE;
+  activeTab: 'expansion' | 'deck' = 'expansion';
   tcgPath: string = '';
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -38,6 +41,7 @@ export class BoosterListComponent implements OnInit {
       this.geekstackService.getDuelmasterBtn().subscribe({
         next: (response) =>{
           this.duelmasterlist = response
+          this.updateFilteredList()
          },
         error:(err) =>{
           console.error(err);
@@ -47,7 +51,7 @@ export class BoosterListComponent implements OnInit {
       this.geekstackService.getBoosterOfTcg(this.tcgPath).subscribe({
         next: (data) => {
           this.boosterList = data;
-          console.log(data);
+          this.updateFilteredList()
         },
         error: (err) => {
           console.error('Failed to fetch booster list:', err);
@@ -58,5 +62,18 @@ export class BoosterListComponent implements OnInit {
 
   onBoosterClick(pathname: string): void {
     this.router.navigate(['tcg', this.tcgPath, pathname]); // Navigate to the 'pathname' of the clicked booster
+  }
+
+  updateFilteredList(): void {
+    if(this.tcgPath == TCGTYPE.DUELMASTERS){
+    this.filteredList = this.duelmasterlist.filter(dm => dm.category === this.activeTab);
+    } else {
+      this.filteredList = this.boosterList.filter(bt => bt.category === this.activeTab)
+    }
+  }
+
+  setActiveTab(tab: 'expansion' | 'deck') {
+    this.activeTab = tab;
+    this.updateFilteredList(); 
   }
 }

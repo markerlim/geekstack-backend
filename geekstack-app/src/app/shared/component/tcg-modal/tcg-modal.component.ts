@@ -146,12 +146,21 @@ export class TcgModalComponent implements OnInit, OnDestroy {
 
   replaceTagsWithIcons(line: string): string {
     let replacedLine = line;
+    
+    // First escape any angle brackets in the text
+    replacedLine = replacedLine.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    
+    // Then do your tag replacements (which will insert proper HTML)
     Object.keys(this.tagsToIcons).forEach((tag) => {
-      const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-
+      // Escape the tag for regex matching, including the now-escaped brackets
+      const escapedTag = tag.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+                            .replace(/</g, '&lt;')
+                            .replace(/>/g, '&gt;');
+      
       const iconTag = `<img class="tcg-icon" src="${this.tagsToIcons[tag]}" alt="${tag}">`;
       replacedLine = replacedLine.replace(new RegExp(escapedTag, 'g'), iconTag);
     });
+    
     return replacedLine;
   }
 

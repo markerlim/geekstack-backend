@@ -5,12 +5,11 @@ import { CardOnePiece } from '../model/card-onepiece.model';
 import { CardDragonBallZFW } from '../model/card-dragonballzfw.model';
 import { CookieRunCard } from '../model/card-cookierunbraverse.model';
 import { ListOfDecks } from '../model/listofdecks.model';
-import { GeekstackService } from './geekstackdata.service';
-import { GSMongoUser } from '../model/mongo-user.model';
 import { UserStore } from '../store/user.store';
 import { DuelmastersCard } from '../model/card-duelmaster.model';
 import { HololiveCard } from '../model/card-hololive.model';
 import { TCGTYPE } from '../utils/constants';
+import { TcgStore } from '../store/ctcg.store';
 
 type GameCard =
   | CardUnionArena
@@ -38,11 +37,21 @@ export class CardDeckService implements OnInit, OnDestroy {
   deckuid: string = '';
   deckcover: string = '';
   deckname: string = '';
-
+  MAX_CARD_COUNT = 4;
   decks: ListOfDecks[] | null = [];
-  private geekstackService = inject(GeekstackService);
   private userStore = inject(UserStore);
-  constructor() {}
+  private tcgStore = inject(TcgStore);
+  constructor() {
+    this.tcgStore.currentTcg$.subscribe({
+      next: (res) => {
+        if (res == TCGTYPE.DUELMASTERS) {
+          this.MAX_CARD_COUNT = 3;
+        } else {
+          this.MAX_CARD_COUNT = 4;
+        }
+      },
+    });
+  }
 
   ngOnInit() {
     this.userStore.gsSqlUser$.pipe(takeUntil(this.destroy$)).subscribe({
@@ -55,12 +64,11 @@ export class CardDeckService implements OnInit, OnDestroy {
       },
     });
   }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
   }
-
-  private readonly MAX_CARD_COUNT = 4;
 
   addCard(card: GameCard) {
     console.log('Adding card:', card);

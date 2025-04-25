@@ -6,7 +6,7 @@
   }"
   (click)="onClickImage()"
 >
-  <img [src]="imageSrc" [alt]="imageAlt" />
+  <img [src]="imageSrc" [alt]="imageAlt" loading="lazy"/>
 </div>
 
 @if (isTcgImageClicked) {

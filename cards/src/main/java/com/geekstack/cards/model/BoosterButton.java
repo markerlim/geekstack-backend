@@ -12,6 +12,7 @@ public class BoosterButton {
     private String alt;
     private String imageSrc;
     private String tcg;
+    private String category;
     private Integer order;
 
     public BoosterButton(){
@@ -73,6 +74,14 @@ public class BoosterButton {
 
     public void setOrder(Integer order) {
         this.order = order;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
     }
 
     

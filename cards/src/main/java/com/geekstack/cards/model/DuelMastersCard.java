@@ -12,6 +12,7 @@ public class DuelMastersCard {
     @Id
     private String _id;
     private String cardUid;
+    private String cardId;
     private String booster;
     private String cost;
     private String power;
@@ -324,6 +325,14 @@ public class DuelMastersCard {
 
     public void set_id(String _id) {
         this._id = _id;
+    }
+
+    public String getCardId() {
+        return cardId;
+    }
+
+    public void setCardId(String cardId) {
+        this.cardId = cardId;
     }
     
     

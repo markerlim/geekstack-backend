@@ -8,10 +8,11 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { UserStore } from '../../../core/store/user.store';
 import { FireCloudMessaging } from '../../../core/service/fcm.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-notifications',
-  imports: [FormsModule, TimeAgoPipe, MatSlideToggleModule],
+  imports: [FormsModule, TimeAgoPipe, MatSlideToggleModule, MatIconModule],
   templateUrl: './notifications.component.html',
   styleUrl: './notifications.component.css',
 })

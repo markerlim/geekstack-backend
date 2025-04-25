@@ -8,6 +8,8 @@
   line-height: 0;
   overflow: hidden;
   display: inline-block;
+    border: 1px solid #2b333d;
+
 }
 @media (max-width:599px) {
   .card{

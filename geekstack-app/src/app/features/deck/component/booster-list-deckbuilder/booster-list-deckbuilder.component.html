@@ -1,39 +1,51 @@
 @if (isSmallScreen) {
 <div class="buffer" (click)="onClickOutside()"></div>
 }
+
 <div [ngClass]="{ 'db-cardlist-mobile': isSmallScreen }">
-  @if (showBoosterList) {
+  @if (tcgPath != TCGTYPE.UNIONARENA) {
+  <div class="tab-container">
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'expansion'"
+      (click)="setActiveTab('expansion')"
+    >
+      Expansions
+    </button>
+    <button
+      class="tab-button"
+      [class.active]="activeTab === 'deck'"
+      (click)="setActiveTab('deck')"
+    >
+      Decks
+    </button>
+  </div>
+  } @if (showBoosterList) {
   <div class="booster-list">
-    @switch (tcgPath) { 
-      @case(TCGTYPE.HOLOLIVE) { 
-        @for (booster of boosterList; track $index) {
-      <ng-container>
-        <div>
-          <img
-            [src]="booster.imageSrc"
-            (click)="onBoosterClick(booster.pathname)"
-            width="110px"
-          />
-        </div>
-      </ng-container>
-        } 
-      }
-      @case(TCGTYPE.DUELMASTERS) { 
-        @for (dm of duelmasterlist; track $index) {
-      <ng-container>
-        <div>
-          <img
-            [src]="dm.urlimage"
-            (click)="onBoosterClick(dm.booster)"
-            width="110px"
-          />
-        </div>
-      </ng-container>
-        } 
-      }  
-    @default { 
-      @for (booster of boosterList;
-      track $index) {
+    @switch (tcgPath) { @case(TCGTYPE.HOLOLIVE) { @for (booster of boosterList;
+    track $index) {
+    <ng-container>
+      <div>
+        <img
+          [src]="booster.imageSrc"
+          (click)="onBoosterClick(booster.pathname)"
+          width="110px"
+        />
+      </div>
+    </ng-container>
+    } } @case(TCGTYPE.DUELMASTERS) { @for (dm of filteredList; track
+    $index) {
+    <ng-container>
+      <div>
+        <img
+          [src]="dm.urlimage"
+          (click)="onBoosterClick(dm.booster)"
+          width="110px"
+        />
+      </div>
+    </ng-container>
+    } } 
+    @case(TCGTYPE.UNIONARENA) { @for (booster of boosterList; track $index) {
       <div class="booster-item" (click)="onBoosterClick(booster.pathname)">
         <img
           [src]="booster.imageSrc"
@@ -41,9 +53,16 @@
           [style.width.px]="booster.imgWidth"
         />
       </div>
-      } 
-    }  
-  }
+      } }
+    @default { @for (booster of filteredList; track $index) {
+    <div class="booster-item" (click)="onBoosterClick(booster.pathname)">
+      <img
+        [src]="booster.imageSrc"
+        alt="{{ booster.alt }}"
+        [style.width.px]="booster.imgWidth"
+      />
+    </div>
+    } } }
   </div>
   } @if (!showBoosterList && cardList.length > 0) {
   <div class="card-list">

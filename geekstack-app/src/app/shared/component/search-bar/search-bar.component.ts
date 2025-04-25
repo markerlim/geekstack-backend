@@ -3,11 +3,12 @@ import { Component, HostListener, Output } from '@angular/core';
 import { MatIconModule } from '@angular/material/icon';
 import { Subject } from 'rxjs';
 import { TCGTYPE } from '../../../core/utils/constants';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-search-bar',
   standalone: true,
-  imports: [CommonModule, MatIconModule],
+  imports: [CommonModule, MatIconModule,FormsModule],
   templateUrl: './search-bar.component.html',
   styleUrls: ['./search-bar.component.css'],
 })
@@ -50,6 +51,7 @@ export class SearchBarComponent {
     },
   ];
 
+  searchTerm = '';
   selectedGame = this.games[0];
   isDropdownOpen = false;
 
@@ -74,10 +76,22 @@ export class SearchBarComponent {
   }
 
   onSearch(event: any) {
+    this.searchTerm = event.target.value;
     this.onSearchValue.next({
       name: this.selectedGame.name,
       icon: this.selectedGame.icon,
-      term: event.target.value,
+      term: this.searchTerm,
     });
   }
+  
+
+  handleClearSearch() {
+    this.searchTerm = '';
+    this.onSearchValue.next({
+      name: this.selectedGame.name,
+      icon: this.selectedGame.icon,
+      term: this.searchTerm,
+    });
+  }
+  
 }

@@ -4,6 +4,7 @@
     type="text"
     class="search-input"
     (keydown.enter)="onSearch($event)"
+    [(ngModel)]="searchTerm"
     placeholder="Search Geekstack"
   />
   <div class="dropdown-container">
@@ -25,4 +26,7 @@
       </ul>
     </div>
   </div>
+</div>
+<div class="clear-btn" [ngClass]="{showClear:searchTerm, dontShowClear:!searchTerm}" (click)="handleClearSearch()">
+  clear
 </div>

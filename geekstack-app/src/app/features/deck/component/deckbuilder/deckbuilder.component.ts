@@ -76,12 +76,12 @@ export class DeckbuilderComponent implements OnInit, OnDestroy {
         this.isSmallScreen = isSmall;
       });
 
-    // Safe route params subscription
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      const tcg = params['tcg'];
-      this.tcgStore.setTcg(tcg);
-      this.tcg = this.tcgStore.getCurrentTcg();
-    });
+      this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+        const tcg = params['tcg'];
+        this.tcgStore.setTcg(tcg);
+        this.cardDeckService.clearList();
+        this.tcg = this.tcgStore.getCurrentTcg();
+      });
 
     this.userStore.gsSqlUser$.pipe(takeUntil(this.destroy$)).subscribe({
       next: (res) => {

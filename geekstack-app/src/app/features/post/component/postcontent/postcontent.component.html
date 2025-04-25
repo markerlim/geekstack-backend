@@ -27,26 +27,26 @@
     />
   </div>
 </div>
-
-<form [formGroup]="form" (ngSubmit)="onSubmit()">
-  <div class="decks-holder">
-    @if (filteredDecks && filteredDecks.length > 0) { @for (item of filteredDecks; let i = $index; track
-    item.deckuid) {
-    <div class="deck-item" (click)="selectDeck(i)">
-      <img class="cover" src="/images/deckcovertemplate.png" />
-      <img class="cover-dp" [src]="item.deckcover" />
-      @if (selectedDeckIndex === i) {
-      <div class="deckSelected"><code>Selected</code></div>
-      }
-      <div class="deck-name">
-        {{item.deckname}}
-      </div>
-    </div>
-    }} @else {
-    <div class="nodecks">No Decks found</div>
+<br/>
+<div class="decks-holder">
+  @if (filteredDecks && filteredDecks.length > 0) { @for (item of filteredDecks; let i = $index; track
+  item.deckuid) {
+  <div class="deck-item" (click)="selectDeck(i)">
+    <img class="cover" src="/images/deckcovertemplate.png" />
+    <img class="cover-dp" [src]="item.deckcover" />
+    @if (selectedDeckIndex === i) {
+    <div class="deckSelected"><code>Selected</code></div>
     }
+    <div class="deck-name">
+      {{item.deckname}}
+    </div>
   </div>
-  <br />
+  }} @else {
+  <div class="nodecks">No Decks found</div>
+  }
+</div>
+<br/>
+<form [formGroup]="form" (ngSubmit)="onSubmit()">
   <div class="selected-deckname">Deck Name: {{selectedDeck?.deckname}}</div>
   <input type="text" placeholder="Add a headline!" formControlName="headline" />
   <div class="line-sep"></div>
