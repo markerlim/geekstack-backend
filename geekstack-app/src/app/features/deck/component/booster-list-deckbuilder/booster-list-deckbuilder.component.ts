@@ -52,7 +52,7 @@ export class BoosterListDeckbuilderComponent implements OnInit {
   selectedColor = '';
   selectedBooster = '';
   selectedRarity = '';
-  activeTab: 'expansion' | 'deck' = 'expansion';
+  activeTab: 'expansion' | 'deck' | 'extra' = 'expansion';
 
   TCGTYPE = TCGTYPE;
   @Output()
@@ -299,7 +299,7 @@ export class BoosterListDeckbuilderComponent implements OnInit {
     }
   }
 
-  setActiveTab(tab: 'expansion' | 'deck') {
+  setActiveTab(tab: 'expansion' | 'deck' | 'extra') {
     this.activeTab = tab;
     this.updateFilteredList(); 
   }

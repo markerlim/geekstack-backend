@@ -22,7 +22,7 @@ export class BoosterListComponent implements OnInit {
   duelmasterlist: any[] = [];
   filteredList: any[] = [];
   TCGTYPE = TCGTYPE;
-  activeTab: 'expansion' | 'deck' = 'expansion';
+  activeTab: 'expansion' | 'deck' | 'extra' = 'expansion';
   tcgPath: string = '';
   private route = inject(ActivatedRoute);
   private router = inject(Router);
@@ -72,7 +72,7 @@ export class BoosterListComponent implements OnInit {
     }
   }
 
-  setActiveTab(tab: 'expansion' | 'deck') {
+  setActiveTab(tab: 'expansion' | 'deck' | 'extra') {
     this.activeTab = tab;
     this.updateFilteredList(); 
   }

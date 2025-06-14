@@ -12,6 +12,15 @@
     >
       Expansions
     </button>
+      @if (tcgPath== "onepiece") {
+  <button
+    class="tab-button"
+    [class.active]="activeTab === 'extra'"
+    (click)="setActiveTab('extra')"
+  >
+    Extra Sets
+  </button>
+  }
     <button
       class="tab-button"
       [class.active]="activeTab === 'deck'"

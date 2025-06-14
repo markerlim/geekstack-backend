@@ -7,12 +7,21 @@
   >
     Expansions
   </button>
+  @if (tcgPath== "onepiece") {
+  <button
+    class="tab-button"
+    [class.active]="activeTab === 'extra'"
+    (click)="setActiveTab('extra')"
+  >
+    Extra Sets
+  </button>
+  }
   <button
     class="tab-button"
     [class.active]="activeTab === 'deck'"
     (click)="setActiveTab('deck')"
   >
-    Decks
+    Starter Decks
   </button>
 </div>
 }
@@ -43,8 +52,8 @@
     />
   </div>
   } } @case (TCGTYPE.UNIONARENA) { @for (booster of boosterList; track $index) {
-    <div class="booster-item">
-      <img
+  <div class="booster-item">
+    <img
       [src]="booster.imageSrc"
       [alt]="booster.alt"
       [width]="booster.imgWidth"

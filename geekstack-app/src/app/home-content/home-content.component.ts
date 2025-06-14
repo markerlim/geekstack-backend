@@ -50,6 +50,16 @@ export class HomeContentComponent {
       path: `/tcg/${TCGTYPE.DRAGONBALLZFW}`,
     },
     {
+      img: '/images/homeRBbtn.webp',
+      alt: 'Riftbound League Of Legends',
+      path: `/tcg/${TCGTYPE.RIFTBOUND}`,
+    },
+    {
+      img: '/images/homeGCGbtn.webp',
+      alt: 'Gundam Card Game',
+      path: `/tcg/${TCGTYPE.GUNDAM}`,
+    },
+    {
       img: '/images/homePTCGPbtn.jpg',
       alt: 'Pokemon',
       path: `/tcg/${TCGTYPE.PKMNPOCKET}`,

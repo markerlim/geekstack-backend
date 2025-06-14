@@ -4,6 +4,8 @@ export const TCGTYPE = {
     COOKIERUN: 'cookierunbraverse',
     DUELMASTERS: 'duelmasters',
     DRAGONBALLZFW:'dragonballzfw',
+    GUNDAM:'gundam',
+    RIFTBOUND:'riftboundlol',
     PKMNPOCKET:'ptcgpocket',
     HOLOLIVE:'hololive'
   };
