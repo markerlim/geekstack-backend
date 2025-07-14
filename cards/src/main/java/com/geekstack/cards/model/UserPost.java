@@ -1,6 +1,6 @@
 package com.geekstack.cards.model;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
@@ -19,7 +19,7 @@ public class UserPost {
     private String content;//c
     private String deckName;//c
     private Boolean isTournamentDeck;//c
-    private LocalDateTime timestamp;//c
+    private ZonedDateTime timestamp;//c
     private List<CardDetails> selectedCards;//c
     private List<CardDetails> listofcards;//c
     private List<String> listoflikes;
@@ -32,7 +32,7 @@ public class UserPost {
     }
 
     public UserPost(String postId, String postType, String code, String userId, String headline, String content,
-            String deckName, Boolean isTournamentDeck, LocalDateTime timestamp, List<CardDetails> selectedCards,
+            String deckName, Boolean isTournamentDeck, ZonedDateTime timestamp, List<CardDetails> selectedCards,
             List<CardDetails> listofcards, List<String> listoflikes, List<Comment> listofcomments, String name,
             String displaypic) {
         this.postId = postId;
@@ -165,11 +165,11 @@ public class UserPost {
         this.deckName = deckName;
     }
 
-    public LocalDateTime getTimestamp() {
+    public ZonedDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(ZonedDateTime timestamp) {
         this.timestamp = timestamp;
     }
 

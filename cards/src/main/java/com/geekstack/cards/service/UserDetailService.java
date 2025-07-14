@@ -27,9 +27,6 @@ public class UserDetailService {
     private UserDetailsMySQLRepository userDetailsMySQLRepository;
 
     @Autowired
-    private FirebaseService firebaseService;
-
-    @Autowired
     private NotificationRepository notificationRepository;
 
     @Transactional
@@ -64,8 +61,7 @@ public class UserDetailService {
         return userDetailsMySQLRepository.updateDisplayPic(displaypic, userId);
     }
 
-    public List<Notification> listNotifications(String payload, String limit) throws Exception {
-        String userId = firebaseService.verifyIdToken(payload).getUid();
+    public List<Notification> listNotifications(String userId, String limit) throws Exception {
         logger.info(userId);
         List<Notification> list = notificationRepository.getNotification(userId, Integer.parseInt(limit));
         logger.info(list.toString());

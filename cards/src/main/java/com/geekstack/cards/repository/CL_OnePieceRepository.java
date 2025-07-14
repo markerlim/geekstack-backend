@@ -21,7 +21,7 @@ public class CL_OnePieceRepository {
     private MongoTemplate mongoTemplate;
 
     public List<OnePieceCard> getCards() {
-        return mongoTemplate.findAll(OnePieceCard.class,C_ONEPIECE);
+        return mongoTemplate.findAll(OnePieceCard.class, C_ONEPIECE);
     }
 
     public List<OnePieceCard> getCardsByBooster(String booster) {
@@ -36,13 +36,57 @@ public class CL_OnePieceRepository {
         return results;
     }
 
+    public List<OnePieceCard> getCardsIsLeader(int page, int size) {
+
+        Criteria criteria = Criteria.where(F_CATEGORY).is(T_LEADER.toUpperCase());
+
+        Query query = new Query(criteria);
+
+        QuerySorting(query, F_CARDUID, true);
+
+        query.skip((long) page * size);
+        query.limit(size);
+
+        return mongoTemplate.find(query, OnePieceCard.class, C_ONEPIECE);
+    }
+
+    public List<OnePieceCard> getCardsIsLeader(int page, int size, String searchTerm) {
+        // Create base criteria for leaders
+        Criteria leaderCriteria = Criteria.where(F_CATEGORY).is(T_LEADER.toUpperCase());
+
+        // Create text search criteria if searchTerm is provided
+        TextCriteria textCriteria = null;
+        if (searchTerm != null && !searchTerm.isEmpty()) {
+            textCriteria = TextCriteria.forDefaultLanguage().matchingPhrase(searchTerm);
+        }
+
+        // Build query combining both criteria
+        Query query;
+        if (textCriteria != null) {
+            query = TextQuery.queryText(textCriteria)
+                    .sortByScore()
+                    .addCriteria(leaderCriteria);
+        } else {
+            query = new Query(leaderCriteria);
+        }
+
+        // Apply your existing sorting
+        QuerySorting(query, F_BOOSTER, true, F_CARDUID, true);
+
+        // Apply pagination
+        query.skip((long) page * size);
+        query.limit(size);
+
+        return mongoTemplate.find(query, OnePieceCard.class, C_ONEPIECE);
+    }
+
     public List<OnePieceCard> searchForCards(String term) {
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
                 .matchingPhrase(term);
 
         TextQuery textQuery = new TextQuery(textCriteria);
 
-        TextQuerySorting(textQuery,F_BOOSTER,true ,F_CARDUID, true);
+        TextQuerySorting(textQuery, F_BOOSTER, true, F_CARDUID, true);
 
         List<OnePieceCard> results = mongoTemplate.find(textQuery, OnePieceCard.class, C_ONEPIECE);
 

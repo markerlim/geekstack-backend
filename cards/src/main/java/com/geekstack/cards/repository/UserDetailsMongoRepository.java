@@ -15,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import com.geekstack.cards.model.CookieRunDecklist;
 import com.geekstack.cards.model.DragonballzFWDecklist;
 import com.geekstack.cards.model.DuelMasterDecklist;
+import com.geekstack.cards.model.GundamDecklist;
 import com.geekstack.cards.model.OnePieceDecklist;
 import com.geekstack.cards.model.UnionArenaDecklist;
 import com.geekstack.cards.model.UserDetails;
@@ -164,10 +165,36 @@ public class UserDetailsMongoRepository {
         query.addCriteria(Criteria.where(F_USERID).is(userId));
         query.fields().include(F_DMDECKS);
         UserDetails user = mongoTemplate.findOne(query, UserDetails.class, C_USER);
-        if (user == null || user.getUadecks() == null) {
+        if (user == null || user.getDmdecks() == null) {
             return List.of();
         }
         return user.getDmdecks();
+    }
+
+    public void createGundamDecklist(GundamDecklist decklist, String userId) {
+        Query query = new Query(Criteria.where(F_USERID).is(userId));
+        decklist.setDeckuid(UUID.randomUUID().toString());
+        Update update = new Update().push(F_GCGDECKS, decklist);
+        mongoTemplate.updateFirst(query, update, UserDetails.class, C_USER);
+    }
+
+    public void updateGundamDecklist(GundamDecklist decklist, String userId, String deckuid) {
+        Query query = new Query(
+                Criteria.where(F_USERID).is(userId).and(F_GCGDECKS).elemMatch(Criteria.where(F_DECKUID).is(deckuid)));
+        decklist.setDeckuid(deckuid);
+        Update update = new Update().set(F_GCGDECKS + ".$", decklist);
+        mongoTemplate.updateFirst(query, update, UserDetails.class, C_USER);
+    }
+
+    public List<GundamDecklist> loadGundamDecklist(String userId) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(F_USERID).is(userId));
+        query.fields().include(F_GCGDECKS);
+        UserDetails user = mongoTemplate.findOne(query, UserDetails.class, C_USER);
+        if (user == null || user.getGcgdecks() == null) {
+            return List.of();
+        }
+        return user.getGcgdecks();
     }
 
     public void deleteDecklist(String tcg, String userId, String deckId) {

@@ -41,7 +41,6 @@ public class CookieRunCard {
     @Field("cardId")
     private String cardId;
 
-
     @Field("field_grade")
     private String grade;
 
@@ -64,6 +63,11 @@ public class CookieRunCard {
     private String booster;
 
     private int count;
+
+    // Used in the frontend so when deck saving need this,
+    // Might include this in db directly
+    private String tcg;
+
     public CookieRunCard() {
     }
 
@@ -94,7 +98,6 @@ public class CookieRunCard {
         this.cardLevelTitle = cardLevelTitle;
         this.booster = booster;
     }
-
 
     public String getBooster() {
         return booster;
@@ -184,7 +187,6 @@ public class CookieRunCard {
         this.hp = hp;
     }
 
-
     public String getCardUid() {
         return cardUid;
     }
@@ -197,11 +199,9 @@ public class CookieRunCard {
         return cardId;
     }
 
-
     public void setCardId(String cardId) {
         this.cardId = cardId;
     }
-
 
     public String getGrade() {
         return grade;
@@ -283,5 +283,12 @@ public class CookieRunCard {
         this.cardLevelTitle = cardLevelTitle;
     }
 
-}
+    public String getTcg() {
+        return tcg;
+    }
 
+    public void setTcg(String tcg) {
+        this.tcg = tcg;
+    }
+
+}

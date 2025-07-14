@@ -19,6 +19,7 @@ import com.geekstack.cards.model.Notification;
 import com.geekstack.cards.repository.NotificationRepository;
 import com.geekstack.cards.repository.UserDetailsMySQLRepository;
 import com.geekstack.cards.repository.UserPostMongoRepository;
+import com.geekstack.cards.repository.UserPostMySQLRepository;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 @Service
@@ -28,6 +29,9 @@ public class RabbitMQConsumer {
 
     @Autowired
     private UserPostMongoRepository userPostMongoRepository;
+
+    @Autowired
+    private UserPostMySQLRepository userPostMySQLRepository;
 
     @Autowired
     private NotificationRepository notificationRepository;
@@ -93,7 +97,8 @@ public class RabbitMQConsumer {
         }
 
         for (String userId : holder.keySet()) {
-            userPostMongoRepository.likeMultiplePosts(holder.get(userId), userId);
+            //userPostMongoRepository.likeMultiplePosts(holder.get(userId), userId);
+            userPostMySQLRepository.likeMultiplePosts(holder.get(userId),userId);
         }
 
         System.out.println("Batch writing " + likes.size() + " likes to database.");

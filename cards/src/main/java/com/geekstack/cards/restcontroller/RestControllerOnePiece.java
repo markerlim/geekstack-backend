@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geekstack.cards.model.OnePieceCard;
@@ -18,7 +19,7 @@ import static com.geekstack.cards.utils.Constants.*;
 @RestController
 @RequestMapping("/api/data/onepiece")
 public class RestControllerOnePiece {
-    
+
     @Autowired
     private CardListService cardListService;
 
@@ -34,14 +35,16 @@ public class RestControllerOnePiece {
         return new ResponseEntity<List<OnePieceCard>>(cardListService.listofonepiece().byBooster(booster),
                 HttpStatus.OK);
     }
-        
+
     // http//localhost:8080/data/unionarena/search/{phrase to search for}
     @GetMapping("/search/{term}")
     public ResponseEntity<List<OnePieceCard>> searchOnePiece(@PathVariable String term) {
         return new ResponseEntity<List<OnePieceCard>>(cardListService.listofonepiece().searchDatabase(term),
                 HttpStatus.OK);
     }
-    // http//localhost:8080/data/onepiece/filter/{category or color or rarity}/{booster}
+
+    // http//localhost:8080/data/onepiece/filter/{category or color or
+    // rarity}/{booster}
     @GetMapping("/filter/{field}/{booster}")
     public ResponseEntity<List<String>> OnePieceFiltersByBooster(@PathVariable String field,
             @PathVariable String booster) {
@@ -60,5 +63,11 @@ public class RestControllerOnePiece {
                     HttpStatus.OK);
         }
         return null;
+    }
+
+    @GetMapping("/leaders")
+    public ResponseEntity<List<OnePieceCard>> allLeaders(@RequestParam(defaultValue = "1") String page,
+            @RequestParam(defaultValue = "20") String size, @RequestParam(defaultValue = "" ) String search) {
+        return new ResponseEntity<List<OnePieceCard>>(cardListService.listofonepiece().byLeader(Integer.parseInt(page),Integer.parseInt(size),search), HttpStatus.OK);
     }
 }
