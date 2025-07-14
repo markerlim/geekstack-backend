@@ -3,6 +3,8 @@ package com.geekstack.cards.repository;
 import static com.geekstack.cards.utils.Constants.*;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +17,12 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
+import com.geekstack.cards.exception.DocumentNotFoundException;
 import com.geekstack.cards.model.Comment;
 import com.geekstack.cards.model.UserPost;
+import com.mongodb.client.result.DeleteResult;
 
 @Repository
 public class UserPostMongoRepository {
@@ -30,47 +35,48 @@ public class UserPostMongoRepository {
     public List<UserPost> userPostingsDefault(int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
         Query query = new Query().with(pageable);
-    
+
         List<UserPost> posts = mongoTemplate.find(query, UserPost.class, C_USERPOST);
         long total = mongoTemplate.count(new Query(), UserPost.class, C_USERPOST);
-    
+
         return new PageImpl<>(posts, pageable, total).getContent();
     }
 
     public List<UserPost> userPostingsByType(int page, int size, String type) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
         Query query = new Query(Criteria.where(F_USERPOST_TYPE).is(type)).with(pageable);
-    
+
         List<UserPost> posts = mongoTemplate.find(query, UserPost.class, C_USERPOST);
         long total = mongoTemplate.count(new Query(), UserPost.class, C_USERPOST);
-    
+
         return new PageImpl<>(posts, pageable, total).getContent();
     }
 
     public List<UserPost> userPostingsByUserId(String userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
         Query query = new Query(Criteria.where(F_USERID_REAL).is(userId)).with(pageable);
-    
+
         List<UserPost> posts = mongoTemplate.find(query, UserPost.class, C_USERPOST);
         long total = mongoTemplate.count(new Query(), UserPost.class, C_USERPOST);
-    
+
         return new PageImpl<>(posts, pageable, total).getContent();
     }
 
     public List<UserPost> userPostingsLikedByUserId(String userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
         Query query = new Query(Criteria.where(F_USERPOST_LISTL).in(userId)).with(pageable);
-    
+
         List<UserPost> posts = mongoTemplate.find(query, UserPost.class, C_USERPOST);
         long total = mongoTemplate.count(new Query(), UserPost.class, C_USERPOST);
-    
+
         return new PageImpl<>(posts, pageable, total).getContent();
     }
 
-    public UserPost getOnePost(String postId){
+    public UserPost getOnePost(String postId) {
         Query query = new Query(Criteria.where(F_USERPOST_ID).is(postId));
-        return mongoTemplate.findOne(query, UserPost.class,C_USERPOST);
+        return mongoTemplate.findOne(query, UserPost.class, C_USERPOST);
     }
+
     /**
      * db.userpost.insertOne({userpost object})
      * 
@@ -104,9 +110,9 @@ public class UserPostMongoRepository {
         String shortIdStr = String.format("%08d", shortId);
 
         Update update = new Update().push(F_USERPOST_LISTC,
-                new Comment(shortIdStr, comment, userId, LocalDateTime.now()));
+                new Comment(shortIdStr, comment, userId, ZonedDateTime.now(ZoneOffset.UTC)));
 
-        mongoTemplate.updateFirst(query, update, UserPost.class, C_USERPOST); 
+        mongoTemplate.updateFirst(query, update, UserPost.class, C_USERPOST);
         return shortIdStr;
     }
 
@@ -125,8 +131,22 @@ public class UserPostMongoRepository {
      * @param postId
      * @param commentId
      */
-    public void deleteComment(String postId, String commentId) {
-        Query query = new Query(Criteria.where(F_USERPOST_ID).is(postId));
+    public void deleteComment(String postId, String commentId, String userId) {
+        // Validate inputs
+        if (!StringUtils.hasText(postId)) {
+            throw new IllegalArgumentException("Post ID cannot be empty");
+        }
+        if (!StringUtils.hasText(userId)) {
+            throw new IllegalArgumentException("User ID cannot be empty");
+        }
+
+        // Create query to match both postId AND userId
+        Query query = new Query().addCriteria(
+            new Criteria().andOperator(
+                Criteria.where(F_USERPOST_ID).is(postId),
+                Criteria.where(F_USERID_REAL).is(userId)
+            )
+        );
         Update update = new Update().pull(F_USERPOST_LISTC, Query.query(Criteria.where(F_USERPOST_CID).is(commentId)));
 
         mongoTemplate.updateFirst(query, update, C_USERPOST);
@@ -198,14 +218,39 @@ public class UserPostMongoRepository {
         mongoTemplate.updateFirst(query, update, UserPost.class, C_USERPOST);
     }
 
-    /**
-     * db.userpost.deleteOne({ postId: "insert postId" });
-     * 
-     * @param postId
-     */
-    public void deletePost(String postId) {
-        Query query = new Query(Criteria.where(F_USERPOST_ID).is(postId));
-        mongoTemplate.remove(query, UserPost.class, C_USERPOST);
+/**
+ * Deletes a post by its ID after verifying ownership
+ * Example MongoDB command: 
+ * db.userpost.deleteOne({ 
+ *   postId: "actual_post_id", 
+ *   userId: "authenticated_user_id" 
+ * });
+ * 
+ * @param postId The ID of the post to delete
+ * @param userId The ID of the authenticated user (for ownership verification)
+ */
+public void deletePost(String postId, String userId) {
+    // Validate inputs
+    if (!StringUtils.hasText(postId)) {
+        throw new IllegalArgumentException("Post ID cannot be empty");
     }
+    if (!StringUtils.hasText(userId)) {
+        throw new IllegalArgumentException("User ID cannot be empty");
+    }
+
+    // Create query to match both postId AND userId
+    Query query = new Query().addCriteria(
+        new Criteria().andOperator(
+            Criteria.where(F_USERPOST_ID).is(postId),
+            Criteria.where(F_USERID_REAL).is(userId)
+        )
+    );
+
+    DeleteResult result = mongoTemplate.remove(query, UserPost.class, C_USERPOST);
+    
+    if (result.getDeletedCount() == 0) {
+        throw new DocumentNotFoundException("Post not found or not owned by user");
+    }
+}
 
 }

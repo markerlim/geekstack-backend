@@ -3,6 +3,7 @@ package com.geekstack.cards.model;
 import static com.geekstack.cards.utils.Constants.C_NOTIFICATION;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -18,14 +19,14 @@ public class Notification {
     private String postId;//Post Id
     private String message;//Event action
     private Boolean isRead;//Boolean of read
-    private LocalDateTime timestamp;//Time stamp of event
+    private ZonedDateTime timestamp;//Time stamp of event
 
     public Notification(){
 
     } 
 
     public Notification(String notificationId, String userId, String senderId, String senderName, String senderDp,
-            String postId, String message, Boolean isRead, LocalDateTime timestamp) {
+            String postId, String message, Boolean isRead, ZonedDateTime timestamp) {
         this.notificationId = notificationId;
         this.userId = userId;
         this.senderId = senderId;
@@ -77,11 +78,11 @@ public class Notification {
         this.isRead = isRead;
     }
 
-    public LocalDateTime getTimestamp() {
+    public ZonedDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(ZonedDateTime timestamp) {
         this.timestamp = timestamp;
     }
 

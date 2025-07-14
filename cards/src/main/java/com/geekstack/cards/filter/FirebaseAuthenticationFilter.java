@@ -1,5 +1,6 @@
 package com.geekstack.cards.filter;
 
+import com.geekstack.cards.model.FirebaseUser;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseToken;
@@ -10,7 +11,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.util.StringUtils;
 import java.io.IOException;
@@ -28,6 +28,7 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
             String origin = request.getHeader("Origin");
 
             String[] allowedOrigins = {
+                    "http://localhost:3000",
                     "http://localhost:4200",
                     "http://localhost:8080",
                     "https://localhost",
@@ -65,8 +66,8 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
 
                 logger.info("Successfully decoded Firebase token for UID: {}", decodedToken.getUid());
 
-                Authentication authentication = new FirebaseAuthenticationToken(decodedToken);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                FirebaseUser user = new FirebaseUser(decodedToken);
+                SecurityContextHolder.getContext().setAuthentication(user);
 
                 logger.info("Authentication set in SecurityContext for UID: {}", decodedToken.getUid());
 

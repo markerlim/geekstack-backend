@@ -1,6 +1,6 @@
 package com.geekstack.cards.model;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 
 public class Comment {
@@ -10,13 +10,13 @@ public class Comment {
     private String userId;
     private String name;
     private String displaypic;
-    private LocalDateTime timestamp;
+    private ZonedDateTime timestamp;
 
     public Comment() {
 
     }
 
-    public Comment(String commentId, String comment, String userId, LocalDateTime timestamp) {
+    public Comment(String commentId, String comment, String userId, ZonedDateTime timestamp) {
         this.commentId = commentId;
         this.comment = comment;
         this.userId = userId;
@@ -65,11 +65,11 @@ public class Comment {
         this.userId = userId;
     }
 
-    public LocalDateTime getTimestamp() {
+    public ZonedDateTime getTimestamp() {
         return timestamp;
     }
 
-    public void setTimestamp(LocalDateTime timestamp) {
+    public void setTimestamp(ZonedDateTime timestamp) {
         this.timestamp = timestamp;
     }
 

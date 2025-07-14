@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.geekstack.cards.model.Comment;
+import com.geekstack.cards.model.FirebaseUser;
 import com.geekstack.cards.model.UserPost;
 import com.geekstack.cards.service.UserPostService;
 
@@ -27,7 +30,7 @@ import com.geekstack.cards.service.UserPostService;
 @RequestMapping("/api/userpost")
 public class UserPostController {
 
-        private final static Logger logger = LoggerFactory.getLogger(UserDetailsController.class);
+    private final static Logger logger = LoggerFactory.getLogger(UserPostController.class);
 
     @Autowired
     private UserPostService userPostService;
@@ -41,8 +44,10 @@ public class UserPostController {
     @GetMapping("/type/{posttype}")
     public ResponseEntity<List<UserPost>> listalluserpostByType(@RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit, @PathVariable String posttype) {
-        return ResponseEntity.ok(userPostService.listUserPostByType(Integer.parseInt(page), Integer.parseInt(limit),posttype));
+        return ResponseEntity
+                .ok(userPostService.listUserPostByType(Integer.parseInt(page), Integer.parseInt(limit), posttype));
     }
+
     /**
      * Example of Json from form
      * {
@@ -68,7 +73,9 @@ public class UserPostController {
      */
     @PostMapping(path = { "/post" }, consumes = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<Map<String, Object>> userMakePost(
-            @RequestBody UserPost userPost) {
+            @RequestBody UserPost userPost,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        userPost.setUserId(user.getUid());
         Map<String, Object> response = new HashMap<>();
         logger.info(userPost.getPostId());
         try {
@@ -82,15 +89,16 @@ public class UserPostController {
     }
 
     @GetMapping("/findpost/{postId}")
-    public ResponseEntity<UserPost> getPostByPostId(@PathVariable String postId){
+    public ResponseEntity<UserPost> getPostByPostId(@PathVariable String postId) {
         return ResponseEntity.ok(userPostService.getOnePost(postId));
     }
 
     @DeleteMapping("/delete/{postId}")
-    public ResponseEntity<Map<String, Object>> userDeletePost(@PathVariable String postId) {
+    public ResponseEntity<Map<String, Object>> userDeletePost(@PathVariable String postId,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
         try {
-            userPostService.deletePost(postId);
+            userPostService.deletePost(postId, user.getUid());
             response.put("message", "Post deleted successfully");
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -101,12 +109,13 @@ public class UserPostController {
 
     @PostMapping("/comment")
     public ResponseEntity<Map<String, Object>> commentPost(
-            @RequestBody String payload) {
+            @RequestBody String payload, @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String commentId = userPostService.commentPost(payload);
+            logger.info(payload);
+            Comment commentObj = userPostService.commentPost(payload, user.getUid());
             response.put("message", "Comment created successfully");
-            response.put("commentId", commentId);
+            response.put("commentObject", commentObj);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", "Error adding deck: " + e.getMessage());
@@ -116,10 +125,11 @@ public class UserPostController {
 
     @DeleteMapping("/comment/{postId}/delete/{commentId}")
     public ResponseEntity<Map<String, Object>> deleteComment(@PathVariable String postId,
-            @PathVariable String commentId) {
+            @PathVariable String commentId, @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
+        String userId = user.getUid();
         try {
-            userPostService.deleteCommmentFromPost(postId, commentId);
+            userPostService.deleteCommmentFromPost(postId, commentId, userId);
             response.put("message", "Comment deleted successfully");
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -129,12 +139,14 @@ public class UserPostController {
     }
 
     // userId refer to the user that trigger this action
-    @PostMapping("/like")
+    @PostMapping("/like/{postId}/postedby/{posterId}")
     public ResponseEntity<Map<String, Object>> likeAPost(
-            @RequestBody String payload) {
+            @PathVariable String postId,
+            @PathVariable String posterId,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
         try {
-            userPostService.handleLikeEvent(payload);
+            userPostService.handleLikeEvent(postId, posterId, user.getUid(), user.getPicture(), user.getName());
             response.put("message", "like recorded successfully");
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -143,10 +155,11 @@ public class UserPostController {
         }
     }
 
-    @DeleteMapping("/unlike/{postId}/by/{userId}")
+    @DeleteMapping("/unlike/{postId}")
     public ResponseEntity<Map<String, Object>> unlikeAPost(@PathVariable String postId,
-            @PathVariable String userId) {
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
+        String userId = user.getUid();
         try {
             userPostService.unlikePost(postId, userId);
             response.put("message", "unlike recorded successfully");
@@ -170,6 +183,7 @@ public class UserPostController {
             @RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit) throws NumberFormatException, Exception {
         return ResponseEntity.ok(
-                userPostService.listUserPostLikedByUserId(authorization, Integer.parseInt(page), Integer.parseInt(limit)));
+                userPostService.listUserPostLikedByUserId(authorization, Integer.parseInt(page),
+                        Integer.parseInt(limit)));
     }
 }

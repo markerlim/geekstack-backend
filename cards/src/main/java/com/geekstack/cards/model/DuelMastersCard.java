@@ -27,7 +27,7 @@ public class DuelMastersCard {
     private String detailurl;
     private String effects;
     private String effectsJP;
-    
+
     @TextIndexed
     private String cardName;
     private String cardNameJP;
@@ -53,7 +53,12 @@ public class DuelMastersCard {
 
     private int count;
 
-    public DuelMastersCard(){}
+    // Used in the frontend so when deck saving need this,
+    // Might include this in db directly
+    private String tcg;
+
+    public DuelMastersCard() {
+    }
 
     public String getCardUid() {
         return cardUid;
@@ -334,6 +339,13 @@ public class DuelMastersCard {
     public void setCardId(String cardId) {
         this.cardId = cardId;
     }
-    
-    
+
+    public String getTcg() {
+        return tcg;
+    }
+
+    public void setTcg(String tcg) {
+        this.tcg = tcg;
+    }
+
 }

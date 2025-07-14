@@ -1,6 +1,7 @@
 package com.geekstack.cards.service;
 
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -42,7 +43,7 @@ public class RabbitMQProducer {
     }
 
     // userId refers to the user that will be receiving the notification
-    public void sendNotificationEvent(String postId, String userId, LocalDateTime time, String message, 
+    public void sendNotificationEvent(String postId, String userId, ZonedDateTime time, String message, 
     String senderId, String senderName, String senderDp) {
         this.rabbitTemplate.setMessageConverter(new Jackson2JsonMessageConverter(objectMapper));
         Notification noti = new Notification();

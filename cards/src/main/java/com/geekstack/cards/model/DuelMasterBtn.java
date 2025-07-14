@@ -4,14 +4,20 @@ import java.time.LocalDateTime;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = "NewList")
 public class DuelMasterBtn {
     
     @Id
     private String _id;
-    private String urlimage;
-    private String booster;
+
+    @Field("urlimage")
+    private String imageSrc;
+
+    @Field("booster")
+    private String pathname;
+
     private String japtext;
     private LocalDateTime timestamp;
     private String category;
@@ -27,17 +33,17 @@ public class DuelMasterBtn {
     public void set_id(String _id) {
         this._id = _id;
     }
-    public String getUrlimage() {
-        return urlimage;
+    public String getImageSrc() {
+        return imageSrc;
     }
-    public void setUrlimage(String urlimage) {
-        this.urlimage = urlimage;
+    public void setImageSrc(String imageSrc) {
+        this.imageSrc = imageSrc;
     }
-    public String getBooster() {
-        return booster;
+    public String getPathname() {
+        return pathname;
     }
-    public void setBooster(String booster) {
-        this.booster = booster;
+    public void setPathname(String pathname) {
+        this.pathname = pathname;
     }
     public String getJaptext() {
         return japtext;

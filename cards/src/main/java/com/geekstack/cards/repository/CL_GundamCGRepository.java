@@ -1,8 +1,10 @@
 package com.geekstack.cards.repository;
 
-import static com.geekstack.cards.utils.Constants.C_HOLOLIVE;
+import static com.geekstack.cards.utils.Constants.C_GUNDAM;
 import static com.geekstack.cards.utils.Constants.F_BOOSTER;
 import static com.geekstack.cards.utils.Constants.F_CARDUID;
+import static com.geekstack.cards.utils.Constants.F_PACKAGEID;
+import static com.geekstack.cards.utils.Constants.F_SERIES;
 import static com.geekstack.cards.utils.Constants.QuerySorting;
 import static com.geekstack.cards.utils.Constants.TextQuerySorting;
 
@@ -16,37 +18,37 @@ import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Repository;
 
-import com.geekstack.cards.model.HololiveCard;
+import com.geekstack.cards.model.GundamCard;
 
 @Repository
-public class CL_HololiveRepository {
+public class CL_GundamCGRepository {
 
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public List<HololiveCard> getCards() {
-        return mongoTemplate.findAll(HololiveCard.class, C_HOLOLIVE);
+    public List<GundamCard> getCards() {
+        return mongoTemplate.findAll(GundamCard.class, C_GUNDAM);
     }
 
-    public List<HololiveCard> getCardsByBooster(String booster) {
-        Criteria criteria = Criteria.where(F_BOOSTER).is(booster);
+    public List<GundamCard> getCardsByBooster(String booster) {
+        Criteria criteria = Criteria.where(F_SERIES).is(booster.toUpperCase());
         Query query = new Query(criteria);
 
         QuerySorting(query, F_CARDUID, true);
 
-        List<HololiveCard> results = mongoTemplate.find(query, HololiveCard.class, C_HOLOLIVE);
+        List<GundamCard> results = mongoTemplate.find(query, GundamCard.class, C_GUNDAM);
         return results;
     }
 
-    public List<HololiveCard> searchForCards(String term) {
+    public List<GundamCard> searchForCards(String term) {
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
                 .matchingPhrase(term);
 
         TextQuery textQuery = new TextQuery(textCriteria);
 
-        TextQuerySorting(textQuery, F_BOOSTER, true, F_CARDUID, true);
+        TextQuerySorting(textQuery, F_SERIES, true, F_CARDUID, true);
 
-        List<HololiveCard> results = mongoTemplate.find(textQuery, HololiveCard.class, C_HOLOLIVE);
+        List<GundamCard> results = mongoTemplate.find(textQuery, GundamCard.class, C_GUNDAM);
 
         return results;
     }

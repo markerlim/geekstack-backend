@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import static com.geekstack.cards.utils.Constants.*;
 
 public class UserDetails {
-    
+
     @Id
     private String userId;
 
@@ -27,8 +27,11 @@ public class UserDetails {
     @Field(F_DMDECKS)
     private List<DuelMasterDecklist> dmdecks;
 
-    public UserDetails(){
-        
+    @Field(F_GCGDECKS)
+    private List<GundamDecklist> gcgdecks;
+
+    public UserDetails() {
+
     }
 
     public String getUserId() {
@@ -79,5 +82,12 @@ public class UserDetails {
         this.dmdecks = dmdecks;
     }
 
+    public List<GundamDecklist> getGcgdecks() {
+        return gcgdecks;
+    }
+
+    public void setGcgdecks(List<GundamDecklist> gcgdecks) {
+        this.gcgdecks = gcgdecks;
+    }
 
 }

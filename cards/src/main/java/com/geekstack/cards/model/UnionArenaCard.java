@@ -61,9 +61,12 @@ public class UnionArenaCard {
     private String FULLA;
     private int count;
 
+    // Used in the frontend so when deck saving need this,
+    // Might include this in db directly
+    private String tcg;
+
     public UnionArenaCard() {
     }
-    
 
     public UnionArenaCard(String _id, String anime, String animeCode, int apcost, int banRatio, String banWith,
             String basicpower, String booster, String cardId, String cardUid, String cardName, String category,
@@ -99,7 +102,6 @@ public class UnionArenaCard {
         YYT = yYT;
         FULLA = fULLA;
     }
-
 
     public String get_id() {
         return _id;
@@ -325,14 +327,20 @@ public class UnionArenaCard {
         this.banWith = banWith;
     }
 
-
     public int getCount() {
         return count;
     }
 
-
     public void setCount(int count) {
         this.count = count;
+    }
+
+    public String getTcg() {
+        return tcg;
+    }
+
+    public void setTcg(String tcg) {
+        this.tcg = tcg;
     }
 
 }

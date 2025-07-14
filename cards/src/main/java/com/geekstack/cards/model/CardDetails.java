@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class CardDetails {
 
     @JsonProperty("_id")
-    private ObjectId _id;
+    private String _id;
 
     @JsonProperty("imageSrc")
     private String imageSrc;
@@ -19,12 +19,11 @@ public class CardDetails {
 
     public CardDetails() {}
 
-
-    public ObjectId get_id() {
+    public String get_id() {
         return _id;
     }
 
-    public void set_id(ObjectId _id) {
+    public void set_id(String _id) {
         this._id = _id;
     }
 

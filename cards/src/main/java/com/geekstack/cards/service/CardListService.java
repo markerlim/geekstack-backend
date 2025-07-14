@@ -10,6 +10,7 @@ import com.geekstack.cards.model.CardPriceYYT;
 import com.geekstack.cards.model.CookieRunCard;
 import com.geekstack.cards.model.DragonBallzFWCard;
 import com.geekstack.cards.model.DuelMastersCard;
+import com.geekstack.cards.model.GundamCard;
 import com.geekstack.cards.model.HololiveCard;
 import com.geekstack.cards.model.OnePieceCard;
 import com.geekstack.cards.model.UnionArenaCard;
@@ -17,6 +18,7 @@ import com.geekstack.cards.model.UnionArenaCardDTO;
 import com.geekstack.cards.repository.CL_CookieRunRepository;
 import com.geekstack.cards.repository.CL_DragonBallzFWRepository;
 import com.geekstack.cards.repository.CL_DuelMasterRepository;
+import com.geekstack.cards.repository.CL_GundamCGRepository;
 import com.geekstack.cards.repository.CL_HololiveRepository;
 import com.geekstack.cards.repository.CL_OnePieceRepository;
 import com.geekstack.cards.repository.CL_UnionArenaRepository;
@@ -45,6 +47,9 @@ public class CardListService {
     private CL_HololiveRepository hololiveRepository;
 
     @Autowired
+    private CL_GundamCGRepository gundamCGRepository;
+
+    @Autowired
     private PR_FullaheadRepository fullaheadRepository;
 
     @Autowired
@@ -61,19 +66,19 @@ public class CardListService {
             return duelMasterRepository.getCardsByBooster(booster);
         }
 
-        public List<DuelMastersCard> searchDatabase(String term){
+        public List<DuelMastersCard> searchDatabase(String term) {
             return duelMasterRepository.searchForCards(term);
         }
 
-        public List<String> boosterFilters(){
+        public List<String> boosterFilters() {
             return duelMasterRepository.getDistinctBooster();
         }
 
-        public List<String> civilizationFilters(String booster){
+        public List<String> civilizationFilters(String booster) {
             return duelMasterRepository.getDistinctCivilization(booster);
         }
 
-        public List<String> cardTypeFilters(String booster){
+        public List<String> cardTypeFilters(String booster) {
             return duelMasterRepository.getDistinctCardType(booster);
         }
     }
@@ -88,22 +93,23 @@ public class CardListService {
             return unionArenaRepository.getCardsByAnimeCode(animeCode);
         }
 
-        public List<UnionArenaCard> searchDatabaseFull(String term){
+        public List<UnionArenaCard> searchDatabaseFull(String term) {
             return unionArenaRepository.searchForCardsFull(term);
         }
-        public List<UnionArenaCardDTO> searchDatabase(String term){
+
+        public List<UnionArenaCardDTO> searchDatabase(String term) {
             return unionArenaRepository.searchForCards(term);
         }
 
-        public List<String> boosterFilters(String animeCode){
+        public List<String> boosterFilters(String animeCode) {
             return unionArenaRepository.getDistinctBooster(animeCode);
         }
 
-        public List<String> colorFilters(String animeCode){
+        public List<String> colorFilters(String animeCode) {
             return unionArenaRepository.getDistinctColor(animeCode);
         }
 
-        public List<String> rarityFilters(String animeCode){
+        public List<String> rarityFilters(String animeCode) {
             return unionArenaRepository.getDistinctRarity(animeCode);
         }
     }
@@ -114,22 +120,31 @@ public class CardListService {
             return onePieceRepository.getCards();
         }
 
+        public List<OnePieceCard> byLeader(int page, int size, String search) {
+            if (search.isEmpty()) {
+                return onePieceRepository.getCardsIsLeader(page, size);
+            } else {
+                return onePieceRepository.getCardsIsLeader(page, size, search);
+            }
+        }
+
         public List<OnePieceCard> byBooster(String booster) {
             return onePieceRepository.getCardsByBooster(booster);
         }
-        public List<OnePieceCard> searchDatabase(String term){
+
+        public List<OnePieceCard> searchDatabase(String term) {
             return onePieceRepository.searchForCards(term);
         }
 
-        public List<String> categoryFilters(String booster){
+        public List<String> categoryFilters(String booster) {
             return onePieceRepository.getDistinctCategory(booster);
         }
 
-        public List<String> colorFilters(String booster){
+        public List<String> colorFilters(String booster) {
             return onePieceRepository.getDistinctColor(booster);
         }
 
-        public List<String> rarityFilters(String booster){
+        public List<String> rarityFilters(String booster) {
             return onePieceRepository.getDistinctRarity(booster);
         }
     }
@@ -144,7 +159,7 @@ public class CardListService {
             return cookieRunRepository.getCardsByBooster(booster);
         }
 
-        public List<CookieRunCard> searchDatabase(String term){
+        public List<CookieRunCard> searchDatabase(String term) {
             return cookieRunRepository.searchForCards(term);
         }
     }
@@ -159,21 +174,21 @@ public class CardListService {
             return dragonBallzFWRepository.getCardsByBooster(booster);
         }
 
-        public List<String> cardtypeFilters(String booster){
+        public List<String> cardtypeFilters(String booster) {
             return dragonBallzFWRepository.getDistinctCardtype(booster);
         }
 
-        public List<String> colorFilters(String booster){
+        public List<String> colorFilters(String booster) {
             return dragonBallzFWRepository.getDistinctColor(booster);
         }
 
-        public List<String> rarityFilters(String booster){
+        public List<String> rarityFilters(String booster) {
             return dragonBallzFWRepository.getDistinctRarity(booster);
         }
     }
 
-    //Nested class for Hololive actions
-    public class HololiveActions{
+    // Nested class for Hololive actions
+    public class HololiveActions {
         public List<HololiveCard> all() {
             return hololiveRepository.getCards();
         }
@@ -182,17 +197,32 @@ public class CardListService {
             return hololiveRepository.getCardsByBooster(booster);
         }
 
-
-        public List<HololiveCard> searchDatabase(String term){
+        public List<HololiveCard> searchDatabase(String term) {
             return hololiveRepository.searchForCards(term);
         }
     }
-    public class CardPriceActions{
-        public CardPriceFULLA byFulla(String id){
+
+    // Nested class for Gundam actions
+    public class GundamActions {
+        public List<GundamCard> all() {
+            return gundamCGRepository.getCards();
+        }
+
+        public List<GundamCard> byBooster(String booster) {
+            return gundamCGRepository.getCardsByBooster(booster);
+        }
+
+        public List<GundamCard> searchDatabase(String term) {
+            return gundamCGRepository.searchForCards(term);
+        }
+    }
+
+    public class CardPriceActions {
+        public CardPriceFULLA byFulla(String id) {
             return fullaheadRepository.findCardById(id);
         }
 
-        public CardPriceYYT byYuyutei(String id){
+        public CardPriceYYT byYuyutei(String id) {
             return yuyuteiRepository.findCardById(id);
         }
     }
@@ -214,15 +244,19 @@ public class CardListService {
         return new CookieRunActions();
     }
 
-    public DragonBallzFWActions listofdragonballzfw(){
+    public DragonBallzFWActions listofdragonballzfw() {
         return new DragonBallzFWActions();
     }
 
-    public HololiveActions listofhololive(){
+    public HololiveActions listofhololive() {
         return new HololiveActions();
     }
-    
-    public CardPriceActions cardprices(){
+
+    public GundamActions listofgundam() {
+        return new GundamActions();
+    }
+
+    public CardPriceActions cardprices() {
         return new CardPriceActions();
     }
 }

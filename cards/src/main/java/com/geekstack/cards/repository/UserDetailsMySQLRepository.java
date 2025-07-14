@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
@@ -46,6 +47,15 @@ public class UserDetailsMySQLRepository {
         return count;
     }
 
+    /**
+     * Checks if a user exists in the database by their userId.
+     * 
+     * @param userId The unique identifier of the user to check
+     * @return A Map containing user details if found (keys: "userId", "name",
+     *         "displaypic"),
+     *         or an empty Map if the user doesn't exist
+     * @throws DataAccessException if there's an error accessing the database
+     */
     public Map<String, String> userExists(String userId) {
         SqlRowSet rs = jdbcTemplate.queryForRowSet(SQL_USER_EXIST, userId);
         Map<String, String> holder = new HashMap<>();
@@ -72,7 +82,7 @@ public class UserDetailsMySQLRepository {
     }
 
     public void removeFcmToken(String token) {
-        jdbcTemplate.update(SQL_REMOVE_FCM,token);
+        jdbcTemplate.update(SQL_REMOVE_FCM, token);
     }
 
     public void removeFcmTokensByUserId(String userId) {
