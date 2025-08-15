@@ -25,11 +25,12 @@ public class Constants {
     public static final String F_USERID_REAL = "userId";
     public static final String F_DECKS = "decks";
     public static final String F_UADECKS = "uadecks";
-    public static final String F_OPDECKS = "opdeck";
+    public static final String F_OPDECKS = "opdecks";
     public static final String F_DBZFWDECKS = "dbzfwdecks";
     public static final String F_CRBDECKS = "crbdecks";
     public static final String F_DMDECKS = "dmdecks";
     public static final String F_GCGDECKS = "gcgdecks";
+    public static final String F_HOCGDECKS = "hocgdecks";
     public static final String F_DECKUID = "deckuid";
     public static final String F_PACKAGEID = "package";// For gundam booster (tmp)
 

@@ -30,6 +30,9 @@ public class UserDetails {
     @Field(F_GCGDECKS)
     private List<GundamDecklist> gcgdecks;
 
+    @Field(F_HOCGDECKS)
+    private List<HololiveOCGDecklist> hocgdecks;
+
     public UserDetails() {
 
     }
@@ -88,6 +91,14 @@ public class UserDetails {
 
     public void setGcgdecks(List<GundamDecklist> gcgdecks) {
         this.gcgdecks = gcgdecks;
+    }
+
+    public List<HololiveOCGDecklist> getHocgdecks() {
+        return hocgdecks;
+    }
+
+    public void setHocgdecks(List<HololiveOCGDecklist> hocgdecks) {
+        this.hocgdecks = hocgdecks;
     }
 
 }

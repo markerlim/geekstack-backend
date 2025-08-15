@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -155,12 +154,17 @@ public class UserDetailsController {
     // One Piece save user deck endpoint
     @PostMapping("/save/onepiece")
     public ResponseEntity<Map<String, Object>> saveOPDeck(
+            @RequestParam(required = false) String deckuid,
             @RequestBody OnePieceDecklist decklist,
             @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
         String userId = user.getUid();
         try {
-            userDetailsMongoRepository.createOnePieceDecklist(decklist, userId);
+            if (deckuid == null || deckuid.isEmpty()) {
+                userDetailsMongoRepository.createOnePieceDecklist(decklist, userId);
+            } else {
+                userDetailsMongoRepository.updateOnePieceDecklist(decklist, userId, deckuid);
+            }
             response.put("message", "Deck created successfully");
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -181,12 +185,17 @@ public class UserDetailsController {
     // DragonballzFW save user deck endpoint
     @PostMapping("/save/dragonballzfw")
     public ResponseEntity<Map<String, Object>> saveDBZFWDeck(
+            @RequestParam(required = false) String deckuid,
             @RequestBody DragonballzFWDecklist decklist,
             @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
         String userId = user.getUid();
         try {
-            userDetailsMongoRepository.createDragonballzFWDecklist(decklist, userId);
+            if (deckuid == null || deckuid.isEmpty()) {
+                userDetailsMongoRepository.createDragonballzFWDecklist(decklist, userId);
+            } else {
+                userDetailsMongoRepository.updateDragonballzFWDecklist(decklist, userId, deckuid);
+            }
             response.put("message", "Deck created successfully");
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -208,13 +217,21 @@ public class UserDetailsController {
     // Cookierunbraverse save user deck endpoint
     @PostMapping("/save/cookierunbraverse")
     public ResponseEntity<Map<String, Object>> saveCRBDeck(
+            @RequestParam(required = false) String deckuid,
             @RequestBody CookieRunDecklist decklist,
             @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
         String userId = user.getUid();
         try {
-            userDetailsMongoRepository.createCookieRunDecklist(decklist, userId);
-            response.put("message", "Deck created successfully");
+            if (deckuid == null || deckuid.isEmpty()) {
+                userDetailsMongoRepository.createCookieRunDecklist(decklist, userId);
+                response.put("message", "Deck created successfully");
+
+            } else {
+                userDetailsMongoRepository.updateCookieRunDecklist(decklist, userId, deckuid);
+                response.put("message", "Deck updated successfully");
+
+            }
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", "Error adding deck: " + e.getMessage());

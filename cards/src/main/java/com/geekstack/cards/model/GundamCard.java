@@ -32,6 +32,7 @@ public class GundamCard {
     private String hitPoints;
     private String sourceTitle;
     private String obtainedFrom;
+    private int count;
 
     // Used in the frontend so when deck saving need this,
     // Might include this in db directly
@@ -45,7 +46,7 @@ public class GundamCard {
             String urlimage, String cardUid, String detailUrl,
             String rarity, String level, String cost, String color, String cardType,
             String effect, String zone, String trait, String link, String attackPower,
-            String hitPoints, String sourceTitle, String obtainedFrom) {
+            String hitPoints, String sourceTitle, String obtainedFrom, int count) {
         this._id = _id;
         this.cardName = cardName;
         this.cardId = cardId;
@@ -67,6 +68,7 @@ public class GundamCard {
         this.hitPoints = hitPoints;
         this.sourceTitle = sourceTitle;
         this.obtainedFrom = obtainedFrom;
+        this.count = count;
     }
 
     // Getters and Setters
@@ -273,4 +275,13 @@ public class GundamCard {
         this.tcg = tcg;
     }
 
+    public int getCount() {
+        return count;
+    }
+
+    public void setCount(int count) {
+        this.count = count;
+    }
+
+    
 }
