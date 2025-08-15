@@ -78,7 +78,7 @@ public class UserDetailsMongoRepository {
         Query query = new Query(
                 Criteria.where(F_USERID).is(userId).and(F_OPDECKS).elemMatch(Criteria.where(F_DECKUID).is(deckuid)));
         decklist.setDeckuid(deckuid);
-        Update update = new Update().push(F_OPDECKS, decklist);
+        Update update = new Update().set(F_OPDECKS + ".$", decklist);
         mongoTemplate.updateFirst(query, update, UserDetails.class, C_USER);
     }
 
@@ -104,7 +104,7 @@ public class UserDetailsMongoRepository {
         Query query = new Query(
                 Criteria.where(F_USERID).is(userId).and(F_CRBDECKS).elemMatch(Criteria.where(F_DECKUID).is(deckuid)));
         decklist.setDeckuid(deckuid);
-        Update update = new Update().push(F_CRBDECKS, decklist);
+        Update update = new Update().set(F_CRBDECKS + ".$", decklist);
         mongoTemplate.updateFirst(query, update, UserDetails.class, C_USER);
     }
 
@@ -130,7 +130,7 @@ public class UserDetailsMongoRepository {
         Query query = new Query(
                 Criteria.where(F_USERID).is(userId).and(F_DBZFWDECKS).elemMatch(Criteria.where(F_DECKUID).is(deckuid)));
         decklist.setDeckuid(deckuid);
-        Update update = new Update().push(F_DBZFWDECKS, decklist);
+        Update update = new Update().set(F_DBZFWDECKS + ".$", decklist);
         mongoTemplate.updateFirst(query, update, UserDetails.class, C_USER);
     }
 
