@@ -11,13 +11,12 @@ import org.springframework.stereotype.Service;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
-import jakarta.json.JsonReader;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
-    
+
     @Autowired
     private JavaMailSender mailSender;
 
@@ -26,21 +25,32 @@ public class EmailService {
 
     @Async
     public void sendReportEmail(String payload) {
-
         try {
-            JsonReader reader = Json.createReader(new StringReader(payload));
-            JsonObject jobject = reader.readObject();
+            JsonObject jobject = Json.createReader(new StringReader(payload)).readObject();
             String cardUid = jobject.getString("cardUid");
             String userId = jobject.getString("userId");
             String errorMsg = jobject.getString("errorMsg");
-            
+
+            System.out.println("Attempting to send email...");
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
             helper.setTo(emailAddress);
             helper.setSubject("Error report for: " + cardUid);
-            helper.setText(buildEmailBody(userId, cardUid, errorMsg), true); // true to enable HTML
+            helper.setText(buildEmailBody(userId, cardUid, errorMsg), true);
+
+            System.out.println("Mail Properties:");
+            System.out.println("Name: " + mailSender.getClass().getName());
+
             mailSender.send(message);
+            System.out.println("Email sent successfully");
         } catch (MessagingException e) {
+            System.err.println("MessagingException: " + e.getMessage());
+            e.printStackTrace();
+            if (e.getCause() != null) {
+                System.err.println("Root cause: " + e.getCause().getMessage());
+            }
+        } catch (Exception e) {
+            System.err.println("Unexpected error: " + e.getMessage());
             e.printStackTrace();
         }
     }

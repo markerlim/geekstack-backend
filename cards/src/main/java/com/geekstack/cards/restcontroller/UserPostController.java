@@ -87,11 +87,20 @@ public class UserPostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
-
-    @GetMapping("/findpost/{postId}")
-    public ResponseEntity<UserPost> getPostByPostId(@PathVariable String postId) {
-        return ResponseEntity.ok(userPostService.getOnePost(postId));
+@GetMapping("/findpost/{postId}")
+public ResponseEntity<?> getPostByPostId(@PathVariable String postId) {
+    try {
+        UserPost post = userPostService.getOnePost(postId);
+        if (post == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("message", "Post not found", "postId", postId));
+        }
+        return ResponseEntity.ok(post);
+    } catch (Exception e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .body(Map.of("message", "Error retrieving post", "error", e.getMessage()));
     }
+}
 
     @DeleteMapping("/delete/{postId}")
     public ResponseEntity<Map<String, Object>> userDeletePost(@PathVariable String postId,
@@ -186,4 +195,5 @@ public class UserPostController {
                 userPostService.listUserPostLikedByUserId(authorization, Integer.parseInt(page),
                         Integer.parseInt(limit)));
     }
+
 }
