@@ -2,7 +2,6 @@ package com.geekstack.cards.model;
 
 import static com.geekstack.cards.utils.Constants.C_NOTIFICATION;
 
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 import org.springframework.data.annotation.Id;
