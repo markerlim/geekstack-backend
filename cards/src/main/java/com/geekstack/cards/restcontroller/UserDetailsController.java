@@ -1,5 +1,12 @@
 package com.geekstack.cards.restcontroller;
 
+import static com.geekstack.cards.utils.Constants.F_CRBDECKS;
+import static com.geekstack.cards.utils.Constants.F_DBZFWDECKS;
+import static com.geekstack.cards.utils.Constants.F_DMDECKS;
+import static com.geekstack.cards.utils.Constants.F_GCGDECKS;
+import static com.geekstack.cards.utils.Constants.F_OPDECKS;
+import static com.geekstack.cards.utils.Constants.F_UADECKS;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +31,7 @@ import com.geekstack.cards.model.CookieRunDecklist;
 import com.geekstack.cards.model.DragonballzFWDecklist;
 import com.geekstack.cards.model.DuelMasterDecklist;
 import com.geekstack.cards.model.FirebaseUser;
+import com.geekstack.cards.model.GenericDecklist;
 import com.geekstack.cards.model.GundamDecklist;
 import com.geekstack.cards.model.Notification;
 import com.geekstack.cards.model.OnePieceDecklist;
@@ -121,33 +129,45 @@ public class UserDetailsController {
     @PostMapping("/save/unionarena")
     public ResponseEntity<Map<String, Object>> saveUADeck(
             @RequestParam(required = false) String deckuid,
-            @RequestBody UnionArenaDecklist decklist, @AuthenticationPrincipal FirebaseUser.Principal user) {
+            @RequestBody GenericDecklist decklist, @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
         String uuid = "";
         String userId = user.getUid();
         try {
             if (deckuid == null || deckuid.isEmpty()) {
                 uuid = userDetailsMongoRepository.createUnionArenaDecklist(decklist, userId);
+                response.put("message", "Deck created successfully");
             } else {
                 uuid = userDetailsMongoRepository.updateUnionArenaDecklist(decklist, userId, deckuid);
+                response.put("message", "Deck updated successfully");
+
             }
 
-            response.put("message", "Deck created successfully");
             response.put("deckuid", uuid);
 
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", "Error adding deck: " + e.getMessage());
-            response.put("deckId", null);
+            response.put("deckuid", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    // Union Arena load user deck endpoint
+    // Union Arena load user lightweight of all deck endpoint
     @GetMapping("/load/unionarena")
-    public ResponseEntity<List<UnionArenaDecklist>> loadUADeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
+    public ResponseEntity<List<GenericDecklist>> loadUADeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
         String userId = user.getUid();
-        return new ResponseEntity<List<UnionArenaDecklist>>(userDetailsMongoRepository.loadUnionArenaDecklist(userId),
+        return new ResponseEntity<List<GenericDecklist>>(userDetailsMongoRepository.loadDecklist(userId, F_UADECKS),
+                HttpStatus.OK);
+    }
+
+    // Union Arena load deck data by deckuid
+    @GetMapping("/load/unionarena/{deckuid}")
+    public ResponseEntity<UnionArenaDecklist> loadOneUADeck(@PathVariable String deckuid,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        String userId = user.getUid();
+        return new ResponseEntity<UnionArenaDecklist>(
+                userDetailsMongoRepository.loadUnionArenaDecklist(userId, deckuid),
                 HttpStatus.OK);
     }
 
@@ -155,30 +175,44 @@ public class UserDetailsController {
     @PostMapping("/save/onepiece")
     public ResponseEntity<Map<String, Object>> saveOPDeck(
             @RequestParam(required = false) String deckuid,
-            @RequestBody OnePieceDecklist decklist,
+            @RequestBody GenericDecklist decklist,
             @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
+        String uuid = "";
         String userId = user.getUid();
         try {
             if (deckuid == null || deckuid.isEmpty()) {
-                userDetailsMongoRepository.createOnePieceDecklist(decklist, userId);
+                uuid = userDetailsMongoRepository.createOnePieceDecklist(decklist, userId);
+                response.put("message", "Deck created successfully");
             } else {
-                userDetailsMongoRepository.updateOnePieceDecklist(decklist, userId, deckuid);
+                uuid = userDetailsMongoRepository.updateOnePieceDecklist(decklist, userId, deckuid);
+                response.put("message", "Deck updated successfully");
+
             }
-            response.put("message", "Deck created successfully");
+            response.put("deckuid", uuid);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", "Error adding deck: " + e.getMessage());
-            response.put("deckId", null);
+            response.put("deckuid", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    // One Piece load user deck endpoint
+    // One Piece load user lightweight of all deck endpoint
     @GetMapping("/load/onepiece")
-    public ResponseEntity<List<OnePieceDecklist>> loadOPDeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
+    public ResponseEntity<List<GenericDecklist>> loadOPDeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
         String userId = user.getUid();
-        return new ResponseEntity<List<OnePieceDecklist>>(userDetailsMongoRepository.loadOnePieceDecklist(userId),
+        return new ResponseEntity<List<GenericDecklist>>(userDetailsMongoRepository.loadDecklist(userId, F_OPDECKS),
+                HttpStatus.OK);
+    }
+
+    // One Piece load deck data by deckuid
+    @GetMapping("/load/onepiece/{deckuid}")
+    public ResponseEntity<OnePieceDecklist> loadOneOPDeck(@PathVariable String deckuid,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        String userId = user.getUid();
+        return new ResponseEntity<OnePieceDecklist>(
+                userDetailsMongoRepository.loadOnePieceDecklist(userId, deckuid),
                 HttpStatus.OK);
     }
 
@@ -186,65 +220,88 @@ public class UserDetailsController {
     @PostMapping("/save/dragonballzfw")
     public ResponseEntity<Map<String, Object>> saveDBZFWDeck(
             @RequestParam(required = false) String deckuid,
-            @RequestBody DragonballzFWDecklist decklist,
+            @RequestBody GenericDecklist decklist,
             @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
+        String uuid = "";
         String userId = user.getUid();
         try {
             if (deckuid == null || deckuid.isEmpty()) {
-                userDetailsMongoRepository.createDragonballzFWDecklist(decklist, userId);
+                uuid = userDetailsMongoRepository.createDragonballzFWDecklist(decklist, userId);
+                response.put("message", "Deck created successfully");
             } else {
-                userDetailsMongoRepository.updateDragonballzFWDecklist(decklist, userId, deckuid);
+                uuid = userDetailsMongoRepository.updateDragonballzFWDecklist(decklist, userId, deckuid);
+                response.put("message", "Deck updated successfully");
             }
-            response.put("message", "Deck created successfully");
+            response.put("deckuid", uuid);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", "Error adding deck: " + e.getMessage());
-            response.put("deckId", null);
+            response.put("deckuid", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    // DragonballzFW load user deck endpoint
+    // DragonballzFW load user lightweight of all deck endpoint
     @GetMapping("/load/dragonballzfw")
-    public ResponseEntity<List<DragonballzFWDecklist>> loadDBZFWDeck(
+    public ResponseEntity<List<GenericDecklist>> loadDBZFWDeck(
             @AuthenticationPrincipal FirebaseUser.Principal user) {
         String userId = user.getUid();
-        return new ResponseEntity<List<DragonballzFWDecklist>>(
-                userDetailsMongoRepository.loadDragonballzFWDecklist(userId), HttpStatus.OK);
+        return new ResponseEntity<List<GenericDecklist>>(
+                userDetailsMongoRepository.loadDecklist(userId, F_DBZFWDECKS), HttpStatus.OK);
+    }
+
+    // DragonballzFW load deck data by deckuid
+    @GetMapping("/load/dragonballzfw/{deckuid}")
+    public ResponseEntity<DragonballzFWDecklist> loadOneDBZFWDeck(@PathVariable String deckuid,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        String userId = user.getUid();
+        return new ResponseEntity<DragonballzFWDecklist>(
+                userDetailsMongoRepository.loadDragonballzFWDecklist(userId, deckuid),
+                HttpStatus.OK);
     }
 
     // Cookierunbraverse save user deck endpoint
     @PostMapping("/save/cookierunbraverse")
     public ResponseEntity<Map<String, Object>> saveCRBDeck(
             @RequestParam(required = false) String deckuid,
-            @RequestBody CookieRunDecklist decklist,
+            @RequestBody GenericDecklist decklist,
             @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
+        String uuid = "";
         String userId = user.getUid();
         try {
             if (deckuid == null || deckuid.isEmpty()) {
-                userDetailsMongoRepository.createCookieRunDecklist(decklist, userId);
+                uuid = userDetailsMongoRepository.createCookieRunDecklist(decklist, userId);
                 response.put("message", "Deck created successfully");
-
             } else {
-                userDetailsMongoRepository.updateCookieRunDecklist(decklist, userId, deckuid);
+                uuid = userDetailsMongoRepository.updateCookieRunDecklist(decklist, userId, deckuid);
                 response.put("message", "Deck updated successfully");
-
             }
+            response.put("deckuid", uuid);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", "Error adding deck: " + e.getMessage());
-            response.put("deckId", null);
+            response.put("deckuid", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    // Cookierunbraverse load user deck endpoint
+    // Cookierunbraverse load user lightweight of all deck endpoint
     @GetMapping("/load/cookierunbraverse")
-    public ResponseEntity<List<CookieRunDecklist>> loadCRBDeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
+    public ResponseEntity<List<GenericDecklist>> loadCRBDeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
         String userId = user.getUid();
-        return new ResponseEntity<List<CookieRunDecklist>>(userDetailsMongoRepository.loadCookieRunDecklist(userId),
+        return new ResponseEntity<List<GenericDecklist>>(userDetailsMongoRepository.loadDecklist(userId, F_CRBDECKS),
+                HttpStatus.OK);
+    }
+
+    // Cookierunbraverse load deck data by deckuid
+    @GetMapping("/load/cookierunbraverse/{deckuid}")
+    public ResponseEntity<CookieRunDecklist> loadOneCRBDeck(@PathVariable String deckuid,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        String userId = user.getUid();
+        return new ResponseEntity<CookieRunDecklist>(
+                userDetailsMongoRepository.loadCookieRunDecklist(userId, deckuid),
                 HttpStatus.OK);
     }
 
@@ -252,32 +309,43 @@ public class UserDetailsController {
     @PostMapping("/save/duelmasters")
     public ResponseEntity<Map<String, Object>> saveDMDeck(
             @RequestParam(required = false) String deckuid,
-            @RequestBody DuelMasterDecklist decklist,
+            @RequestBody GenericDecklist decklist,
             @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
+        String uuid = "";
         String userId = user.getUid();
         try {
             if (deckuid == null || deckuid.isEmpty()) {
-                userDetailsMongoRepository.createDuelMasterDecklist(decklist, userId);
+                uuid = userDetailsMongoRepository.createDuelMasterDecklist(decklist, userId);
+                response.put("message", "Deck created successfully");
             } else {
-                userDetailsMongoRepository.updateDuelMasterDecklist(decklist, userId, deckuid);
+                uuid = userDetailsMongoRepository.updateDuelMasterDecklist(decklist, userId, deckuid);
+                response.put("message", "Deck updated successfully");
             }
-
-            response.put("message", "Deck created successfully");
-
+            response.put("deckuid", uuid);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", "Error adding deck: " + e.getMessage());
-            response.put("deckId", null);
+            response.put("deckuid", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    // Duelmasters load user deck endpoint
+    // Duelmasters load user lightweight of all deck endpoint
     @GetMapping("/load/duelmasters")
-    public ResponseEntity<List<DuelMasterDecklist>> loadDMDeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
+    public ResponseEntity<List<GenericDecklist>> loadDMDeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
         String userId = user.getUid();
-        return new ResponseEntity<List<DuelMasterDecklist>>(userDetailsMongoRepository.loadDuelMasterDecklist(userId),
+        return new ResponseEntity<List<GenericDecklist>>(userDetailsMongoRepository.loadDecklist(userId, F_DMDECKS),
+                HttpStatus.OK);
+    }
+
+    // Duelmasters load deck data by deckuid
+    @GetMapping("/load/duelmasters/{deckuid}")
+    public ResponseEntity<DuelMasterDecklist> loadOneDMDeck(@PathVariable String deckuid,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        String userId = user.getUid();
+        return new ResponseEntity<DuelMasterDecklist>(
+                userDetailsMongoRepository.loadDuelMasterDecklist(userId, deckuid),
                 HttpStatus.OK);
     }
 
@@ -285,35 +353,47 @@ public class UserDetailsController {
     @PostMapping("/save/gundam")
     public ResponseEntity<Map<String, Object>> saveGCGDeck(
             @RequestParam(required = false) String deckuid,
-            @RequestBody GundamDecklist decklist,
+            @RequestBody GenericDecklist decklist,
             @AuthenticationPrincipal FirebaseUser.Principal user) {
         Map<String, Object> response = new HashMap<>();
+        String uuid = "";
         String userId = user.getUid();
         try {
             if (deckuid == null || deckuid.isEmpty()) {
-                userDetailsMongoRepository.createGundamDecklist(decklist, userId);
+                uuid = userDetailsMongoRepository.createGundamDecklist(decklist, userId);
+                response.put("message", "Deck created successfully");
             } else {
-                userDetailsMongoRepository.updateGundamDecklist(decklist, userId, deckuid);
+                uuid = userDetailsMongoRepository.updateGundamDecklist(decklist, userId, deckuid);
+                response.put("message", "Deck updated successfully");
             }
-
-            response.put("message", "Deck created successfully");
-
+            response.put("deckuid", uuid);
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", "Error adding deck: " + e.getMessage());
-            response.put("deckId", null);
+            response.put("deckuid", null);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
-    // Gundam load user deck endpoint
+    // Gundam load user lightweight of all deck endpoint
     @GetMapping("/load/gundam")
-    public ResponseEntity<List<GundamDecklist>> loadGCGDeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
+    public ResponseEntity<List<GenericDecklist>> loadGCGDeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
         String userId = user.getUid();
-        return new ResponseEntity<List<GundamDecklist>>(userDetailsMongoRepository.loadGundamDecklist(userId),
+        return new ResponseEntity<List<GenericDecklist>>(userDetailsMongoRepository.loadDecklist(userId, F_GCGDECKS),
                 HttpStatus.OK);
     }
 
+    // Gundam load deck data by deckuid
+    @GetMapping("/load/gundam/{deckuid}")
+    public ResponseEntity<GundamDecklist> loadOneGCGDeck(@PathVariable String deckuid,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        String userId = user.getUid();
+        return new ResponseEntity<GundamDecklist>(
+                userDetailsMongoRepository.loadGundamDecklist(userId, deckuid),
+                HttpStatus.OK);
+    }
+
+    // Delete deck
     @DeleteMapping("/delete/{tcg}/deck/{deckId}")
     public ResponseEntity<Map<String, Object>> deleteDeck(@PathVariable String tcg,
             @PathVariable String deckId,

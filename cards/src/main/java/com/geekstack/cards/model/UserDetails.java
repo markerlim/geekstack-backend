@@ -13,25 +13,25 @@ public class UserDetails {
     private String userId;
 
     @Field(F_UADECKS)
-    private List<UnionArenaDecklist> uadecks;
+    private List<GenericDecklist> uadecks;
 
     @Field(F_OPDECKS)
-    private List<OnePieceDecklist> opdecks;
+    private List<GenericDecklist> opdecks;
 
     @Field(F_CRBDECKS)
-    private List<CookieRunDecklist> crbdecks;
+    private List<GenericDecklist> crbdecks;
 
     @Field(F_DBZFWDECKS)
-    private List<DragonballzFWDecklist> dbzfwdecks;
+    private List<GenericDecklist> dbzfwdecks;
 
     @Field(F_DMDECKS)
-    private List<DuelMasterDecklist> dmdecks;
+    private List<GenericDecklist> dmdecks;
 
     @Field(F_GCGDECKS)
-    private List<GundamDecklist> gcgdecks;
+    private List<GenericDecklist> gcgdecks;
 
     @Field(F_HOCGDECKS)
-    private List<HololiveOCGDecklist> hocgdecks;
+    private List<GenericDecklist> hocgdecks;
 
     public UserDetails() {
 
@@ -45,60 +45,61 @@ public class UserDetails {
         this.userId = userId;
     }
 
-    public List<UnionArenaDecklist> getUadecks() {
+    public List<GenericDecklist> getUadecks() {
         return uadecks;
     }
 
-    public void setUadecks(List<UnionArenaDecklist> uadecks) {
+    public void setUadecks(List<GenericDecklist> uadecks) {
         this.uadecks = uadecks;
     }
 
-    public List<OnePieceDecklist> getOpdecks() {
+    public List<GenericDecklist> getOpdecks() {
         return opdecks;
     }
 
-    public void setOpdecks(List<OnePieceDecklist> opdecks) {
+    public void setOpdecks(List<GenericDecklist> opdecks) {
         this.opdecks = opdecks;
     }
 
-    public List<CookieRunDecklist> getCrbdecks() {
+    public List<GenericDecklist> getCrbdecks() {
         return crbdecks;
     }
 
-    public void setCrbdecks(List<CookieRunDecklist> crbdecks) {
+    public void setCrbdecks(List<GenericDecklist> crbdecks) {
         this.crbdecks = crbdecks;
     }
 
-    public List<DragonballzFWDecklist> getDbzfwdecks() {
+    public List<GenericDecklist> getDbzfwdecks() {
         return dbzfwdecks;
     }
 
-    public void setDbzfwdecks(List<DragonballzFWDecklist> dbzfwdecks) {
+    public void setDbzfwdecks(List<GenericDecklist> dbzfwdecks) {
         this.dbzfwdecks = dbzfwdecks;
     }
 
-    public List<DuelMasterDecklist> getDmdecks() {
+    public List<GenericDecklist> getDmdecks() {
         return dmdecks;
     }
 
-    public void setDmdecks(List<DuelMasterDecklist> dmdecks) {
+    public void setDmdecks(List<GenericDecklist> dmdecks) {
         this.dmdecks = dmdecks;
     }
 
-    public List<GundamDecklist> getGcgdecks() {
+    public List<GenericDecklist> getGcgdecks() {
         return gcgdecks;
     }
 
-    public void setGcgdecks(List<GundamDecklist> gcgdecks) {
+    public void setGcgdecks(List<GenericDecklist> gcgdecks) {
         this.gcgdecks = gcgdecks;
     }
 
-    public List<HololiveOCGDecklist> getHocgdecks() {
+    public List<GenericDecklist> getHocgdecks() {
         return hocgdecks;
     }
 
-    public void setHocgdecks(List<HololiveOCGDecklist> hocgdecks) {
+    public void setHocgdecks(List<GenericDecklist> hocgdecks) {
         this.hocgdecks = hocgdecks;
     }
 
+    
 }
