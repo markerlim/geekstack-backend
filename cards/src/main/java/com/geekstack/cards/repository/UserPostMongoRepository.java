@@ -15,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.TextCriteria;
+import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -58,6 +60,17 @@ public class UserPostMongoRepository {
 
         List<UserPost> posts = mongoTemplate.find(query, UserPost.class, C_USERPOST);
         long total = mongoTemplate.count(new Query(), UserPost.class, C_USERPOST);
+
+        return new PageImpl<>(posts, pageable, total).getContent();
+    }
+
+    public List<UserPost> userPostingsBySearchTerm(String term, int page, int size) {
+        TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
+                .matchingPhrase(term);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+        Query query = TextQuery.queryText(textCriteria).with(pageable);
+        List<UserPost> posts = mongoTemplate.find(query, UserPost.class, C_USERPOST);
+        long total = mongoTemplate.count(TextQuery.queryText(textCriteria), UserPost.class, C_USERPOST);
 
         return new PageImpl<>(posts, pageable, total).getContent();
     }
@@ -142,11 +155,9 @@ public class UserPostMongoRepository {
 
         // Create query to match both postId AND userId
         Query query = new Query().addCriteria(
-            new Criteria().andOperator(
-                Criteria.where(F_USERPOST_ID).is(postId),
-                Criteria.where(F_USERID_REAL).is(userId)
-            )
-        );
+                new Criteria().andOperator(
+                        Criteria.where(F_USERPOST_ID).is(postId),
+                        Criteria.where(F_USERID_REAL).is(userId)));
         Update update = new Update().pull(F_USERPOST_LISTC, Query.query(Criteria.where(F_USERPOST_CID).is(commentId)));
 
         mongoTemplate.updateFirst(query, update, C_USERPOST);
@@ -218,39 +229,37 @@ public class UserPostMongoRepository {
         mongoTemplate.updateFirst(query, update, UserPost.class, C_USERPOST);
     }
 
-/**
- * Deletes a post by its ID after verifying ownership
- * Example MongoDB command: 
- * db.userpost.deleteOne({ 
- *   postId: "actual_post_id", 
- *   userId: "authenticated_user_id" 
- * });
- * 
- * @param postId The ID of the post to delete
- * @param userId The ID of the authenticated user (for ownership verification)
- */
-public void deletePost(String postId, String userId) {
-    // Validate inputs
-    if (!StringUtils.hasText(postId)) {
-        throw new IllegalArgumentException("Post ID cannot be empty");
-    }
-    if (!StringUtils.hasText(userId)) {
-        throw new IllegalArgumentException("User ID cannot be empty");
-    }
+    /**
+     * Deletes a post by its ID after verifying ownership
+     * Example MongoDB command:
+     * db.userpost.deleteOne({
+     * postId: "actual_post_id",
+     * userId: "authenticated_user_id"
+     * });
+     * 
+     * @param postId The ID of the post to delete
+     * @param userId The ID of the authenticated user (for ownership verification)
+     */
+    public void deletePost(String postId, String userId) {
+        // Validate inputs
+        if (!StringUtils.hasText(postId)) {
+            throw new IllegalArgumentException("Post ID cannot be empty");
+        }
+        if (!StringUtils.hasText(userId)) {
+            throw new IllegalArgumentException("User ID cannot be empty");
+        }
 
-    // Create query to match both postId AND userId
-    Query query = new Query().addCriteria(
-        new Criteria().andOperator(
-            Criteria.where(F_USERPOST_ID).is(postId),
-            Criteria.where(F_USERID_REAL).is(userId)
-        )
-    );
+        // Create query to match both postId AND userId
+        Query query = new Query().addCriteria(
+                new Criteria().andOperator(
+                        Criteria.where(F_USERPOST_ID).is(postId),
+                        Criteria.where(F_USERID_REAL).is(userId)));
 
-    DeleteResult result = mongoTemplate.remove(query, UserPost.class, C_USERPOST);
-    
-    if (result.getDeletedCount() == 0) {
-        throw new DocumentNotFoundException("Post not found or not owned by user");
+        DeleteResult result = mongoTemplate.remove(query, UserPost.class, C_USERPOST);
+
+        if (result.getDeletedCount() == 0) {
+            throw new DocumentNotFoundException("Post not found or not owned by user");
+        }
     }
-}
 
 }
