@@ -38,14 +38,47 @@ public class UserPostController {
     @GetMapping
     public ResponseEntity<List<UserPost>> listalluserpost(@RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit) {
-        return ResponseEntity.ok(userPostService.listUserPost(Integer.parseInt(page), Integer.parseInt(limit)));
+        return ResponseEntity
+                .ok(userPostService.listUserPost(Integer.parseInt(page), Integer.parseInt(limit), "DEFAULT"));
     }
 
     @GetMapping("/type/{posttype}")
-    public ResponseEntity<List<UserPost>> listalluserpostByType(@RequestParam(defaultValue = "1") String page,
-            @RequestParam(defaultValue = "20") String limit, @PathVariable String posttype) {
-        return ResponseEntity
-                .ok(userPostService.listUserPostByType(Integer.parseInt(page), Integer.parseInt(limit), posttype));
+    public ResponseEntity<List<UserPost>> listAllUserPostsByType(
+            @RequestParam(defaultValue = "1") String page,
+            @RequestParam(defaultValue = "20") String limit,
+            @PathVariable String posttype,
+            @RequestParam(required = false) String code) {
+
+        String filter;
+        if (code != null && !code.trim().isEmpty()) {
+            filter = "CATEGORYANDCODE:" + posttype + ":" + code;
+        } else {
+            filter = "CATEGORY:" + posttype;
+        }
+
+        return ResponseEntity.ok(userPostService.listUserPost(
+                Integer.parseInt(page),
+                Integer.parseInt(limit),
+                filter));
+    }
+
+    @GetMapping("/type/{posttype}/search/{term}")
+    public ResponseEntity<List<UserPost>> listAllUserPostsBySearchAndType(
+            @RequestParam(defaultValue = "1") String page,
+            @RequestParam(defaultValue = "20") String limit,
+            @RequestParam(required = false) String code,
+            @PathVariable String posttype,
+            @PathVariable String term) {
+        String filter;
+        if (code != null && !code.trim().isEmpty()) {
+            filter = "SEARCHANDTYPE:" + posttype + ":" + term + ":" + code;
+        } else {
+            filter = "SEARCHANDTYPE:" + posttype + ":" + term;
+        }
+        return ResponseEntity.ok(userPostService.listUserPost(
+                Integer.parseInt(page),
+                Integer.parseInt(limit),
+                filter));
     }
 
     /**
@@ -92,7 +125,7 @@ public class UserPostController {
     public ResponseEntity<List<UserPost>> listalluserpostBySearch(@RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit, @PathVariable String term) {
         return ResponseEntity
-                .ok(userPostService.listUserPostBySearchTerm(term, Integer.parseInt(page), Integer.parseInt(limit)));
+                .ok(userPostService.listUserPost(Integer.parseInt(page), Integer.parseInt(limit), "SEARCH:" + term));
     }
 
     @GetMapping("/findpost/{postId}")
@@ -192,7 +225,8 @@ public class UserPostController {
             @RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit) throws NumberFormatException, Exception {
         return ResponseEntity.ok(
-                userPostService.listUserPostByUserId(authorization, Integer.parseInt(page), Integer.parseInt(limit)));
+                userPostService.listUserPost(Integer.parseInt(page), Integer.parseInt(limit),
+                        "USERPOST:" + authorization));
     }
 
     @GetMapping("/listoflikedpost")
@@ -200,8 +234,8 @@ public class UserPostController {
             @RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit) throws NumberFormatException, Exception {
         return ResponseEntity.ok(
-                userPostService.listUserPostLikedByUserId(authorization, Integer.parseInt(page),
-                        Integer.parseInt(limit)));
+                userPostService.listUserPost(Integer.parseInt(page),
+                        Integer.parseInt(limit), "LIKEDPOST:" + authorization));
     }
 
 }

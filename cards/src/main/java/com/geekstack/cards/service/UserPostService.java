@@ -54,9 +54,50 @@ public class UserPostService {
         throw new ClassCastException("Not a List");
     }
 
-    public List<UserPost> listUserPost(int page, int limit) {
-        List<UserPost> userPosts = userPostMongoRepository.userPostingsDefault(page, limit);
+    public List<UserPost> listUserPost(int page, int limit, String commands) {
+        List<UserPost> userPosts = new ArrayList<>();
+        String[] loc = commands != null ? commands.split(":", 4) : new String[] {};
+        if (loc.length == 0) {
+            return userPostMongoRepository.userPostingsDefault(page, limit);
+        }
 
+        switch (loc[0]) {
+            case "SEARCH":
+                if (loc.length >= 2) {
+                    userPosts = userPostMongoRepository.userPostingsBySearchTerm(loc[1], page, limit);
+                }
+                break;
+            case "SEARCHANDTYPE":
+                if (loc.length == 3) {
+                    userPosts = userPostMongoRepository.userPostingsByTypeAndSearchTerm(loc[2], page, limit, loc[1]);
+                } else if (loc.length >= 4) {
+                    userPosts = userPostMongoRepository.userPostingsByTypeAndCodeAndSearchTerm(loc[2], page, limit,
+                            loc[1], loc[3]);
+                }
+                break;
+            case "CATEGORY":
+                if (loc.length >= 2) {
+                    userPosts = userPostMongoRepository.userPostingsByType(page, limit, loc[1]);
+                }
+                break;
+            case "CATEGORYANDCODE":
+                if (loc.length >= 3) {
+                    userPosts = userPostMongoRepository.userPostingsByTypeAndCode(page, limit, loc[1], loc[2]);
+                }
+                break;
+            case "USERPOST":
+                if (loc.length >= 2) {
+                    userPosts = userPostMongoRepository.userPostingsByUserId(loc[1], page, limit);
+                }
+                break;
+            case "LIKEDPOST":
+                if (loc.length >= 2) {
+                    userPosts = userPostMongoRepository.userPostingsLikedByUserId(loc[1], page, limit);
+                }
+                break;
+            default:
+                userPosts = userPostMongoRepository.userPostingsDefault(page, limit);
+        }
         Set<String> uniquePostUserIds = userPosts.stream()
                 .map(UserPost::getUserId)
                 .collect(Collectors.toSet());
@@ -87,154 +128,6 @@ public class UserPostService {
             post.setListofcomments(castList(engagement.get("comments"), Comment.class));
             post.setListoflikes(castList(engagement.get("likes"), String.class));
         }
-        return userPosts;
-    }
-
-    public List<UserPost> listUserPostBySearchTerm(String term,int page, int limit) {
-        List<UserPost> userPosts = userPostMongoRepository.userPostingsBySearchTerm(term, page, limit);
-
-        Set<String> uniquePostUserIds = userPosts.stream()
-                .map(UserPost::getUserId)
-                .collect(Collectors.toSet());
-
-        Set<String> allUniqueUserIds = new HashSet<>();
-        allUniqueUserIds.addAll(uniquePostUserIds);
-
-        List<Map<String, Object>> allUserDetails = userPostMySQLRepository
-                .batchGetUser(new ArrayList<>(allUniqueUserIds));
-        System.out.println("finish user details pull\n");
-
-        Map<String, Map<String, Object>> userMap = new HashMap<>();
-        for (Map<String, Object> user : allUserDetails) {
-            String userId = (String) user.get("userId");
-            userMap.put(userId, user);
-        }
-
-        for (UserPost post : userPosts) {
-            String postUserId = post.getUserId();
-            String postId = post.getPostId();
-            Map<String, Object> postUser = userMap.get(postUserId);
-
-            if (postUser != null) {
-                post.setDisplaypic(getStringOrNull(postUser, "displaypic"));
-                post.setName(getStringOrNull(postUser, "name"));
-            }
-            Map<String, Object> engagement = userPostMySQLRepository.getCommentsAndLikes(postId);
-            post.setListofcomments(castList(engagement.get("comments"), Comment.class));
-            post.setListoflikes(castList(engagement.get("likes"), String.class));
-        }
-        return userPosts;
-    }
-
-    public List<UserPost> listUserPostByType(int page, int limit, String type) {
-        List<UserPost> userPosts = userPostMongoRepository.userPostingsByType(page, limit, type);
-
-        Set<String> uniquePostUserIds = userPosts.stream()
-                .map(UserPost::getUserId)
-                .collect(Collectors.toSet());
-
-        Set<String> allUniqueUserIds = new HashSet<>();
-        allUniqueUserIds.addAll(uniquePostUserIds);
-
-        List<Map<String, Object>> allUserDetails = userPostMySQLRepository
-                .batchGetUser(new ArrayList<>(allUniqueUserIds));
-        System.out.println("finish user details pull\n");
-
-        Map<String, Map<String, Object>> userMap = new HashMap<>();
-        for (Map<String, Object> user : allUserDetails) {
-            String userId = (String) user.get("userId");
-            userMap.put(userId, user);
-        }
-
-        for (UserPost post : userPosts) {
-            String postUserId = post.getUserId();
-            String postId = post.getPostId();
-            Map<String, Object> postUser = userMap.get(postUserId);
-
-            if (postUser != null) {
-                post.setDisplaypic(getStringOrNull(postUser, "displaypic"));
-                post.setName(getStringOrNull(postUser, "name"));
-            }
-            Map<String, Object> engagement = userPostMySQLRepository.getCommentsAndLikes(postId);
-            post.setListofcomments(castList(engagement.get("comments"), Comment.class));
-            post.setListoflikes(castList(engagement.get("likes"), String.class));
-
-        }
-
-        return userPosts;
-    }
-
-    public List<UserPost> listUserPostByUserId(String userId, int page, int limit) throws Exception {
-        List<UserPost> userPosts = userPostMongoRepository.userPostingsByUserId(userId, page, limit);
-
-        Set<String> uniquePostUserIds = userPosts.stream()
-                .map(UserPost::getUserId)
-                .collect(Collectors.toSet());
-
-        Set<String> allUniqueUserIds = new HashSet<>();
-        allUniqueUserIds.addAll(uniquePostUserIds);
-
-        List<Map<String, Object>> allUserDetails = userPostMySQLRepository
-                .batchGetUser(new ArrayList<>(allUniqueUserIds));
-        System.out.println("finish user details pull\n");
-
-        Map<String, Map<String, Object>> userMap = new HashMap<>();
-        for (Map<String, Object> user : allUserDetails) {
-            userMap.put((String) user.get("userId"), user);
-        }
-
-        for (UserPost post : userPosts) {
-            String postUserId = post.getUserId();
-            String postId = post.getPostId();
-            Map<String, Object> postUser = userMap.get(postUserId);
-
-            if (postUser != null) {
-                post.setDisplaypic(getStringOrNull(postUser, "displaypic"));
-                post.setName(getStringOrNull(postUser, "name"));
-            }
-
-            Map<String, Object> engagement = userPostMySQLRepository.getCommentsAndLikes(postId);
-            post.setListofcomments(castList(engagement.get("comments"), Comment.class));
-            post.setListoflikes(castList(engagement.get("likes"), String.class));
-        }
-
-        return userPosts;
-    }
-
-    public List<UserPost> listUserPostLikedByUserId(String userId, int page, int limit) throws Exception {
-        List<UserPost> userPosts = userPostMongoRepository.userPostingsLikedByUserId(userId, page, limit);
-
-        Set<String> uniquePostUserIds = userPosts.stream()
-                .map(UserPost::getUserId)
-                .collect(Collectors.toSet());
-
-        Set<String> allUniqueUserIds = new HashSet<>();
-        allUniqueUserIds.addAll(uniquePostUserIds);
-
-        List<Map<String, Object>> allUserDetails = userPostMySQLRepository
-                .batchGetUser(new ArrayList<>(allUniqueUserIds));
-        System.out.println("finish user details pull\n");
-
-        Map<String, Map<String, Object>> userMap = new HashMap<>();
-        for (Map<String, Object> user : allUserDetails) {
-            userMap.put((String) user.get("userId"), user);
-        }
-
-        for (UserPost post : userPosts) {
-            String postUserId = post.getUserId();
-            String postId = post.getPostId();
-            Map<String, Object> postUser = userMap.get(postUserId);
-
-            if (postUser != null) {
-                post.setDisplaypic(getStringOrNull(postUser, "displaypic"));
-                post.setName(getStringOrNull(postUser, "name"));
-            }
-
-            Map<String, Object> engagement = userPostMySQLRepository.getCommentsAndLikes(postId);
-            post.setListofcomments(castList(engagement.get("comments"), Comment.class));
-            post.setListoflikes(castList(engagement.get("likes"), String.class));
-        }
-
         return userPosts;
     }
 
@@ -375,12 +268,12 @@ public class UserPostService {
 
     // Unlike a post
     public void unlikePost(String postId, String userId) {
-        //userPostMongoRepository.unlikeAPost(postId, userId);
-        userPostMySQLRepository.unlikePost(postId,userId);
+        // userPostMongoRepository.unlikeAPost(postId, userId);
+        userPostMySQLRepository.unlikePost(postId, userId);
     }
 
     // Liking a post
-    public void handleLikeEvent(String postId,String posterId, String userId, String displaypic, String name) {
+    public void handleLikeEvent(String postId, String posterId, String userId, String displaypic, String name) {
 
         String message = "liked your post.";
 
