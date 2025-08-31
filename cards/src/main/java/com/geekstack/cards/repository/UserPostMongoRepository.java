@@ -85,6 +85,44 @@ public class UserPostMongoRepository {
         return new PageImpl<>(posts, pageable, total).getContent();
     }
 
+    public List<UserPost> userPostingsByTypeAndCode(int page, int size, String type, String code) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+        Query query = new Query(Criteria.where(F_USERPOST_TYPE).is(type).and(F_USERPOST_CODE).is(code.toLowerCase()))
+                .with(pageable);
+
+        List<UserPost> posts = mongoTemplate.find(query, UserPost.class, C_USERPOST);
+        long total = mongoTemplate.count(new Query(), UserPost.class, C_USERPOST);
+
+        return new PageImpl<>(posts, pageable, total).getContent();
+    }
+
+    public List<UserPost> userPostingsByTypeAndSearchTerm(String term, int page, int size, String type) {
+        TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
+                .matchingPhrase(term);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+        Query query = TextQuery.queryText(textCriteria)
+                .addCriteria(Criteria.where(F_USERPOST_TYPE).is(type))
+                .with(pageable);
+        List<UserPost> posts = mongoTemplate.find(query, UserPost.class, C_USERPOST);
+        long total = mongoTemplate.count(TextQuery.queryText(textCriteria), UserPost.class, C_USERPOST);
+
+        return new PageImpl<>(posts, pageable, total).getContent();
+    }
+
+    public List<UserPost> userPostingsByTypeAndCodeAndSearchTerm(String term, int page, int size, String type,
+            String code) {
+        TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
+                .matchingPhrase(term);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "timestamp"));
+        Query query = TextQuery.queryText(textCriteria)
+                .addCriteria(Criteria.where(F_USERPOST_TYPE).is(type).and(F_USERPOST_CODE).is(code.toLowerCase()))
+                .with(pageable);
+        List<UserPost> posts = mongoTemplate.find(query, UserPost.class, C_USERPOST);
+        long total = mongoTemplate.count(TextQuery.queryText(textCriteria), UserPost.class, C_USERPOST);
+
+        return new PageImpl<>(posts, pageable, total).getContent();
+    }
+
     public UserPost getOnePost(String postId) {
         Query query = new Query(Criteria.where(F_USERPOST_ID).is(postId));
         return mongoTemplate.findOne(query, UserPost.class, C_USERPOST);

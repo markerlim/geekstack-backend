@@ -47,6 +47,7 @@ public class Constants {
 
     public static final String F_USERPOST_ID = "_id";
     public static final String F_USERPOST_TYPE = "postType";
+    public static final String F_USERPOST_CODE = "code";
     public static final String F_USERPOST_CID = "commentId";
     public static final String F_USERPOST_LISTC = "listofcomments";
     public static final String F_USERPOST_LISTL = "listoflikes";
