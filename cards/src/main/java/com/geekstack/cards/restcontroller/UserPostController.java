@@ -20,10 +20,13 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.geekstack.cards.model.Comment;
 import com.geekstack.cards.model.FirebaseUser;
 import com.geekstack.cards.model.UserPost;
+import com.geekstack.cards.model.UserPostFinal;
+import com.geekstack.cards.service.GoogleCloudStorageService;
 import com.geekstack.cards.service.UserPostService;
 
 @RestController
@@ -35,15 +38,18 @@ public class UserPostController {
     @Autowired
     private UserPostService userPostService;
 
+    @Autowired
+    private GoogleCloudStorageService googleCloudStorageService;
+
     @GetMapping
-    public ResponseEntity<List<UserPost>> listalluserpost(@RequestParam(defaultValue = "1") String page,
+    public ResponseEntity<List<UserPostFinal>> listalluserpost(@RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit) {
         return ResponseEntity
                 .ok(userPostService.listUserPost(Integer.parseInt(page), Integer.parseInt(limit), "DEFAULT"));
     }
 
     @GetMapping("/type/{posttype}")
-    public ResponseEntity<List<UserPost>> listAllUserPostsByType(
+    public ResponseEntity<List<UserPostFinal>> listAllUserPostsByType(
             @RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit,
             @PathVariable String posttype,
@@ -63,7 +69,7 @@ public class UserPostController {
     }
 
     @GetMapping("/type/{posttype}/search/{term}")
-    public ResponseEntity<List<UserPost>> listAllUserPostsBySearchAndType(
+    public ResponseEntity<List<UserPostFinal>> listAllUserPostsBySearchAndType(
             @RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit,
             @RequestParam(required = false) String code,
@@ -93,10 +99,6 @@ public class UserPostController {
      * ],
      * "listofcards": [
      * { "cardUid": "card_002", "imageSrc": "https://example.com/image2.jpg" }
-     * ],
-     * "listoflikes": [],
-     * "listofcomments": [
-     * 
      * ]
      * }
      * 
@@ -122,7 +124,7 @@ public class UserPostController {
     }
 
     @GetMapping("/search/{term}")
-    public ResponseEntity<List<UserPost>> listalluserpostBySearch(@RequestParam(defaultValue = "1") String page,
+    public ResponseEntity<List<UserPostFinal>> listalluserpostBySearch(@RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit, @PathVariable String term) {
         return ResponseEntity
                 .ok(userPostService.listUserPost(Integer.parseInt(page), Integer.parseInt(limit), "SEARCH:" + term));
@@ -179,7 +181,7 @@ public class UserPostController {
         Map<String, Object> response = new HashMap<>();
         String userId = user.getUid();
         try {
-            userPostService.deleteCommmentFromPost(postId, commentId, userId);
+            userPostService.deleteCommmentFromPost(commentId, userId);
             response.put("message", "Comment deleted successfully");
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
@@ -221,7 +223,7 @@ public class UserPostController {
     }
 
     @GetMapping("/listuserpostings")
-    public ResponseEntity<List<UserPost>> listPostingOfUser(@RequestHeader("Authorization") String authorization,
+    public ResponseEntity<List<UserPostFinal>> listPostingOfUser(@RequestHeader("Authorization") String authorization,
             @RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit) throws NumberFormatException, Exception {
         return ResponseEntity.ok(
@@ -230,7 +232,7 @@ public class UserPostController {
     }
 
     @GetMapping("/listoflikedpost")
-    public ResponseEntity<List<UserPost>> listLikedPostOfUser(@RequestHeader("Authorization") String authorization,
+    public ResponseEntity<List<UserPostFinal>> listLikedPostOfUser(@RequestHeader("Authorization") String authorization,
             @RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit) throws NumberFormatException, Exception {
         return ResponseEntity.ok(
@@ -238,4 +240,20 @@ public class UserPostController {
                         Integer.parseInt(limit), "LIKEDPOST:" + authorization));
     }
 
+    @PostMapping("/upd/{postId}")
+    public ResponseEntity<Map<String, Object>> updateImage(@PathVariable String postId,
+            @RequestParam("file") MultipartFile file) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            String fileName = "post_" + postId + "_" + System.currentTimeMillis() + ".png";
+            String fileUrl = googleCloudStorageService.uploadPostImage(file.getBytes(), postId, fileName);
+            response.put("message", "Successfully Uploaded");
+            response.put("fileUrl", fileUrl);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            logger.error("Error uploading image", e);
+            response.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 }

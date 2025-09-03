@@ -18,7 +18,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/public/**","/api/boosterlist/**","/api/data/**",
                         "/api/excrate/**","/api/userpost","/api/userpost/type/**","/api/user/report-error","/api/user/getExcRate"
-                        ,"/api/userpost/findpost/**","/api/user/update/image/**").permitAll()
+                        ,"/api/userpost/findpost/**","/api/user/upd/image/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(new FirebaseAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

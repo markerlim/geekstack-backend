@@ -54,6 +54,8 @@ public class UserPostMySQLRepository {
             "FROM likes l " +
             "JOIN users u ON l.userId = u.userId " +
             "WHERE l.postId = ?";
+    
+    private static final String SQL_DELETE_COMMENT = "DELETE FROM comments WHERE commentId = ? and userId = ?";
 
     // Combined query using UNION ALL
     private static final String SQL_LIKES_COMMENTS_UNION = "SELECT 'comment' as type, c.commentId, c.userId, c.comments, c.timestamp, "
@@ -145,6 +147,11 @@ public class UserPostMySQLRepository {
         } catch (EmptyResultDataAccessException e) {
             return null;
         }
+    }
+
+    public boolean deleteComment(String commentId, String userId){
+        int rowsUpdated = jdbcTemplate.update(SQL_DELETE_COMMENT, commentId, userId);
+        return rowsUpdated > 0;
     }
 
     /**

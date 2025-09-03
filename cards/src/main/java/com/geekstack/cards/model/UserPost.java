@@ -12,18 +12,16 @@ public class UserPost {
     @Id
     private String postId;
 
-    private String postType;//c
-    private String code;//c
-    private String userId;//c
+    private String postType;// c
+    private String code;// c
+    private String userId;// c
     private String headline;
-    private String content;//c
-    private String deckName;//c
-    private Boolean isTournamentDeck;//c
-    private ZonedDateTime timestamp;//c
-    private List<CardDetails> selectedCards;//c
-    private List<CardDetails> listofcards;//c
-    private List<String> listoflikes;
-    private List<Comment> listofcomments;
+    private String content;// c
+    private String deckName;// c
+    private Boolean isTournamentDeck;// c
+    private ZonedDateTime timestamp;// c
+    private List<CardDetails> selectedCards;// c
+    private List<CardDetails> listofcards;// c
     private String name;
     private String displaypic;
 
@@ -46,12 +44,9 @@ public class UserPost {
         this.timestamp = timestamp;
         this.selectedCards = selectedCards;
         this.listofcards = listofcards;
-        this.listoflikes = listoflikes;
-        this.listofcomments = listofcomments;
         this.name = name;
         this.displaypic = displaypic;
     }
-
 
     public String getName() {
         return name;
@@ -75,22 +70,6 @@ public class UserPost {
 
     public void setHeadline(String headline) {
         this.headline = headline;
-    }
-
-    public List<String> getListoflikes() {
-        return listoflikes;
-    }
-
-    public void setListoflikes(List<String> listoflikes) {
-        this.listoflikes = listoflikes;
-    }
-
-    public List<Comment> getListofcomments() {
-        return listofcomments;
-    }
-
-    public void setListofcomments(List<Comment> listofcomments) {
-        this.listofcomments = listofcomments;
     }
 
     public String getPostId() {
@@ -178,8 +157,7 @@ public class UserPost {
         return "UserPost [postId=" + postId + ", postType=" + postType + ", code=" + code + ", userId=" + userId
                 + ", headline=" + headline + ", content=" + content + ", deckName=" + deckName + ", isTournamentDeck="
                 + isTournamentDeck + ", timestamp=" + timestamp + ", selectedCards=" + selectedCards + ", listofcards="
-                + listofcards + ", listoflikes=" + listoflikes + ", listofcomments=" + listofcomments + ", name=" + name
+                + listofcards + ", name=" + name
                 + ", displaypic=" + displaypic + "]";
     }
-    
 }
