@@ -20,7 +20,7 @@ public class UserPost {
     private String deckName;// c
     private Boolean isTournamentDeck;// c
     private ZonedDateTime timestamp;// c
-    private List<CardDetails> selectedCards;// c
+    private String selectedCover;// c
     private List<CardDetails> listofcards;// c
     private String name;
     private String displaypic;
@@ -30,7 +30,7 @@ public class UserPost {
     }
 
     public UserPost(String postId, String postType, String code, String userId, String headline, String content,
-            String deckName, Boolean isTournamentDeck, ZonedDateTime timestamp, List<CardDetails> selectedCards,
+            String deckName, Boolean isTournamentDeck, ZonedDateTime timestamp, String selectedCover,
             List<CardDetails> listofcards, List<String> listoflikes, List<Comment> listofcomments, String name,
             String displaypic) {
         this.postId = postId;
@@ -42,7 +42,7 @@ public class UserPost {
         this.deckName = deckName;
         this.isTournamentDeck = isTournamentDeck;
         this.timestamp = timestamp;
-        this.selectedCards = selectedCards;
+        this.selectedCover = selectedCover;
         this.listofcards = listofcards;
         this.name = name;
         this.displaypic = displaypic;
@@ -112,12 +112,12 @@ public class UserPost {
         this.isTournamentDeck = isTournamentDeck;
     }
 
-    public List<CardDetails> getSelectedCards() {
-        return selectedCards;
+    public String getSelectedCover() {
+        return selectedCover;
     }
 
-    public void setSelectedCards(List<CardDetails> selectedCards) {
-        this.selectedCards = selectedCards;
+    public void setSelectedCover(String selectedCover) {
+        this.selectedCover = selectedCover;
     }
 
     public List<CardDetails> getListofcards() {
@@ -156,7 +156,7 @@ public class UserPost {
     public String toString() {
         return "UserPost [postId=" + postId + ", postType=" + postType + ", code=" + code + ", userId=" + userId
                 + ", headline=" + headline + ", content=" + content + ", deckName=" + deckName + ", isTournamentDeck="
-                + isTournamentDeck + ", timestamp=" + timestamp + ", selectedCards=" + selectedCards + ", listofcards="
+                + isTournamentDeck + ", timestamp=" + timestamp + ", selectedCover=" + selectedCover + ", listofcards="
                 + listofcards + ", name=" + name
                 + ", displaypic=" + displaypic + "]";
     }
