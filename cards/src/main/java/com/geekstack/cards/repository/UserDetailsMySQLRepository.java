@@ -19,7 +19,7 @@ public class UserDetailsMySQLRepository {
     private JdbcTemplate jdbcTemplate;
 
     private final static String SQL_USER_EXIST = """
-            SELECT userId,name,displaypic FROM users WHERE userId = ?
+            SELECT userId,name,displaypic,preferences,membershipType FROM users WHERE userId = ?
             """;
     private final static String SQL_SAVE_USER = """
             INSERT INTO users(userId, name, displaypic, email) VALUES (?,?,?,?)
@@ -35,6 +35,14 @@ public class UserDetailsMySQLRepository {
 
     private final static String SQL_REMOVE_FCM_BYUSERID = """
             DELETE FROM fcm_tokens WHERE user_id = ?
+            """;
+
+    private final static String SQL_UPDATE_PREFERENCE = """
+            UPDATE users SET preferences = ? WHERE userId = ?
+            """;
+
+    private final static String SQL_UPDATE_MEMBERSHIPTYPE = """
+            UPDATE users SET membershipType = ? WHERE userId = ?
             """;
     private final static String SQL_BATCHGET_TOKENS = "SELECT user_id,token FROM fcm_tokens WHERE user_id IN (%s)";
 
@@ -63,12 +71,24 @@ public class UserDetailsMySQLRepository {
             holder.put("userId", rs.getString("userId"));
             holder.put("name", rs.getString("name"));
             holder.put("displaypic", rs.getString("displaypic"));
+            holder.put("preferences", rs.getString("preferences"));
+            holder.put("membershipType", rs.getString("membershipType"));
         }
         return holder;
     }
 
     public boolean updateUserName(String name, String userId) {
         int rowsUpdated = jdbcTemplate.update(SQL_UPDATE_NAME, name, userId);
+        return rowsUpdated > 0;
+    }
+
+    public boolean updatePreference(String preference, String userId) {
+        int rowsUpdated = jdbcTemplate.update(SQL_UPDATE_PREFERENCE, preference, userId);
+        return rowsUpdated > 0;
+    }
+
+        public boolean updateMembershipType(String type, String userId) {
+        int rowsUpdated = jdbcTemplate.update(SQL_UPDATE_MEMBERSHIPTYPE, type, userId);
         return rowsUpdated > 0;
     }
 

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import com.geekstack.cards.model.Comment;
 import com.geekstack.cards.model.UserPost;
+import com.geekstack.cards.model.UserPostFinal;
 import com.geekstack.cards.repository.UserPostMongoRepository;
 import com.geekstack.cards.repository.UserPostMySQLRepository;
 
@@ -54,11 +55,11 @@ public class UserPostService {
         throw new ClassCastException("Not a List");
     }
 
-    public List<UserPost> listUserPost(int page, int limit, String commands) {
+    public List<UserPostFinal> listUserPost(int page, int limit, String commands) {
         List<UserPost> userPosts = new ArrayList<>();
         String[] loc = commands != null ? commands.split(":", 4) : new String[] {};
         if (loc.length == 0) {
-            return userPostMongoRepository.userPostingsDefault(page, limit);
+            userPosts = userPostMongoRepository.userPostingsDefault(page, limit);
         }
 
         switch (loc[0]) {
@@ -114,8 +115,9 @@ public class UserPostService {
             String userId = (String) user.get("userId");
             userMap.put(userId, user);
         }
-
-        for (UserPost post : userPosts) {
+        List<UserPostFinal> result = new ArrayList<>();
+        for (UserPost upost : userPosts) {
+            UserPostFinal post = new UserPostFinal(upost);
             String postUserId = post.getUserId();
             String postId = post.getPostId();
             Map<String, Object> postUser = userMap.get(postUserId);
@@ -127,14 +129,18 @@ public class UserPostService {
             Map<String, Object> engagement = userPostMySQLRepository.getCommentsAndLikes(postId);
             post.setListofcomments(castList(engagement.get("comments"), Comment.class));
             post.setListoflikes(castList(engagement.get("likes"), String.class));
+            result.add(post);
         }
-        return userPosts;
+        return result;
     }
 
-    public UserPost getOnePost(String postId) {
+    public UserPostFinal getOnePost(String postId) {
         // Get single post instead of list
         UserPost userPost = userPostMongoRepository.getOnePost(postId);
-
+        UserPostFinal post = new UserPostFinal(userPost);
+        Map<String, Object> engagement = userPostMySQLRepository.getCommentsAndLikes(postId);
+        post.setListofcomments(castList(engagement.get("comments"), Comment.class));
+        post.setListoflikes(castList(engagement.get("likes"), String.class));
         // Collect unique user IDs from post and comments
         Set<String> allUniqueUserIds = new HashSet<>();
 
@@ -144,8 +150,8 @@ public class UserPostService {
         }
 
         // Add comment author IDs
-        if (userPost.getListofcomments() != null) {
-            userPost.getListofcomments().stream()
+        if (post.getListofcomments() != null) {
+            post.getListofcomments().stream()
                     .map(Comment::getUserId)
                     .filter(Objects::nonNull)
                     .forEach(allUniqueUserIds::add);
@@ -173,8 +179,8 @@ public class UserPostService {
         }
 
         // Set comment author details
-        if (userPost.getListofcomments() != null) {
-            for (Comment comment : userPost.getListofcomments()) {
+        if (post.getListofcomments() != null) {
+            for (Comment comment : post.getListofcomments()) {
                 if (comment.getUserId() != null) {
                     Map<String, Object> commentUser = userMap.get(comment.getUserId());
                     if (commentUser != null) {
@@ -185,7 +191,7 @@ public class UserPostService {
             }
         }
 
-        return userPost;
+        return post;
     }
 
     private String getStringOrNull(Map<String, Object> map, String key) {
@@ -196,8 +202,6 @@ public class UserPostService {
     // Create a post
     public void createPost(UserPost userPost) {
         userPost.setTimestamp(ZonedDateTime.now());
-        userPost.setListofcomments(new ArrayList<>());
-        userPost.setListoflikes(new ArrayList<>());
         userPostMongoRepository.userPostAction(userPost);
     }
 
@@ -262,13 +266,12 @@ public class UserPostService {
     }
 
     // Delete comment from a post where comment is from and delete by commentId
-    public void deleteCommmentFromPost(String postId, String commentId, String userId) {
-        userPostMongoRepository.deleteComment(postId, commentId, userId);
+    public void deleteCommmentFromPost(String commentId, String userId) {
+        userPostMySQLRepository.deleteComment(commentId, userId);
     }
 
     // Unlike a post
     public void unlikePost(String postId, String userId) {
-        // userPostMongoRepository.unlikeAPost(postId, userId);
         userPostMySQLRepository.unlikePost(postId, userId);
     }
 

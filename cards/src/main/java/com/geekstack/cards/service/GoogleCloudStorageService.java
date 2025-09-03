@@ -1,7 +1,6 @@
 package com.geekstack.cards.service;
 
 import com.google.auth.oauth2.GoogleCredentials;
-import com.google.cloud.storage.Acl;
 import com.google.cloud.storage.Blob;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
@@ -52,18 +51,34 @@ public class GoogleCloudStorageService {
         String contentType = Files.probeContentType(Paths.get(fileName));
 
         BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, "user-images/" + userId + "/" + fileName)
-                .setContentType(contentType) // Dynamically set content type
+                .setContentType(contentType)
                 .build();
 
         try {
-            // Upload the file to Google Cloud Storage
+            // Upload the file to Google Cloud Storage - NO ACL SETTING
             Blob blob = storage.create(blobInfo, fileData);
 
-            // Make the file publicly readable (optional)
-            blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
-
-            // Return the public URL of the uploaded file
+            // Return the public URL (note: this will only work if bucket is public)
             return "https://storage.googleapis.com/" + bucketName + "/user-images/" + userId + "/" + fileName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error uploading file to Google Cloud Storage", e);
+        }
+    }
+
+    public String uploadPostImage(byte[] fileData, String postId, String fileName) throws IOException {
+        // Dynamically get the content type
+        String contentType = Files.probeContentType(Paths.get(fileName));
+
+        BlobInfo blobInfo = BlobInfo.newBuilder(bucketName, "userpost/" + fileName)
+                .setContentType(contentType)
+                .build();
+
+        try {
+            // Upload the file to Google Cloud Storage - NO ACL SETTING
+            Blob blob = storage.create(blobInfo, fileData);
+
+        return "https://storage.googleapis.com/" + bucketName + "/userpost/" + fileName;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Error uploading file to Google Cloud Storage", e);

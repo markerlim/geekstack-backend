@@ -6,6 +6,9 @@ public class UserSQL {
     private String name;
     private String displaypic;
     private String fcmToken;
+    private String preferences;
+    private String membershipType;
+
 
     public UserSQL(){}
     public String getUserId() {
@@ -38,6 +41,17 @@ public class UserSQL {
     public void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
     }
-
+    public String getPreferences() {
+        return preferences;
+    }
+    public void setPreferences(String preferences) {
+        this.preferences = preferences;
+    }
+    public String getMembershipType() {
+        return membershipType;
+    }
+    public void setMembershipType(String membershipType) {
+        this.membershipType = membershipType;
+    }
     
 }

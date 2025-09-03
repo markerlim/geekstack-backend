@@ -97,7 +97,7 @@ public class RabbitMQConsumer {
         }
 
         for (String userId : holder.keySet()) {
-            //userPostMongoRepository.likeMultiplePosts(holder.get(userId), userId);
+            userPostMongoRepository.likeMultiplePosts(holder.get(userId), userId);
             userPostMySQLRepository.likeMultiplePosts(holder.get(userId),userId);
         }
 

@@ -437,7 +437,7 @@ public class UserDetailsController {
         }
     }
 
-    @PostMapping("/update/image/{userId}")
+    @PostMapping("/upd/image/{userId}")
     public ResponseEntity<Map<String, Object>> updateImage(@PathVariable String userId,
             @RequestParam("file") MultipartFile file) {
         Map<String, Object> response = new HashMap<>();
@@ -450,6 +450,21 @@ public class UserDetailsController {
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             logger.error("Error uploading image", e);
+            response.put("message", "Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    @PostMapping("/upd/preference")
+    public ResponseEntity<Map<String, Object>> updatePreference(@RequestBody Map<String, Object> payload,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        Map<String, Object> response = new HashMap<>();
+        try {
+            String userId = user.getUid();
+            userDetailService.updatePreference(payload, userId);
+            response.put("message", "Preference change success!");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
             response.put("message", "Error: " + e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }

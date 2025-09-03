@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geekstack.cards.model.Notification;
 import com.geekstack.cards.repository.NotificationRepository;
 import com.geekstack.cards.repository.UserDetailsMongoRepository;
@@ -33,8 +35,8 @@ public class UserDetailService {
     public int createUser(String userId, String name, String displaypic, String email) {
         try {
             if (userDetailsMySQLRepository.userExists(userId).isEmpty()) {
-                userDetailsMySQLRepository.createUser(userId, name, displaypic, email);
-                userDetailsMongoRepository.createUser(userId);
+                userDetailsMySQLRepository.createUser(userId, name, displaypic, email);// MySql
+                userDetailsMongoRepository.createUser(userId);// Mongo
                 return 1;
             }
             return 0;
@@ -53,12 +55,22 @@ public class UserDetailService {
         return holder;
     }
 
-    public boolean updateUserName(String name, String userId){
+    public boolean updateUserName(String name, String userId) {
         return userDetailsMySQLRepository.updateUserName(name, userId);
     }
 
-    public boolean updateDisplaypic(String displaypic, String userId){
+    public boolean updateDisplaypic(String displaypic, String userId) {
         return userDetailsMySQLRepository.updateDisplayPic(displaypic, userId);
+    }
+
+    public boolean updatePreference(Map<String, Object> preferences, String userId) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            String preferencesJson = objectMapper.writeValueAsString(preferences);
+            return userDetailsMySQLRepository.updatePreference(preferencesJson, userId);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("Error converting preferences to JSON", e);
+        }
     }
 
     public List<Notification> listNotifications(String userId, String limit) throws Exception {
