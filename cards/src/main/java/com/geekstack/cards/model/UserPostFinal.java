@@ -21,7 +21,7 @@ public class UserPostFinal extends UserPost {
         this.setDeckName(userPost.getDeckName());
         this.setIsTournamentDeck(userPost.getIsTournamentDeck());
         this.setTimestamp(userPost.getTimestamp());
-        this.setSelectedCards(userPost.getSelectedCards());
+        this.setSelectedCover(userPost.getSelectedCover());
         this.setListofcards(userPost.getListofcards());
         this.setName(userPost.getName());
         this.setDisplaypic(userPost.getDisplaypic());
