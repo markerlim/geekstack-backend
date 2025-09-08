@@ -11,7 +11,6 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.MessagingErrorCode;
-import com.google.firebase.messaging.Notification;
 
 @Service
 public class FirebaseCloudMessagingService {
@@ -44,7 +43,7 @@ public class FirebaseCloudMessagingService {
             String response = firebaseMessaging.send(message);
             logger.info("Successfully sent FCM: {}", response);
         } catch (FirebaseMessagingException e) {
-            logger.error("Failed to send FCM alert to {} for {}: Code={}, Message={}");
+            logger.error("Failed to send FCM alert to {} for {}: Code={}, Message={}",userId,postId,e.getErrorCode(),e.getMessage());
 
             MessagingErrorCode errorCode = e.getMessagingErrorCode();
             if (errorCode == MessagingErrorCode.UNREGISTERED || errorCode == MessagingErrorCode.INVALID_ARGUMENT) {
