@@ -3,6 +3,7 @@ package com.geekstack.cards.repository;
 import static com.geekstack.cards.utils.Constants.C_NOTIFICATION;
 import static com.geekstack.cards.utils.Constants.F_USERID_REAL;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,4 +35,14 @@ public class NotificationRepository {
         }
         mongoTemplate.insert(notifications, Notification.class);
     }
+
+    public Integer checkNumOfUnread(String userId, ZonedDateTime lastSeen) {
+        Query query = new Query(new Criteria().andOperator(
+                new Criteria().orOperator(
+                        Criteria.where("userId").is(userId),
+                        Criteria.where("userId").is("NOTIFICATION-TO-ALL")),
+                Criteria.where("timestamp").gt(lastSeen.toInstant())));
+        return (int) mongoTemplate.count(query, Notification.class, C_NOTIFICATION);
+    }
+
 }

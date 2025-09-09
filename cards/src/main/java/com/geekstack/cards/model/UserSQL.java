@@ -1,5 +1,7 @@
 package com.geekstack.cards.model;
 
+import java.time.LocalDateTime;
+
 public class UserSQL {
     private String userId;
     private String email;
@@ -8,7 +10,7 @@ public class UserSQL {
     private String fcmToken;
     private String preferences;
     private String membershipType;
-
+    private LocalDateTime lastSeenNotification;
 
     public UserSQL(){}
     public String getUserId() {
@@ -52,6 +54,12 @@ public class UserSQL {
     }
     public void setMembershipType(String membershipType) {
         this.membershipType = membershipType;
+    }
+    public LocalDateTime getLastSeenNotification() {
+        return lastSeenNotification;
+    }
+    public void setLastSeenNotification(LocalDateTime lastSeenNotification) {
+        this.lastSeenNotification = lastSeenNotification;
     }
     
 }

@@ -19,8 +19,10 @@ public class UserDetailsMySQLRepository {
     private JdbcTemplate jdbcTemplate;
 
     private final static String SQL_USER_EXIST = """
-            SELECT userId,name,displaypic,preferences,membershipType FROM users WHERE userId = ?
+            SELECT userId,name,displaypic,preferences,membershipType,lastSeenNotification FROM users WHERE userId = ?
             """;
+
+    private final static String SQL_GET_LASTSEEN = "SELECT userId, lastSeenNotification FROM users WHERE userId = ?";
     private final static String SQL_SAVE_USER = """
             INSERT INTO users(userId, name, displaypic, email) VALUES (?,?,?,?)
             """;
@@ -44,6 +46,11 @@ public class UserDetailsMySQLRepository {
     private final static String SQL_UPDATE_MEMBERSHIPTYPE = """
             UPDATE users SET membershipType = ? WHERE userId = ?
             """;
+
+    private final static String SQL_UPDATE_LASTSEEN = """
+            UPDATE users SET lastSeenNotification = NOW() WHERE userId = ?
+            """;
+
     private final static String SQL_BATCHGET_TOKENS = "SELECT user_id,token FROM fcm_tokens WHERE user_id IN (%s)";
 
     private final static String SQL_UPDATE_NAME = "UPDATE users SET name = ? WHERE userId = ?";
@@ -73,6 +80,7 @@ public class UserDetailsMySQLRepository {
             holder.put("displaypic", rs.getString("displaypic"));
             holder.put("preferences", rs.getString("preferences"));
             holder.put("membershipType", rs.getString("membershipType"));
+            holder.put("lastSeenNotification", rs.getString("lastSeenNotification"));
         }
         return holder;
     }
@@ -87,7 +95,7 @@ public class UserDetailsMySQLRepository {
         return rowsUpdated > 0;
     }
 
-        public boolean updateMembershipType(String type, String userId) {
+    public boolean updateMembershipType(String type, String userId) {
         int rowsUpdated = jdbcTemplate.update(SQL_UPDATE_MEMBERSHIPTYPE, type, userId);
         return rowsUpdated > 0;
     }
@@ -95,6 +103,19 @@ public class UserDetailsMySQLRepository {
     public boolean updateDisplayPic(String displaypic, String userId) {
         int rowsUpdated = jdbcTemplate.update(SQL_UPDATE_DP, displaypic, userId);
         return rowsUpdated > 0;
+    }
+
+    public boolean updateLastSeenNotification(String userId) {
+        int rowsUpdated = jdbcTemplate.update(SQL_UPDATE_LASTSEEN, userId);
+        return rowsUpdated > 0;
+    }
+
+    public String getLastSeenNotification(String userId) {
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(SQL_GET_LASTSEEN, userId);
+        if (rs.next()) {
+            return rs.getString("lastSeenNotification");
+        }
+        return null;
     }
 
     public void updateFcmToken(String userId, String fcmToken) {

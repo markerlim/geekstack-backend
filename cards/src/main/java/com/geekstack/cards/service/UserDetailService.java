@@ -1,5 +1,9 @@
 package com.geekstack.cards.service;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,9 +78,38 @@ public class UserDetailService {
     }
 
     public List<Notification> listNotifications(String userId, String limit) throws Exception {
-        logger.info(userId);
         List<Notification> list = notificationRepository.getNotification(userId, Integer.parseInt(limit));
-        logger.info(list.toString());
+        String lastSeen = userDetailsMySQLRepository.getLastSeenNotification(userId);
+        ZonedDateTime lastSeenZoned = null;
+
+        if (lastSeen != null && !lastSeen.isEmpty()) {
+            LocalDateTime lastSeenDateTime = LocalDateTime.parse(lastSeen, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            lastSeenZoned = lastSeenDateTime.atZone(ZoneId.systemDefault());
+            for (Notification n : list) {
+                if (lastSeenZoned != null) {
+                    // If the notification timestamp is after lastSeen, the user has NOT seen it.
+                    // Therefore, set isRead to false. Otherwise, set isRead to true.
+                    n.setIsRead(!n.getTimestamp().isAfter(lastSeenZoned));
+                } else {
+                    // If lastSeen is null (user never checked notifications), treat all
+                    // notifications as read.
+                    n.setIsRead(true);
+                }
+            }
+        }
+        userDetailsMySQLRepository.updateLastSeenNotification(userId);
         return list;
+    }
+
+    public Integer checkNumOfUnread(String userId) {
+        String lastSeen = userDetailsMySQLRepository.getLastSeenNotification(userId);
+        ZonedDateTime lastSeenZoned = null;
+
+        if (lastSeen != null && !lastSeen.isEmpty()) {
+            LocalDateTime lastSeenDateTime = LocalDateTime.parse(lastSeen, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            lastSeenZoned = lastSeenDateTime.atZone(ZoneId.systemDefault());
+            return notificationRepository.checkNumOfUnread(userId,lastSeenZoned);
+        }
+        return 0;
     }
 }
