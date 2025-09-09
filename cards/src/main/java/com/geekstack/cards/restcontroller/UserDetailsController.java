@@ -37,6 +37,7 @@ import com.geekstack.cards.model.Notification;
 import com.geekstack.cards.model.OnePieceDecklist;
 import com.geekstack.cards.model.UnionArenaDecklist;
 import com.geekstack.cards.repository.UserDetailsMongoRepository;
+import com.geekstack.cards.repository.UserDetailsMySQLRepository;
 import com.geekstack.cards.service.CurrencyConversionService;
 import com.geekstack.cards.service.EmailService;
 import com.geekstack.cards.service.FirebaseService;
@@ -51,6 +52,9 @@ public class UserDetailsController {
     private final static Logger logger = LoggerFactory.getLogger(UserDetailsController.class);
     @Autowired
     private UserDetailsMongoRepository userDetailsMongoRepository;
+
+    @Autowired
+    private UserDetailsMySQLRepository userDetailsMySQLRepository;
 
     @Autowired
     private UserDetailService userDetailService;
@@ -105,6 +109,7 @@ public class UserDetailsController {
             }
             response.put("message", "User exist in database");
             response.put("userObject", userDetailService.getOneUser(userId));
+            response.put("unreadNotification",userDetailService.checkNumOfUnread(userId));
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", "Error adding user: " + e.getMessage());
