@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageImpl;
@@ -278,7 +279,7 @@ public class UserPostMongoRepository {
      * @param postId The ID of the post to delete
      * @param userId The ID of the authenticated user (for ownership verification)
      */
-    public void deletePost(String postId, String userId) {
+    public Map<String,Object> deletePost(String postId, String userId) {
         // Validate inputs
         if (!StringUtils.hasText(postId)) {
             throw new IllegalArgumentException("Post ID cannot be empty");
@@ -293,11 +294,23 @@ public class UserPostMongoRepository {
                         Criteria.where(F_USERPOST_ID).is(postId),
                         Criteria.where(F_USERID_REAL).is(userId)));
 
-        DeleteResult result = mongoTemplate.remove(query, UserPost.class, C_USERPOST);
+        UserPost post = mongoTemplate.findOne(query, UserPost.class, C_USERPOST);
 
-        if (result.getDeletedCount() == 0) {
+        if (post == null) {
             throw new DocumentNotFoundException("Post not found or not owned by user");
         }
-    }
 
+        // Extract selectedCover and content
+        java.util.Map<String, Object> result = new java.util.HashMap<>();
+        result.put("selectedCover", post.getSelectedCover());
+        result.put("content", post.getContent());
+
+        DeleteResult deleteResult = mongoTemplate.remove(query, UserPost.class, C_USERPOST);
+
+        if (deleteResult.getDeletedCount() == 0) {
+            throw new DocumentNotFoundException("Post not found or not owned by user");
+        }
+
+        return result;
+    }
 }
