@@ -35,7 +35,7 @@ public class FirebaseCloudMessagingService {
                 .putData("title", notficationTitle)
                 .putData("body", String.format("%s has %s", sender, action))
                 .putData("icon", notificationImageUrl)
-                .putData("clickAction", "/stacks/" + postId)
+                .putData("clickAction", "/stack/" + postId)
                 .setToken(token)
                 .build();
 
