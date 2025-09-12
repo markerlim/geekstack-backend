@@ -245,7 +245,7 @@ public class UserPostController {
             @RequestParam("file") MultipartFile file) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String fileName = "post_" + postId + "_" + System.currentTimeMillis() + ".png";
+            String fileName = "post_" + postId + "_" + System.currentTimeMillis() + ".webp";
             String fileUrl = googleCloudStorageService.uploadPostImage(file.getBytes(), postId, fileName);
             response.put("message", "Successfully Uploaded");
             response.put("fileUrl", fileUrl);

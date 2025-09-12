@@ -11,8 +11,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import org.checkerframework.checker.units.qual.A;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +45,9 @@ public class UserPostService {
 
     @Autowired
     private RabbitMQProducer rabbitMQProducer;
+
+    @Autowired
+    private GoogleCloudStorageService googleCloudStorageService;
 
     @SuppressWarnings("unchecked")
     private <T> List<T> castList(Object obj, Class<T> clazz) {
@@ -207,7 +213,32 @@ public class UserPostService {
 
     // Delete a post
     public void deletePost(String postId, String userId) {
-        userPostMongoRepository.deletePost(postId, userId);
+        Map<String, Object> holder = userPostMongoRepository.deletePost(postId, userId);
+        List<String> urlArray = new ArrayList<>();
+
+        // Process selectedCover
+        Object selectedCoverObj = holder.get("selectedCover");
+        if (selectedCoverObj instanceof String) {
+            String selectedCover = (String) selectedCoverObj;
+            urlArray.add(selectedCover);
+        }
+
+        Object contentObj = holder.get("content");
+        if (contentObj instanceof String) {
+            String content = (String) contentObj;
+            String regex = "<img[^>]+src=[\"'](https://storage\\.googleapis\\.com/[^\"']+/userpost/[^\"'>]+)[\"']";
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(content);
+            while (matcher.find()) {
+                urlArray.add(matcher.group(1));
+            }
+        }
+
+        if (googleCloudStorageService.deleteImages(urlArray)) {
+            logger.info("Successfully deleted images from GCS for postId: {}", postId);
+        } else {
+            logger.warn("Failed to delete some or all images from GCS for postId: {}", postId);
+        }
     }
 
     // Comment on a post by postId
