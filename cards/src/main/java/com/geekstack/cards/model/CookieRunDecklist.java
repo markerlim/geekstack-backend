@@ -2,13 +2,24 @@ package com.geekstack.cards.model;
 
 import java.util.List;
 
+import org.springframework.data.mongodb.core.mapping.Field;
+
 public class CookieRunDecklist {
+
+    @Field("deckuid")
     private String deckuid;
+
+    @Field("image")
     private String deckcover;
+
+    @Field("deckName")
     private String deckname;
+
+    @Field("listofcards")
     private List<CookieRunCard> listofcards;
 
-    public CookieRunDecklist(){}
+    public CookieRunDecklist() {
+    }
 
     public String getDeckuid() {
         return deckuid;
@@ -41,5 +52,5 @@ public class CookieRunDecklist {
     public void setListofcards(List<CookieRunCard> listofcards) {
         this.listofcards = listofcards;
     }
-    
+
 }

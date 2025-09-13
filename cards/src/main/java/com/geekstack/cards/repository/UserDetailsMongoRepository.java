@@ -84,7 +84,7 @@ public class UserDetailsMongoRepository {
                                 Aggregation.unwind(fieldCat),
                                 // Add match condition for specific deckuid
                                 Aggregation.match(Criteria.where(fieldCat + ".deckuid").is(deckUid)),
-                                Aggregation.unwind(fieldCat + ".listofcards"),
+                                Aggregation.unwind(fieldCat + ".listofcards",true),
 
                                 // Store the count and card ID
                                 Aggregation.project()
@@ -98,7 +98,7 @@ public class UserDetailsMongoRepository {
                                                 "_id",
                                                 "cardDetails"),
 
-                                Aggregation.unwind("cardDetails"),
+                                Aggregation.unwind("cardDetails",true),
 
                                 // Merge the count field into the cardDetails document using ObjectOperators
                                 Aggregation.project()
@@ -221,7 +221,7 @@ public class UserDetailsMongoRepository {
                                 Aggregation.unwind(fieldCat),
                                 // Add match condition for specific deckuid
                                 Aggregation.match(Criteria.where(fieldCat + ".deckuid").is(deckUid)),
-                                Aggregation.unwind(fieldCat + ".listofcards"),
+                                Aggregation.unwind(fieldCat + ".listofcards",true),
 
                                 // Store the count and card ID
                                 Aggregation.project()
@@ -235,7 +235,7 @@ public class UserDetailsMongoRepository {
                                                 "_id",
                                                 "cardDetails"),
 
-                                Aggregation.unwind("cardDetails"),
+                                Aggregation.unwind("cardDetails",true),
 
                                 // Merge the count field into the cardDetails document using ObjectOperators
                                 Aggregation.project()
@@ -263,8 +263,7 @@ public class UserDetailsMongoRepository {
 
                 // Use getUniqueMappedResult() to get a single result
                 return mongoTemplate.aggregate(aggregation, C_USER, OnePieceDecklist.class)
-                                .getUniqueMappedResult();
-        }
+                                .getUniqueMappedResult();}
 
         /*
          * V1 load
@@ -307,7 +306,7 @@ public class UserDetailsMongoRepository {
                                 Aggregation.unwind(fieldCat),
                                 // Add match condition for specific deckuid
                                 Aggregation.match(Criteria.where(fieldCat + ".deckuid").is(deckUid)),
-                                Aggregation.unwind(fieldCat + ".listofcards"),
+                                Aggregation.unwind(fieldCat + ".listofcards",true),
 
                                 // Store the count and card ID
                                 Aggregation.project()
@@ -321,7 +320,7 @@ public class UserDetailsMongoRepository {
                                                 "_id",
                                                 "cardDetails"),
 
-                                Aggregation.unwind("cardDetails"),
+                                Aggregation.unwind("cardDetails",true),
 
                                 // Merge the count field into the cardDetails document using ObjectOperators
                                 Aggregation.project()
@@ -393,7 +392,7 @@ public class UserDetailsMongoRepository {
                                 Aggregation.unwind(fieldCat),
                                 // Add match condition for specific deckuid
                                 Aggregation.match(Criteria.where(fieldCat + ".deckuid").is(deckUid)),
-                                Aggregation.unwind(fieldCat + ".listofcards"),
+                                Aggregation.unwind(fieldCat + ".listofcards",true),
 
                                 // Store the count and card ID
                                 Aggregation.project()
@@ -407,7 +406,7 @@ public class UserDetailsMongoRepository {
                                                 "_id",
                                                 "cardDetails"),
 
-                                Aggregation.unwind("cardDetails"),
+                                Aggregation.unwind("cardDetails",true),
 
                                 // Merge the count field into the cardDetails document using ObjectOperators
                                 Aggregation.project()
@@ -478,7 +477,7 @@ public class UserDetailsMongoRepository {
                                 Aggregation.unwind(fieldCat),
                                 // Add match condition for specific deckuid
                                 Aggregation.match(Criteria.where(fieldCat + ".deckuid").is(deckUid)),
-                                Aggregation.unwind(fieldCat + ".listofcards"),
+                                Aggregation.unwind(fieldCat + ".listofcards",true),
 
                                 // Store the count and card ID
                                 Aggregation.project()
@@ -492,7 +491,7 @@ public class UserDetailsMongoRepository {
                                                 "_id",
                                                 "cardDetails"),
 
-                                Aggregation.unwind("cardDetails"),
+                                Aggregation.unwind("cardDetails",true),
 
                                 // Merge the count field into the cardDetails document using ObjectOperators
                                 Aggregation.project()
@@ -563,7 +562,7 @@ public class UserDetailsMongoRepository {
                                 Aggregation.unwind(fieldCat),
                                 // Add match condition for specific deckuid
                                 Aggregation.match(Criteria.where(fieldCat + ".deckuid").is(deckUid)),
-                                Aggregation.unwind(fieldCat + ".listofcards"),
+                                Aggregation.unwind(fieldCat + ".listofcards",true),
 
                                 // Store the count and card ID
                                 Aggregation.project()
@@ -577,7 +576,7 @@ public class UserDetailsMongoRepository {
                                                 "_id",
                                                 "cardDetails"),
 
-                                Aggregation.unwind("cardDetails"),
+                                Aggregation.unwind("cardDetails",true),
 
                                 // Merge the count field into the cardDetails document using ObjectOperators
                                 Aggregation.project()
