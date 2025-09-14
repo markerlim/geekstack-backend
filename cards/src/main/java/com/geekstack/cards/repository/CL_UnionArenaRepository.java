@@ -22,7 +22,7 @@ public class CL_UnionArenaRepository {
     private MongoTemplate mongoTemplate;
 
     public List<UnionArenaCard> getCards() {
-        return mongoTemplate.findAll(UnionArenaCard.class,C_UNIONARENA);
+        return mongoTemplate.findAll(UnionArenaCard.class, C_UNIONARENA);
     }
 
     /* Return cards by anime code */
@@ -92,6 +92,13 @@ public class CL_UnionArenaRepository {
         query.fields().include(F_RARITY);
 
         return mongoTemplate.findDistinct(query, F_RARITY, C_UNIONARENA, String.class);
+    }
+
+    public List<UnionArenaCard> getCardsByBatchUids(List<String> uids) {
+        Criteria criteria = Criteria.where(F_CARDUID).in(uids);
+        Query query = new Query(criteria);
+        List<UnionArenaCard> cards = mongoTemplate.find(query, UnionArenaCard.class, C_UNIONARENA);
+        return cards;
     }
 
 }

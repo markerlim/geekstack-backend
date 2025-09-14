@@ -1,6 +1,13 @@
 package com.geekstack.cards.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -81,6 +88,47 @@ public class CardListService {
         public List<String> cardTypeFilters(String booster) {
             return duelMasterRepository.getDistinctCardType(booster);
         }
+
+        public List<DuelMastersCard> deckExtract(String value) {
+            Map<String, Integer> cardUidCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            String[] cardEntries = value.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        cardUidCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    cardUidCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            List<String> cardUids = new ArrayList<>(cardUidCountMap.keySet());
+            List<DuelMastersCard> cards = duelMasterRepository.getCardsByBatchUids(cardUids);
+
+            for (DuelMastersCard card : cards) {
+                String uid = card.getCardUid();
+                Integer count = cardUidCountMap.getOrDefault(uid, 0);
+                card.setCount(count);
+            }
+
+            return cards;
+        }
+
     }
 
     // Nested class for UnionArena actions
@@ -99,6 +147,46 @@ public class CardListService {
 
         public List<UnionArenaCardDTO> searchDatabase(String term) {
             return unionArenaRepository.searchForCards(term);
+        }
+
+        public List<UnionArenaCard> deckExtract(String value) {
+            Map<String, Integer> cardUidCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            String[] cardEntries = value.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        cardUidCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    cardUidCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            List<String> cardUids = new ArrayList<>(cardUidCountMap.keySet());
+            List<UnionArenaCard> cards = unionArenaRepository.getCardsByBatchUids(cardUids);
+
+            for (UnionArenaCard card : cards) {
+                String uid = card.getCardUid();
+                Integer count = cardUidCountMap.getOrDefault(uid, 0);
+                card.setCount(count);
+            }
+
+            return cards;
         }
 
         public List<String> boosterFilters(String animeCode) {
@@ -147,6 +235,47 @@ public class CardListService {
         public List<String> rarityFilters(String booster) {
             return onePieceRepository.getDistinctRarity(booster);
         }
+
+        public List<OnePieceCard> deckExtract(String value) {
+            Map<String, Integer> cardUidCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            String[] cardEntries = value.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        cardUidCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    cardUidCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            List<String> cardUids = new ArrayList<>(cardUidCountMap.keySet());
+            List<OnePieceCard> cards = onePieceRepository.getCardsByBatchUids(cardUids);
+
+            for (OnePieceCard card : cards) {
+                String uid = card.getCardUid();
+                Integer count = cardUidCountMap.getOrDefault(uid, 0);
+                card.setCount(count);
+            }
+
+            return cards;
+        }
+
     }
 
     // Nested class for CookieRun actions
@@ -162,6 +291,47 @@ public class CardListService {
         public List<CookieRunCard> searchDatabase(String term) {
             return cookieRunRepository.searchForCards(term);
         }
+
+        public List<CookieRunCard> deckExtract(String value) {
+            Map<String, Integer> cardUidCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            String[] cardEntries = value.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        cardUidCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    cardUidCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            List<String> cardUids = new ArrayList<>(cardUidCountMap.keySet());
+            List<CookieRunCard> cards = cookieRunRepository.getCardsByBatchUids(cardUids);
+
+            for (CookieRunCard card : cards) {
+                String uid = card.getCardUid();
+                Integer count = cardUidCountMap.getOrDefault(uid, 0);
+                card.setCount(count);
+            }
+
+            return cards;
+        }
+
     }
 
     // Nested class for DragonballzFW actions
@@ -185,6 +355,47 @@ public class CardListService {
         public List<String> rarityFilters(String booster) {
             return dragonBallzFWRepository.getDistinctRarity(booster);
         }
+
+        public List<DragonBallzFWCard> deckExtract(String value) {
+            Map<String, Integer> cardUidCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            String[] cardEntries = value.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        cardUidCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    cardUidCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            List<String> cardUids = new ArrayList<>(cardUidCountMap.keySet());
+            List<DragonBallzFWCard> cards = dragonBallzFWRepository.getCardsByBatchUids(cardUids);
+
+            for (DragonBallzFWCard card : cards) {
+                String uid = card.getCardUid();
+                Integer count = cardUidCountMap.getOrDefault(uid, 0);
+                card.setCount(count);
+            }
+
+            return cards;
+        }
+
     }
 
     // Nested class for Hololive actions
@@ -215,6 +426,47 @@ public class CardListService {
         public List<GundamCard> searchDatabase(String term) {
             return gundamCGRepository.searchForCards(term);
         }
+
+        public List<GundamCard> deckExtract(String value) {
+            Map<String, Integer> cardUidCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            String[] cardEntries = value.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        cardUidCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    cardUidCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            List<String> cardUids = new ArrayList<>(cardUidCountMap.keySet());
+            List<GundamCard> cards = gundamCGRepository.getCardsByBatchUids(cardUids);
+
+            for (GundamCard card : cards) {
+                String uid = card.getCardUid();
+                Integer count = cardUidCountMap.getOrDefault(uid, 0);
+                card.setCount(count);
+            }
+
+            return cards;
+        }
+
     }
 
     public class CardPriceActions {

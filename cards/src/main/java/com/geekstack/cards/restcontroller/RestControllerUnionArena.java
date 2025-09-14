@@ -1,12 +1,15 @@
 package com.geekstack.cards.restcontroller;
 
 import java.util.List;
+import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +22,8 @@ import static com.geekstack.cards.utils.Constants.*;
 @RestController
 @RequestMapping("/api/data/unionarena")
 public class RestControllerUnionArena {
+
+    Logger logger = Logger.getLogger(RestControllerUnionArena.class.getName());
 
     @Autowired
     private CardListService cardListService;
@@ -72,4 +77,8 @@ public class RestControllerUnionArena {
         return null;
     }
 
+    @PostMapping("/qr")
+    public ResponseEntity<List<UnionArenaCard>> setCardListService(@RequestBody String value) {
+        return new ResponseEntity<List<UnionArenaCard>>(cardListService.listofunionarena().deckExtract(value), HttpStatus.OK);
+    }
 }

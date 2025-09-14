@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Repository;
 
 import com.geekstack.cards.model.CookieRunCard;
+import com.geekstack.cards.model.DuelMastersCard;
 
 import static com.geekstack.cards.utils.Constants.*;
 
@@ -21,7 +22,7 @@ public class CL_CookieRunRepository {
     private MongoTemplate mongoTemplate;
 
     public List<CookieRunCard> getCards() {
-        return mongoTemplate.findAll(CookieRunCard.class,C_COOKIERUN);
+        return mongoTemplate.findAll(CookieRunCard.class, C_COOKIERUN);
     }
 
     public List<CookieRunCard> getCardsByBooster(String booster) {
@@ -49,6 +50,13 @@ public class CL_CookieRunRepository {
 
     public List<String> getDistinctBooster() {
         return mongoTemplate.findDistinct(new Query(), F_BOOSTER, C_COOKIERUN, String.class);
+    }
+
+    public List<CookieRunCard> getCardsByBatchUids(List<String> uids) {
+        Criteria criteria = Criteria.where(F_CARDUID).in(uids);
+        Query query = new Query(criteria);
+        List<CookieRunCard> cards = mongoTemplate.find(query, CookieRunCard.class, C_COOKIERUN);
+        return cards;
     }
 
 }

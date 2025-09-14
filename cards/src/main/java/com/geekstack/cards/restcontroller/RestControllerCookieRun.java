@@ -7,10 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geekstack.cards.model.CookieRunCard;
+import com.geekstack.cards.model.UnionArenaCard;
 import com.geekstack.cards.service.CardListService;
 
 @RestController
@@ -33,10 +36,16 @@ public class RestControllerCookieRun {
                 HttpStatus.OK);
     }
 
-            // http//localhost:8080/data/cookierunbraverse/search/{phrase to search for}
+    // http//localhost:8080/data/cookierunbraverse/search/{phrase to search for}
     @GetMapping("/search/{term}")
     public ResponseEntity<List<CookieRunCard>> searchCookieRun(@PathVariable String term) {
         return new ResponseEntity<List<CookieRunCard>>(cardListService.listofcookierun().searchDatabase(term),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/qr")
+    public ResponseEntity<List<CookieRunCard>> setCardListService(@RequestBody String value) {
+        return new ResponseEntity<List<CookieRunCard>>(cardListService.listofcookierun().deckExtract(value),
                 HttpStatus.OK);
     }
 }

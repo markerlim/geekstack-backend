@@ -21,7 +21,7 @@ public class CL_DragonBallzFWRepository {
     private MongoTemplate mongoTemplate;
 
     public List<DragonBallzFWCard> getCards() {
-        return mongoTemplate.findAll(DragonBallzFWCard.class,C_DRAGONBALLZFW);
+        return mongoTemplate.findAll(DragonBallzFWCard.class, C_DRAGONBALLZFW);
     }
 
     public List<DragonBallzFWCard> getCardsByBooster(String booster) {
@@ -39,9 +39,9 @@ public class CL_DragonBallzFWRepository {
                 .matchingPhrase(term);
         TextQuery textQuery = new TextQuery(textCriteria);
 
-        TextQuerySorting(textQuery, F_BOOSTER, true, F_CARDUID,true);
+        TextQuerySorting(textQuery, F_BOOSTER, true, F_CARDUID, true);
 
-        List<DragonBallzFWCard> results =  mongoTemplate.find(textQuery, DragonBallzFWCard.class, C_DRAGONBALLZFW);
+        List<DragonBallzFWCard> results = mongoTemplate.find(textQuery, DragonBallzFWCard.class, C_DRAGONBALLZFW);
         return results;
     }
 
@@ -70,6 +70,13 @@ public class CL_DragonBallzFWRepository {
         query.fields().include(F_RARITY);
 
         return mongoTemplate.findDistinct(query, F_RARITY, C_DRAGONBALLZFW, String.class);
+    }
+
+    public List<DragonBallzFWCard> getCardsByBatchUids(List<String> uids) {
+        Criteria criteria = Criteria.where(F_CARDUID).in(uids);
+        Query query = new Query(criteria);
+        List<DragonBallzFWCard> cards = mongoTemplate.find(query, DragonBallzFWCard.class, C_DRAGONBALLZFW);
+        return cards;
     }
 
 }
