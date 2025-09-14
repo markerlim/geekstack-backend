@@ -9,6 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,13 +36,16 @@ public class RestControllerDuelMaster {
         return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().byBooster(booster),
                 HttpStatus.OK);
     }
-        // http//localhost:8080/api/data/duelmasters/search/{phrase to search for}
+
+    // http//localhost:8080/api/data/duelmasters/search/{phrase to search for}
     @GetMapping("/search/{term}")
     public ResponseEntity<List<DuelMastersCard>> searchDuelMaster(@PathVariable String term) {
         return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().searchDatabase(term),
                 HttpStatus.OK);
     }
-    // http//localhost:8080/api/data/duelmaster/filter/{civilization or cardtype}/{booster}
+
+    // http//localhost:8080/api/data/duelmaster/filter/{civilization or
+    // cardtype}/{booster}
     @GetMapping("/filter/{field}/{booster}")
     public ResponseEntity<List<String>> DuelMasterFiltersByBooster(@PathVariable String field,
             @PathVariable String booster) {
@@ -54,5 +59,11 @@ public class RestControllerDuelMaster {
                     HttpStatus.OK);
         }
         return null;
+    }
+
+    @PostMapping("/qr")
+    public ResponseEntity<List<DuelMastersCard>> setCardListService(@RequestBody String value) {
+        return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().deckExtract(value),
+                HttpStatus.OK);
     }
 }

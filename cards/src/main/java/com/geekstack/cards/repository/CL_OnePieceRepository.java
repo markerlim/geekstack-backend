@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Repository;
 
 import com.geekstack.cards.model.OnePieceCard;
+import com.geekstack.cards.model.UnionArenaCard;
 
 import static com.geekstack.cards.utils.Constants.*;
 
@@ -120,4 +121,10 @@ public class CL_OnePieceRepository {
         return mongoTemplate.findDistinct(query, F_RARITY, C_ONEPIECE, String.class);
     }
 
+    public List<OnePieceCard> getCardsByBatchUids(List<String> uids) {
+        Criteria criteria = Criteria.where(F_CARDUID).in(uids);
+        Query query = new Query(criteria);
+        List<OnePieceCard> cards = mongoTemplate.find(query, OnePieceCard.class, C_ONEPIECE);
+        return cards;
+    }
 }

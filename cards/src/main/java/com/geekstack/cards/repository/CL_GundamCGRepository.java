@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.query.TextCriteria;
 import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Repository;
 
+import com.geekstack.cards.model.DragonBallzFWCard;
 import com.geekstack.cards.model.GundamCard;
 
 @Repository
@@ -51,5 +52,12 @@ public class CL_GundamCGRepository {
         List<GundamCard> results = mongoTemplate.find(textQuery, GundamCard.class, C_GUNDAM);
 
         return results;
+    }
+
+    public List<GundamCard> getCardsByBatchUids(List<String> uids) {
+        Criteria criteria = Criteria.where(F_CARDUID).in(uids);
+        Query query = new Query(criteria);
+        List<GundamCard> cards = mongoTemplate.find(query, GundamCard.class, C_GUNDAM);
+        return cards;
     }
 }

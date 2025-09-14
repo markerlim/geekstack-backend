@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Repository;
 
 import com.geekstack.cards.model.DuelMastersCard;
+import com.geekstack.cards.model.OnePieceCard;
 
 import static com.geekstack.cards.utils.Constants.*;
 
@@ -34,9 +35,9 @@ public class CL_DuelMasterRepository {
         return results;
     }
 
-    public List<DuelMastersCard> searchForCards(String term){
+    public List<DuelMastersCard> searchForCards(String term) {
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
-        .matchingPhrase(term);
+                .matchingPhrase(term);
 
         TextQuery textQuery = new TextQuery(textCriteria);
 
@@ -46,25 +47,32 @@ public class CL_DuelMasterRepository {
 
         return results;
     }
-    public List<String> getDistinctBooster(){
-        return mongoTemplate.findDistinct(new Query(),F_BOOSTER, C_DUELMASTER, String.class);
+
+    public List<String> getDistinctBooster() {
+        return mongoTemplate.findDistinct(new Query(), F_BOOSTER, C_DUELMASTER, String.class);
     }
 
-    public List<String> getDistinctCivilization(String booster){
-        System.out.println("booster: "+booster);
+    public List<String> getDistinctCivilization(String booster) {
+        System.out.println("booster: " + booster);
         Criteria criteria = Criteria.where(F_BOOSTER).is(booster);
         Query query = new Query(criteria);
 
-        return mongoTemplate.findDistinct(query,F_CIVILIZATION, C_DUELMASTER, String.class);
+        return mongoTemplate.findDistinct(query, F_CIVILIZATION, C_DUELMASTER, String.class);
     }
 
-    public List<String> getDistinctCardType(String booster){
+    public List<String> getDistinctCardType(String booster) {
 
         Criteria criteria = Criteria.where(F_BOOSTER).is(booster);
         Query query = new Query(criteria);
 
-        return mongoTemplate.findDistinct(query,F_CARDTYPE, C_DUELMASTER, String.class);
+        return mongoTemplate.findDistinct(query, F_CARDTYPE, C_DUELMASTER, String.class);
     }
 
+    public List<DuelMastersCard> getCardsByBatchUids(List<String> uids) {
+        Criteria criteria = Criteria.where(F_CARDUID).in(uids);
+        Query query = new Query(criteria);
+        List<DuelMastersCard> cards = mongoTemplate.find(query, DuelMastersCard.class, C_DUELMASTER);
+        return cards;
+    }
 
 }
