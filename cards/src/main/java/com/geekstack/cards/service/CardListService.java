@@ -1,13 +1,10 @@
 package com.geekstack.cards.service;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,8 +29,13 @@ import com.geekstack.cards.repository.CL_UnionArenaRepository;
 import com.geekstack.cards.repository.PR_FullaheadRepository;
 import com.geekstack.cards.repository.PR_YuyuteiRepository;
 
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+
 @Service
 public class CardListService {
+
+    org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CardListService.class);
 
     @Autowired
     private CL_DuelMasterRepository duelMasterRepository;
@@ -96,7 +98,9 @@ public class CardListService {
                 return new ArrayList<>();
             }
 
-            String[] cardEntries = value.split(",");
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
 
             for (String entry : cardEntries) {
                 String trimmedEntry = entry.trim();
@@ -156,7 +160,9 @@ public class CardListService {
                 return new ArrayList<>();
             }
 
-            String[] cardEntries = value.split(",");
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
 
             for (String entry : cardEntries) {
                 String trimmedEntry = entry.trim();
@@ -177,6 +183,7 @@ public class CardListService {
                 }
             }
 
+            // Convert to list for Mongo query
             List<String> cardUids = new ArrayList<>(cardUidCountMap.keySet());
             List<UnionArenaCard> cards = unionArenaRepository.getCardsByBatchUids(cardUids);
 
@@ -185,7 +192,6 @@ public class CardListService {
                 Integer count = cardUidCountMap.getOrDefault(uid, 0);
                 card.setCount(count);
             }
-
             return cards;
         }
 
@@ -243,7 +249,9 @@ public class CardListService {
                 return new ArrayList<>();
             }
 
-            String[] cardEntries = value.split(",");
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
 
             for (String entry : cardEntries) {
                 String trimmedEntry = entry.trim();
@@ -299,7 +307,9 @@ public class CardListService {
                 return new ArrayList<>();
             }
 
-            String[] cardEntries = value.split(",");
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
 
             for (String entry : cardEntries) {
                 String trimmedEntry = entry.trim();
@@ -363,7 +373,9 @@ public class CardListService {
                 return new ArrayList<>();
             }
 
-            String[] cardEntries = value.split(",");
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
 
             for (String entry : cardEntries) {
                 String trimmedEntry = entry.trim();
@@ -434,7 +446,9 @@ public class CardListService {
                 return new ArrayList<>();
             }
 
-            String[] cardEntries = value.split(",");
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
 
             for (String entry : cardEntries) {
                 String trimmedEntry = entry.trim();

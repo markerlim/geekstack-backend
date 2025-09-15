@@ -24,8 +24,6 @@ import com.geekstack.cards.repository.UserDetailsMySQLRepository;
 @Service
 public class UserDetailService {
 
-    private static final Logger logger = LoggerFactory.getLogger(UserDetailService.class);
-
     @Autowired
     private UserDetailsMongoRepository userDetailsMongoRepository;
 
