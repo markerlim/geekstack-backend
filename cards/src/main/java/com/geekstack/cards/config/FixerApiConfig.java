@@ -15,7 +15,7 @@ public class FixerApiConfig {
     private String apiUrl;
 
     @Bean
-    public RestTemplate restTemplate() {
+    public RestTemplate fixerRestTemplate() {
         return new RestTemplate();
     }
 
