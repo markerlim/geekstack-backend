@@ -34,8 +34,10 @@ import com.geekstack.cards.model.FirebaseUser;
 import com.geekstack.cards.model.GenericDecklist;
 import com.geekstack.cards.model.GundamDecklist;
 import com.geekstack.cards.model.Notification;
+import com.geekstack.cards.model.NotificationMerged;
 import com.geekstack.cards.model.OnePieceDecklist;
 import com.geekstack.cards.model.UnionArenaDecklist;
+import com.geekstack.cards.model.NotificationMerged.SenderInfo;
 import com.geekstack.cards.repository.UserDetailsMongoRepository;
 import com.geekstack.cards.repository.UserDetailsMySQLRepository;
 import com.geekstack.cards.service.CurrencyConversionService;
@@ -416,10 +418,8 @@ public class UserDetailsController {
         }
     }
 
-    // Stopped at
-    // Resolved [org.springframework.web.bind.MissingRequestHeaderException:
-    // Required request header 'payload' for method parameter type String is not
-    // present]
+
+    // Notification endpoint    
     @GetMapping("/notifications")
     public ResponseEntity<List<Notification>> listOfNotifications(
             @RequestParam(defaultValue = "10") String limit,
@@ -427,6 +427,20 @@ public class UserDetailsController {
         String userId = user.getUid();
         return new ResponseEntity<List<Notification>>(userDetailService.listNotifications(userId, limit),
                 HttpStatus.OK);
+    }
+
+    @GetMapping("/notifications/merged")
+    public ResponseEntity<List<NotificationMerged>> listOfNotificationsMerged(
+            @RequestParam(defaultValue = "10") String limit,
+            @AuthenticationPrincipal FirebaseUser.Principal user) throws Exception {
+        String userId = user.getUid();
+        List<NotificationMerged> list = userDetailService.listNotificationsMerge(userId, limit);
+        for (NotificationMerged n : list) {
+            for (SenderInfo s : n.getLatestSender()) {
+                System.out.println(s.getName());
+            }
+        }
+        return new ResponseEntity<List<NotificationMerged>>(list, HttpStatus.OK);
     }
 
     @PostMapping("/upd/{name}/of/{userId}")
