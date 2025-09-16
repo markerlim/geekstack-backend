@@ -39,7 +39,6 @@ import com.geekstack.cards.model.OnePieceDecklist;
 import com.geekstack.cards.model.UnionArenaDecklist;
 import com.geekstack.cards.model.NotificationMerged.SenderInfo;
 import com.geekstack.cards.repository.UserDetailsMongoRepository;
-import com.geekstack.cards.repository.UserDetailsMySQLRepository;
 import com.geekstack.cards.service.CurrencyConversionService;
 import com.geekstack.cards.service.EmailService;
 import com.geekstack.cards.service.FirebaseService;
@@ -54,9 +53,6 @@ public class UserDetailsController {
     private final static Logger logger = LoggerFactory.getLogger(UserDetailsController.class);
     @Autowired
     private UserDetailsMongoRepository userDetailsMongoRepository;
-
-    @Autowired
-    private UserDetailsMySQLRepository userDetailsMySQLRepository;
 
     @Autowired
     private UserDetailService userDetailService;

@@ -3,6 +3,7 @@ package com.geekstack.cards.service;
 import java.time.LocalDateTime;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -17,6 +18,7 @@ import com.geekstack.cards.repository.ExchangeRateRepository;
 public class CurrencyConversionService {
 
     @Autowired
+    @Qualifier("fixerRestTemplate")
     private RestTemplate restTemplate;
 
     @Autowired

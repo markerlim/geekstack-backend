@@ -1,27 +1,31 @@
 package com.geekstack.cards.service;
 
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
-
     @Value("${reporting.email}")
     private String emailAddress;
+
+    @Value("${resend.api.key}")
+    private String resendApiKey;
+
+    @Value("${resend.from.email}")
+    private String resendFromEmail;
+
+    private final RestTemplate restTemplate = new RestTemplate();
 
     @Async
     public void sendReportEmail(String payload) {
@@ -32,26 +36,28 @@ public class EmailService {
             String errorMsg = jobject.getString("errorMsg");
             String tcg = jobject.getString("tcg");
 
-            System.out.println("Attempting to send email...");
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setTo(emailAddress);
-            helper.setSubject(buildTrelloEmailSubject(cardUid, tcg));
-            helper.setText(buildTrelloEmailBody(userId, cardUid, errorMsg), true);
+            String subject = buildTrelloEmailSubject(cardUid, tcg);
+            String body = buildTrelloEmailBody(userId, cardUid, errorMsg);
 
-            System.out.println("Mail Properties:");
-            System.out.println("Name: " + mailSender.getClass().getName());
+            Map<String, Object> emailData = new HashMap<>();
+            emailData.put("from", resendFromEmail);
+            emailData.put("to", emailAddress);
+            emailData.put("subject", subject);
+            emailData.put("html", body);
 
-            mailSender.send(message);
-            System.out.println("Email sent successfully");
-        } catch (MessagingException e) {
-            System.err.println("MessagingException: " + e.getMessage());
-            e.printStackTrace();
-            if (e.getCause() != null) {
-                System.err.println("Root cause: " + e.getCause().getMessage());
-            }
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.setBearerAuth(resendApiKey);
+
+            HttpEntity<Map<String, Object>> request = new HttpEntity<>(emailData, headers);
+
+            ResponseEntity<String> response = restTemplate.postForEntity(
+                "https://api.resend.com/emails", request, String.class);
+
+            System.out.println("Resend API response: " + response.getStatusCode());
+            System.out.println("Response body: " + response.getBody());
         } catch (Exception e) {
-            System.err.println("Unexpected error: " + e.getMessage());
+            System.err.println("Error sending email via Resend: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -75,5 +81,4 @@ public class EmailService {
     private String buildTrelloEmailSubject(String cardUid, String tcg) {
         return "Error Ticket - " + cardUid + " #" + tcg;
     }
-
 }
