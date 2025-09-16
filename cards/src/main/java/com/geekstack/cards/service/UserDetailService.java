@@ -8,8 +8,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.geekstack.cards.model.Notification;
+import com.geekstack.cards.model.NotificationMerged;
 import com.geekstack.cards.repository.NotificationRepository;
 import com.geekstack.cards.repository.UserDetailsMongoRepository;
 import com.geekstack.cards.repository.UserDetailsMySQLRepository;
@@ -92,6 +91,30 @@ public class UserDetailService {
                     // If lastSeen is null (user never checked notifications), treat all
                     // notifications as read.
                     n.setIsRead(true);
+                }
+            }
+        }
+        userDetailsMySQLRepository.updateLastSeenNotification(userId);
+        return list;
+    }
+
+    public List<NotificationMerged> listNotificationsMerge(String userId, String limit) throws Exception {
+        List<NotificationMerged> list = notificationRepository.getMergedNotifications(userId, Integer.parseInt(limit));
+        String lastSeen = userDetailsMySQLRepository.getLastSeenNotification(userId);
+        ZonedDateTime lastSeenZoned = null;
+
+        if (lastSeen != null && !lastSeen.isEmpty()) {
+            LocalDateTime lastSeenDateTime = LocalDateTime.parse(lastSeen, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+            lastSeenZoned = lastSeenDateTime.atZone(ZoneId.systemDefault());
+            for (NotificationMerged n : list) {
+                if (lastSeenZoned != null) {
+                    // If the notification timestamp is after lastSeen, the user has NOT seen it.
+                    // Therefore, set isRead to false. Otherwise, set isRead to true.
+                    n.setRead(!n.getTimestamp().isAfter(lastSeenZoned));
+                } else {
+                    // If lastSeen is null (user never checked notifications), treat all
+                    // notifications as read.
+                    n.setRead(true);
                 }
             }
         }
