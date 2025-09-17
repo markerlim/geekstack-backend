@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -223,21 +222,25 @@ public class UserPostController {
     }
 
     @GetMapping("/listuserpostings")
-    public ResponseEntity<List<UserPostFinal>> listPostingOfUser(@RequestHeader("Authorization") String authorization,
+    public ResponseEntity<List<UserPostFinal>> listPostingOfUser(
             @RequestParam(defaultValue = "1") String page,
-            @RequestParam(defaultValue = "20") String limit) throws NumberFormatException, Exception {
+            @RequestParam(defaultValue = "10") String limit,
+            @AuthenticationPrincipal FirebaseUser.Principal user) throws NumberFormatException, Exception {
+        String userId = user.getUid();
         return ResponseEntity.ok(
                 userPostService.listUserPost(Integer.parseInt(page), Integer.parseInt(limit),
-                        "USERPOST:" + authorization));
+                        "USERPOST:" + userId));
     }
 
     @GetMapping("/listoflikedpost")
-    public ResponseEntity<List<UserPostFinal>> listLikedPostOfUser(@RequestHeader("Authorization") String authorization,
+    public ResponseEntity<List<UserPostFinal>> listLikedPostOfUser(
             @RequestParam(defaultValue = "1") String page,
-            @RequestParam(defaultValue = "20") String limit) throws NumberFormatException, Exception {
+            @RequestParam(defaultValue = "10") String limit,
+            @AuthenticationPrincipal FirebaseUser.Principal user) throws NumberFormatException, Exception {
+        String userId = user.getUid();
         return ResponseEntity.ok(
                 userPostService.listUserPost(Integer.parseInt(page),
-                        Integer.parseInt(limit), "LIKEDPOST:" + authorization));
+                        Integer.parseInt(limit), "LIKEDPOST:" + userId));
     }
 
     @PostMapping("/upd/{postId}")
@@ -245,8 +248,22 @@ public class UserPostController {
             @RequestParam("file") MultipartFile file) {
         Map<String, Object> response = new HashMap<>();
         try {
-            String fileName = "post_" + postId + "_" + System.currentTimeMillis() + ".webp";
+            String originalFilename = file.getOriginalFilename();
+            String extension = "";
+
+            if (originalFilename != null && originalFilename.contains(".")) {
+                extension = originalFilename.substring(originalFilename.lastIndexOf(".")).toLowerCase();
+                if (!extension.equals(".webp") && !extension.equals(".gif")) {
+                    response.put("message", "Invalid file type. Only .webp and .gif are allowed.");
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+                }
+            } else {
+                extension = ".webp";
+            }
+
+            String fileName = "post_" + postId + "_" + System.currentTimeMillis() + extension;
             String fileUrl = googleCloudStorageService.uploadPostImage(file.getBytes(), postId, fileName);
+
             response.put("message", "Successfully Uploaded");
             response.put("fileUrl", fileUrl);
             return ResponseEntity.status(HttpStatus.OK).body(response);
@@ -256,4 +273,5 @@ public class UserPostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
+
 }

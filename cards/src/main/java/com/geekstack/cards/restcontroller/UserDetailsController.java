@@ -107,7 +107,7 @@ public class UserDetailsController {
             }
             response.put("message", "User exist in database");
             response.put("userObject", userDetailService.getOneUser(userId));
-            response.put("unreadNotification",userDetailService.checkNumOfUnread(userId));
+            response.put("unreadNotification", userDetailService.checkNumOfUnread(userId));
             return ResponseEntity.status(HttpStatus.OK).body(response);
         } catch (Exception e) {
             response.put("message", "Error adding user: " + e.getMessage());
@@ -414,8 +414,7 @@ public class UserDetailsController {
         }
     }
 
-
-    // Notification endpoint    
+    // Notification endpoint
     @GetMapping("/notifications")
     public ResponseEntity<List<Notification>> listOfNotifications(
             @RequestParam(defaultValue = "10") String limit,
@@ -439,8 +438,11 @@ public class UserDetailsController {
         return new ResponseEntity<List<NotificationMerged>>(list, HttpStatus.OK);
     }
 
-    @PostMapping("/upd/{name}/of/{userId}")
-    public ResponseEntity<Map<String, Object>> updateName(@PathVariable String name, @PathVariable String userId) {
+    @PostMapping("/upd/name")
+    public ResponseEntity<Map<String, Object>> updateName(@RequestBody Map<String, String> payload,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        String userId = user.getUid();
+        String name = payload.get("name");
         Map<String, Object> response = new HashMap<>();
         try {
             userDetailService.updateUserName(name, userId);
@@ -452,9 +454,11 @@ public class UserDetailsController {
         }
     }
 
-    @PostMapping("/upd/image/{userId}")
-    public ResponseEntity<Map<String, Object>> updateImage(@PathVariable String userId,
-            @RequestParam("file") MultipartFile file) {
+    @PostMapping("/upd/image")
+    public ResponseEntity<Map<String, Object>> updateImage(
+            @RequestParam("file") MultipartFile file,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        String userId = user.getUid();
         Map<String, Object> response = new HashMap<>();
         try {
             String fileName = "profile-pic-" + System.currentTimeMillis() + ".png";
