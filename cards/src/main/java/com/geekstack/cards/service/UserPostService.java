@@ -219,9 +219,13 @@ public class UserPostService {
         Object selectedCoverObj = holder.get("selectedCover");
         if (selectedCoverObj instanceof String) {
             String selectedCover = (String) selectedCoverObj;
-            urlArray.add(selectedCover);
+            if (selectedCover.startsWith("https://storage.googleapis.com/") && 
+                selectedCover.contains("/userpost/")) {
+                urlArray.add(selectedCover);
+            }
         }
 
+        // Process content HTML for image URLs
         Object contentObj = holder.get("content");
         if (contentObj instanceof String) {
             String content = (String) contentObj;
@@ -233,10 +237,15 @@ public class UserPostService {
             }
         }
 
-        if (googleCloudStorageService.deleteImages(urlArray)) {
-            logger.info("Successfully deleted images from GCS for postId: {}", postId);
+        // Only delete images if there are URLs to delete
+        if (!urlArray.isEmpty()) {
+            if (googleCloudStorageService.deleteImages(urlArray)) {
+                logger.info("Successfully deleted {} images from GCS for postId: {}", urlArray.size(), postId);
+            } else {
+                logger.warn("Failed to delete some or all images from GCS for postId: {}", postId);
+            }
         } else {
-            logger.warn("Failed to delete some or all images from GCS for postId: {}", postId);
+            logger.info("No images to delete from GCS for postId: {}", postId);
         }
     }
 
