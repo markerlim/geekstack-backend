@@ -96,6 +96,11 @@ public class GoogleCloudStorageService {
      * @return true if all deletions succeeded, false otherwise
      */
     public boolean deleteImages(List<String> urls) {
+        if (urls == null || urls.isEmpty()) {
+            System.err.println("No URLs to delete from GCS.");
+            return true; // nothing to do
+        }
+        
         java.util.List<String> objectPaths = new java.util.ArrayList<>();
         for (String url : urls) {
             // Example:
