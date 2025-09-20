@@ -2,6 +2,7 @@ package com.geekstack.cards.service;
 
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ import com.geekstack.cards.repository.CL_UnionArenaRepository;
 import com.geekstack.cards.repository.PR_FullaheadRepository;
 import com.geekstack.cards.repository.PR_YuyuteiRepository;
 
+import jakarta.annotation.Nullable;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 
@@ -226,8 +228,21 @@ public class CardListService {
             return onePieceRepository.getCardsByBooster(booster);
         }
 
-        public List<OnePieceCard> searchDatabase(String term) {
-            return onePieceRepository.searchForCards(term);
+        public List<OnePieceCard> searchDatabase(@Nullable String term, @Nullable String color,
+                @Nullable String excludeCategory) {
+            List<String> colorArray = null;
+
+            if (color != null && !color.trim().isEmpty()) {
+                colorArray = Arrays.asList(color.split(","));
+            }
+
+            if (term == null) {
+                return onePieceRepository.getCardsByColor(colorArray, excludeCategory);
+
+            } else {
+                return onePieceRepository.searchForCards(term, colorArray, excludeCategory);
+
+            }
         }
 
         public List<String> categoryFilters(String booster) {
@@ -298,6 +313,21 @@ public class CardListService {
 
         public List<CookieRunCard> searchDatabase(String term) {
             return cookieRunRepository.searchForCards(term);
+        }
+
+        public List<CookieRunCard> searchDatabase(@Nullable String term, @Nullable String color) {
+            List<String> colorArray = null;
+
+            if (color != null && !color.trim().isEmpty()) {
+                colorArray = Arrays.asList(color.split(","));
+            }
+
+            if (term == null) {
+                return cookieRunRepository.getCardsByColor(colorArray);
+            } else {
+                return cookieRunRepository.searchForCards(term, colorArray);
+
+            }
         }
 
         public List<CookieRunCard> deckExtract(String value) {
@@ -435,8 +465,19 @@ public class CardListService {
             return gundamCGRepository.getCardsByBooster(booster);
         }
 
-        public List<GundamCard> searchDatabase(String term) {
-            return gundamCGRepository.searchForCards(term);
+        public List<GundamCard> searchDatabase(@Nullable String term, @Nullable String color) {
+            List<String> colorArray = null;
+
+            if (color != null && !color.trim().isEmpty()) {
+                colorArray = Arrays.asList(color.split(","));
+            }
+
+            if (term == null) {
+                return gundamCGRepository.getCardsByColor(colorArray);
+            } else {
+                return gundamCGRepository.searchForCards(term, colorArray);
+
+            }
         }
 
         public List<GundamCard> deckExtract(String value) {

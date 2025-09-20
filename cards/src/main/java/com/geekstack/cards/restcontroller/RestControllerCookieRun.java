@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geekstack.cards.model.CookieRunCard;
@@ -36,9 +37,9 @@ public class RestControllerCookieRun {
                 HttpStatus.OK);
     }
 
-    // http//localhost:8080/data/cookierunbraverse/search/{phrase to search for}
-    @GetMapping("/search/{term}")
-    public ResponseEntity<List<CookieRunCard>> searchCookieRun(@PathVariable String term) {
+    // http//localhost:8080/data/cookierunbraverse/search?{phrase to search for}
+    @GetMapping("/search")
+    public ResponseEntity<List<CookieRunCard>> searchCookieRun(@RequestParam String term) {
         return new ResponseEntity<List<CookieRunCard>>(cardListService.listofcookierun().searchDatabase(term),
                 HttpStatus.OK);
     }

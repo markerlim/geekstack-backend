@@ -1,8 +1,0 @@
-<div class="nav-tab">
-  @for (tab of tabs; track $index) {
-  <div class="nav-tab-icon" [routerLink]="tab.path" routerLinkActive="active">
-    <img [src]="tab.icon" [alt]="tab.alt" />
-    <p>{{ tab.label }}</p>
-  </div>
-  }
-</div>

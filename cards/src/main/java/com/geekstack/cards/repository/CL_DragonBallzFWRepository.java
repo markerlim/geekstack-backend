@@ -14,6 +14,8 @@ import org.springframework.stereotype.Repository;
 
 import com.geekstack.cards.model.DragonBallzFWCard;
 
+import jakarta.annotation.Nullable;
+
 @Repository
 public class CL_DragonBallzFWRepository {
 
@@ -34,6 +36,16 @@ public class CL_DragonBallzFWRepository {
         return results;
     }
 
+    public List<DragonBallzFWCard> getCardsByColor(List<String> color) {
+        Criteria criteria = Criteria.where(F_COLOR).in(color);
+        Query query = new Query(criteria);
+
+        QuerySorting(query, F_CARDUID, true);
+
+        List<DragonBallzFWCard> results = mongoTemplate.find(query, DragonBallzFWCard.class, C_DRAGONBALLZFW);
+        return results;
+    }
+
     public List<DragonBallzFWCard> searchForCards(String term) {
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
                 .matchingPhrase(term);
@@ -43,6 +55,30 @@ public class CL_DragonBallzFWRepository {
 
         List<DragonBallzFWCard> results = mongoTemplate.find(textQuery, DragonBallzFWCard.class, C_DRAGONBALLZFW);
         return results;
+    }
+
+    // Search by text and color exclude card type
+    public List<DragonBallzFWCard> searchForCards(String term, @Nullable List<String> color,
+            @Nullable String excludeCardType) {
+        TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
+                .matching(term);
+
+        TextQuery textQuery = new TextQuery(textCriteria);
+
+        // Optional: filter by color
+        if (color != null && !color.isEmpty()) {
+            textQuery.addCriteria(Criteria.where(F_COLOR).in(color));
+        }
+
+        // Optional: exclude card type
+        if (excludeCardType != null && !excludeCardType.isEmpty()) {
+            textQuery.addCriteria(Criteria.where(F_CARDTYPE).ne(excludeCardType));
+        }
+
+        // Keep your sorting logic
+        TextQuerySorting(textQuery, F_BOOSTER, true, F_CARDUID, true);
+
+        return mongoTemplate.find(textQuery, DragonBallzFWCard.class, C_DRAGONBALLZFW);
     }
 
     public List<String> getDistinctCardtype(String booster) {

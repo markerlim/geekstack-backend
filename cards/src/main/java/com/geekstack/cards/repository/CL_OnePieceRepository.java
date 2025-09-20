@@ -13,6 +13,8 @@ import org.springframework.stereotype.Repository;
 import com.geekstack.cards.model.OnePieceCard;
 import com.geekstack.cards.model.UnionArenaCard;
 
+import jakarta.annotation.Nullable;
+
 import static com.geekstack.cards.utils.Constants.*;
 
 @Repository
@@ -27,6 +29,27 @@ public class CL_OnePieceRepository {
 
     public List<OnePieceCard> getCardsByBooster(String booster) {
         Criteria criteria = Criteria.where(F_BOOSTER).is(booster.toUpperCase());
+
+        Query query = new Query(criteria);
+
+        QuerySorting(query, F_CARDUID, true);
+
+        List<OnePieceCard> results = mongoTemplate.find(query, OnePieceCard.class, C_ONEPIECE);
+
+        return results;
+    }
+
+    public List<OnePieceCard> getCardsByColor(List<String> color, @Nullable String category) {
+        Criteria criteria = new Criteria();
+        criteria.andOperator(
+                Criteria.where(F_COLOR).in(color)
+        );
+
+        if (category != null) {
+            criteria.andOperator(
+                    Criteria.where(F_CATEGORY).ne(category)
+            );
+        }
 
         Query query = new Query(criteria);
 
@@ -81,6 +104,7 @@ public class CL_OnePieceRepository {
         return mongoTemplate.find(query, OnePieceCard.class, C_ONEPIECE);
     }
 
+    // Search by text only
     public List<OnePieceCard> searchForCards(String term) {
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
                 .matchingPhrase(term);
@@ -92,6 +116,29 @@ public class CL_OnePieceRepository {
         List<OnePieceCard> results = mongoTemplate.find(textQuery, OnePieceCard.class, C_ONEPIECE);
 
         return results;
+    }
+
+    // Search by text and color exclude category
+    public List<OnePieceCard> searchForCards(String term, @Nullable List<String> color, @Nullable String excludeCategory) {
+        TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
+                .matching(term);
+
+        TextQuery textQuery = new TextQuery(textCriteria);
+
+        // Optional: filter by color
+        if (color != null && !color.isEmpty()) {
+            textQuery.addCriteria(Criteria.where(F_COLOR).in(color));
+        }
+
+        // Optional: exclude category
+        if (excludeCategory != null && !excludeCategory.isEmpty()) {
+            textQuery.addCriteria(Criteria.where(F_CATEGORY).ne(excludeCategory));
+        }
+
+        // Keep your sorting logic
+        TextQuerySorting(textQuery, F_BOOSTER, true, F_CARDUID, true);
+
+        return mongoTemplate.find(textQuery, OnePieceCard.class, C_ONEPIECE);
     }
 
     public List<String> getDistinctCategory(String booster) {

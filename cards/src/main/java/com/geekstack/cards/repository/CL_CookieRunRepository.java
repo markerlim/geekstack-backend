@@ -11,7 +11,6 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Repository;
 
 import com.geekstack.cards.model.CookieRunCard;
-import com.geekstack.cards.model.DuelMastersCard;
 
 import static com.geekstack.cards.utils.Constants.*;
 
@@ -35,11 +34,39 @@ public class CL_CookieRunRepository {
         return results;
     }
 
+    public List<CookieRunCard> getCardsByColor(List<String> color) {
+        Criteria criteria = Criteria.where(F_COLOR).in(color);
+        Query query = new Query(criteria);
+
+        QuerySorting(query, F_CARDUID, true);
+
+        List<CookieRunCard> results = mongoTemplate.find(query, CookieRunCard.class, C_COOKIERUN);
+        return results;
+    }
+
     public List<CookieRunCard> searchForCards(String term) {
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
                 .matchingPhrase(term);
 
         TextQuery textQuery = TextQuery.queryText(textCriteria);
+
+        TextQuerySorting(textQuery, F_BOOSTER, true, F_CARDUID, true);
+
+        List<CookieRunCard> results = mongoTemplate.find(textQuery, CookieRunCard.class, C_COOKIERUN);
+
+        return results;
+    }
+
+    public List<CookieRunCard> searchForCards(String term, List<String> color) {
+        TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
+                .matchingPhrase(term);
+
+        TextQuery textQuery = TextQuery.queryText(textCriteria);
+
+        // Optional: filter by color
+        if (color != null && !color.isEmpty()) {
+            textQuery.addCriteria(Criteria.where(F_COLOR).in(color));
+        }
 
         TextQuerySorting(textQuery, F_BOOSTER, true, F_CARDUID, true);
 

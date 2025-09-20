@@ -39,9 +39,13 @@ public class RestControllerOnePiece {
     }
 
     // http//localhost:8080/data/unionarena/search/{phrase to search for}
-    @GetMapping("/search/{term}")
-    public ResponseEntity<List<OnePieceCard>> searchOnePiece(@PathVariable String term) {
-        return new ResponseEntity<List<OnePieceCard>>(cardListService.listofonepiece().searchDatabase(term),
+    @GetMapping("/search")
+    public ResponseEntity<List<OnePieceCard>> searchOnePiece(
+            @RequestParam(required = false) String term,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) String excludeCategory) {
+        return new ResponseEntity<List<OnePieceCard>>(
+                cardListService.listofonepiece().searchDatabase(term, color, excludeCategory),
                 HttpStatus.OK);
     }
 
