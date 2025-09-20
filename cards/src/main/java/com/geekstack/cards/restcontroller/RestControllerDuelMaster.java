@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geekstack.cards.model.DuelMastersCard;
@@ -37,9 +38,9 @@ public class RestControllerDuelMaster {
                 HttpStatus.OK);
     }
 
-    // http//localhost:8080/api/data/duelmasters/search/{phrase to search for}
-    @GetMapping("/search/{term}")
-    public ResponseEntity<List<DuelMastersCard>> searchDuelMaster(@PathVariable String term) {
+    // http//localhost:8080/api/data/duelmasters/search?{phrase to search for}
+    @GetMapping("/search")
+    public ResponseEntity<List<DuelMastersCard>> searchDuelMaster(@RequestParam String term) {
         return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().searchDatabase(term),
                 HttpStatus.OK);
     }

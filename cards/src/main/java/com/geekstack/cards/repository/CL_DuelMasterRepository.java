@@ -11,7 +11,8 @@ import org.springframework.data.mongodb.core.query.TextQuery;
 import org.springframework.stereotype.Repository;
 
 import com.geekstack.cards.model.DuelMastersCard;
-import com.geekstack.cards.model.OnePieceCard;
+
+import jakarta.annotation.Nullable;
 
 import static com.geekstack.cards.utils.Constants.*;
 
@@ -35,11 +36,38 @@ public class CL_DuelMasterRepository {
         return results;
     }
 
+    public List<DuelMastersCard> getCardsByColor(List<String> color) {
+        Criteria criteria = Criteria.where(F_CIVILIZATION).in(color);
+        Query query = new Query(criteria);
+
+        QuerySorting(query, F_CARDUID, true);
+
+        List<DuelMastersCard> results = mongoTemplate.find(query, DuelMastersCard.class, C_DUELMASTER);
+        return results;
+    }
+
     public List<DuelMastersCard> searchForCards(String term) {
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
                 .matchingPhrase(term);
 
         TextQuery textQuery = new TextQuery(textCriteria);
+
+        TextQuerySorting(textQuery, F_BOOSTER, false);
+
+        List<DuelMastersCard> results = mongoTemplate.find(textQuery, DuelMastersCard.class, C_DUELMASTER);
+
+        return results;
+    }
+
+    public List<DuelMastersCard> searchForCards(String term, @Nullable List<String> color) {
+        TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
+                .matchingPhrase(term);
+
+        TextQuery textQuery = new TextQuery(textCriteria);
+
+        if (color != null && !color.isEmpty()) {
+            textQuery.addCriteria(Criteria.where(F_COLOR).in(color));
+        }
 
         TextQuerySorting(textQuery, F_BOOSTER, false);
 

@@ -12,6 +12,8 @@ public class DuelMastersCard {
     @Id
     private String _id;
     private String cardUid;
+
+    @TextIndexed
     private String cardId;
     private String booster;
     private String cost;

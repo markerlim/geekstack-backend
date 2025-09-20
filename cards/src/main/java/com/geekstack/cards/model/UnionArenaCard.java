@@ -22,6 +22,8 @@ public class UnionArenaCard {
     private String banWith;
     private String basicpower;
     private String booster;
+
+    @TextIndexed
     private String cardId;
     private String cardUid;
 

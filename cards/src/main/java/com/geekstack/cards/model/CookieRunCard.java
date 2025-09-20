@@ -39,6 +39,7 @@ public class CookieRunCard {
     private String cardUid;
 
     @Field("cardId")
+    @TextIndexed
     private String cardId;
 
     @Field("field_grade")

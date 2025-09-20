@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geekstack.cards.model.GundamCard;
@@ -33,9 +34,11 @@ public class RestControllerGundam {
                 HttpStatus.OK);
     }
 
-    @GetMapping("/search/{term}")
-    public ResponseEntity<List<GundamCard>> searchHololiveCard(@PathVariable String term) {
-        return new ResponseEntity<List<GundamCard>>(cardListService.listofgundam().searchDatabase(term),
+    // http//localhost:8080/api/data/gundam/search?{phrase to search for}
+    @GetMapping("/search")
+    public ResponseEntity<List<GundamCard>> searchHololiveCard(@RequestParam(required = false) String term, @RequestParam
+            (required = false) String color) {
+        return new ResponseEntity<List<GundamCard>>(cardListService.listofgundam().searchDatabase(term, color),
                 HttpStatus.OK);
     }
 

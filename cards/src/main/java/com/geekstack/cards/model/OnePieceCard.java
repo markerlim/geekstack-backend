@@ -12,6 +12,8 @@ public class OnePieceCard {
 
     @TextIndexed
     private String cardName;
+
+    @TextIndexed
     private String cardId;
     private String rarity;
     private String category;

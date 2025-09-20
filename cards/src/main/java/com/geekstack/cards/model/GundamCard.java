@@ -1,6 +1,7 @@
 package com.geekstack.cards.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -10,7 +11,10 @@ public class GundamCard {
     @Id
     private String _id;
 
+    @TextIndexed
     private String cardName;
+
+    @TextIndexed
     private String cardId;
 
     @Field("package")

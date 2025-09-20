@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geekstack.cards.model.UnionArenaCard;
@@ -41,9 +42,9 @@ public class RestControllerUnionArena {
                 HttpStatus.OK);
     }
 
-    // http://localhost:8080/api/data/unionarena/search/{phrase to search for}
-    @GetMapping("/search/{term}")
-    public ResponseEntity<List<UnionArenaCard>> searchUnionArena(@PathVariable String term) {
+    // http://localhost:8080/api/data/unionarena/search?{phrase to search for}
+    @GetMapping("/search")
+    public ResponseEntity<List<UnionArenaCard>> searchUnionArena(@RequestParam String term) {
         return new ResponseEntity<List<UnionArenaCard>>(cardListService.listofunionarena().searchDatabaseFull(term),
                 HttpStatus.OK);
     }
