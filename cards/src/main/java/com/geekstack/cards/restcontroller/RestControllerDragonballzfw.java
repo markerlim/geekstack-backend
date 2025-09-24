@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geekstack.cards.model.DragonBallzFWCard;
@@ -57,6 +58,16 @@ public class RestControllerDragonballzfw {
                     HttpStatus.OK);
         }
         return null;
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<DragonBallzFWCard>> searchDragonBallzFW(
+            @RequestParam(required = false) String term,
+            @RequestParam(required = false) String color,
+            @RequestParam(required = false) String excludeCategory) {
+        return new ResponseEntity<List<DragonBallzFWCard>>(
+                cardListService.listofdragonballzfw().searchDatabase(term, color, excludeCategory),
+                HttpStatus.OK);
     }
 
     @PostMapping("/qr")
