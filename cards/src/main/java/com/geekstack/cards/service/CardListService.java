@@ -37,8 +37,6 @@ import jakarta.json.JsonObject;
 @Service
 public class CardListService {
 
-    org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CardListService.class);
-
     @Autowired
     private CL_DuelMasterRepository duelMasterRepository;
 
@@ -77,8 +75,20 @@ public class CardListService {
             return duelMasterRepository.getCardsByBooster(booster);
         }
 
-        public List<DuelMastersCard> searchDatabase(String term) {
-            return duelMasterRepository.searchForCards(term);
+        public List<DuelMastersCard> searchDatabase(@Nullable String term, @Nullable String color) {
+            List<String> colorArray = null;
+
+            if (color != null && !color.trim().isEmpty()) {
+                colorArray = Arrays.asList(color.split(","));
+            }
+
+            if (term == null) {
+                return duelMasterRepository.getCardsByColor(colorArray);
+
+            } else {
+                return duelMasterRepository.searchForCards(term, colorArray);
+
+            }
         }
 
         public List<String> boosterFilters() {
@@ -324,6 +334,7 @@ public class CardListService {
 
             if (term == null) {
                 return cookieRunRepository.getCardsByColor(colorArray);
+
             } else {
                 return cookieRunRepository.searchForCards(term, colorArray);
 
@@ -382,6 +393,23 @@ public class CardListService {
 
         public List<DragonBallzFWCard> byBooster(String booster) {
             return dragonBallzFWRepository.getCardsByBooster(booster);
+        }
+
+        public List<DragonBallzFWCard> searchDatabase(@Nullable String term, @Nullable String color,
+                @Nullable String excludeCategory) {
+            List<String> colorArray = null;
+
+            if (color != null && !color.trim().isEmpty()) {
+                colorArray = Arrays.asList(color.split(","));
+            }
+
+            if (term == null) {
+                return dragonBallzFWRepository.getCardsByColor(colorArray, excludeCategory);
+
+            } else {
+                return dragonBallzFWRepository.searchForCards(term, colorArray, excludeCategory);
+
+            }
         }
 
         public List<String> cardtypeFilters(String booster) {

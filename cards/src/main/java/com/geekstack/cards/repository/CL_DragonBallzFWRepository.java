@@ -36,10 +36,14 @@ public class CL_DragonBallzFWRepository {
         return results;
     }
 
-    public List<DragonBallzFWCard> getCardsByColor(List<String> color) {
+    public List<DragonBallzFWCard> getCardsByColor(List<String> color, @Nullable String excludeCardType) {
         Criteria criteria = Criteria.where(F_COLOR).in(color);
-        Query query = new Query(criteria);
 
+        if (excludeCardType != null) {
+            criteria = criteria.and(F_CATEGORY).ne(excludeCardType);
+        }
+
+        Query query = new Query(criteria);
         QuerySorting(query, F_CARDUID, true);
 
         List<DragonBallzFWCard> results = mongoTemplate.find(query, DragonBallzFWCard.class, C_DRAGONBALLZFW);

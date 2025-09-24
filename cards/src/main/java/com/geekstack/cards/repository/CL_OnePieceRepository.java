@@ -40,15 +40,10 @@ public class CL_OnePieceRepository {
     }
 
     public List<OnePieceCard> getCardsByColor(List<String> color, @Nullable String category) {
-        Criteria criteria = new Criteria();
-        criteria.andOperator(
-                Criteria.where(F_COLOR).in(color)
-        );
+        Criteria criteria = Criteria.where(F_COLOR).in(color);
 
         if (category != null) {
-            criteria.andOperator(
-                    Criteria.where(F_CATEGORY).ne(category)
-            );
+            criteria = criteria.and(F_CATEGORY).ne(category);
         }
 
         Query query = new Query(criteria);
@@ -119,7 +114,8 @@ public class CL_OnePieceRepository {
     }
 
     // Search by text and color exclude category
-    public List<OnePieceCard> searchForCards(String term, @Nullable List<String> color, @Nullable String excludeCategory) {
+    public List<OnePieceCard> searchForCards(String term, @Nullable List<String> color,
+            @Nullable String excludeCategory) {
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
                 .matching(term);
 

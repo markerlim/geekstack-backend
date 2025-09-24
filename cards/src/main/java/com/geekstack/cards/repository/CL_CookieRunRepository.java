@@ -35,7 +35,7 @@ public class CL_CookieRunRepository {
     }
 
     public List<CookieRunCard> getCardsByColor(List<String> color) {
-        Criteria criteria = Criteria.where(F_COLOR).in(color);
+        Criteria criteria = Criteria.where("energyTypeTitle").in(color);
         Query query = new Query(criteria);
 
         QuerySorting(query, F_CARDUID, true);
@@ -59,13 +59,13 @@ public class CL_CookieRunRepository {
 
     public List<CookieRunCard> searchForCards(String term, List<String> color) {
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
-                .matchingPhrase(term);
+                .matching(term);
 
-        TextQuery textQuery = TextQuery.queryText(textCriteria);
+        TextQuery textQuery = new TextQuery(textCriteria);
 
         // Optional: filter by color
         if (color != null && !color.isEmpty()) {
-            textQuery.addCriteria(Criteria.where(F_COLOR).in(color));
+            textQuery.addCriteria(Criteria.where("energyTypeTitle").in(color));
         }
 
         TextQuerySorting(textQuery, F_BOOSTER, true, F_CARDUID, true);

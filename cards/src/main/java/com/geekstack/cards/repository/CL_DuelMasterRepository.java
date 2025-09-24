@@ -61,12 +61,12 @@ public class CL_DuelMasterRepository {
 
     public List<DuelMastersCard> searchForCards(String term, @Nullable List<String> color) {
         TextCriteria textCriteria = TextCriteria.forDefaultLanguage()
-                .matchingPhrase(term);
+                .matching(term);
 
         TextQuery textQuery = new TextQuery(textCriteria);
 
         if (color != null && !color.isEmpty()) {
-            textQuery.addCriteria(Criteria.where(F_COLOR).in(color));
+            textQuery.addCriteria(Criteria.where(F_CIVILIZATION).in(color));
         }
 
         TextQuerySorting(textQuery, F_BOOSTER, false);

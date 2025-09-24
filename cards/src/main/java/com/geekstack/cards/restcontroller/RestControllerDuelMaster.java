@@ -40,8 +40,8 @@ public class RestControllerDuelMaster {
 
     // http//localhost:8080/api/data/duelmasters/search?{phrase to search for}
     @GetMapping("/search")
-    public ResponseEntity<List<DuelMastersCard>> searchDuelMaster(@RequestParam String term) {
-        return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().searchDatabase(term),
+    public ResponseEntity<List<DuelMastersCard>> searchDuelMaster(@RequestParam(required = false) String term, @RequestParam(required = false) String color) {
+        return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().searchDatabase(term, color),
                 HttpStatus.OK);
     }
 

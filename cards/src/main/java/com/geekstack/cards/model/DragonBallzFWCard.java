@@ -10,82 +10,96 @@ public class DragonBallzFWCard {
 
     @Id
     private String _id;
-    private boolean awakenform;
 
     @Field("booster")
     private String booster;
+
+    @Field("cardNo")
+    @TextIndexed
     private String cardId;
+
     @Field("cardUid")
     private String cardUid;
 
-    private String cardName;
-    @Field("cardNameLower")
+    @Field("cardName")
     @TextIndexed
-    private String cardNameLower;
-    
-    private String cardtype;
-    private String color;
-    private String combopower;
-    private String cost;
-    private String effects;
-    private String features;
-    private String image;
-    private String power;
-    private String rarityAct;
-    private String rarity;
-    private String setFrom;
-    private String specifieddcost;
-    private String urlimage;
-    private int count;
+    private String cardName;
 
-    //Used in the frontend so when deck saving need this,
-    //Might include this in db directly
+    @Field("cardType")
+    private String cardType;
+
+    @Field("color")
+    private String color;
+
+    @Field("cost")
+    private String cost;
+
+    @Field("specifiedCost")
+    private String specifiedCost;
+
+    @Field("power")
+    private String power;
+
+    @Field("comboPower")
+    private String comboPower;
+
+    @Field("features")
+    @TextIndexed
+    private String features;
+
+    @Field("effect")
+    private String effect;
+
+    @Field("rarity")
+    private String rarity;
+
+    @Field("urlimage")
+    private String urlimage;
+
+    @Field("obtainedFrom")
+    private String obtainedFrom;
+
+    @Field("side")
+    private String side;
+
+    // Frontend use - not stored in DB
+    private int count;
     private String tcg;
 
-    public DragonBallzFWCard(){
-        
+    // Constructors
+    public DragonBallzFWCard() {
     }
 
-    public DragonBallzFWCard(String _id, boolean awakenform, String booster, String cardId, String cardUid,
-            String cardName, String cardNameLower, String cardtype, String color, String combopower, String cost,
-            String effects, String features, String image, String power, String rarityAct, String rarity,
-            String setFrom, String specifieddcost, String urlimage) {
+    public DragonBallzFWCard(String _id, String booster, String cardId, String cardUid, String cardName,
+            String cardType, String color, String cost, String specifiedCost, String power,
+            String comboPower, String features, String effect, String rarity, String urlimage,
+            String obtainedFrom, String side) {
         this._id = _id;
-        this.awakenform = awakenform;
         this.booster = booster;
         this.cardId = cardId;
         this.cardUid = cardUid;
         this.cardName = cardName;
-        this.cardNameLower = cardNameLower;
-        this.cardtype = cardtype;
+        this.cardType = cardType;
         this.color = color;
-        this.combopower = combopower;
         this.cost = cost;
-        this.effects = effects;
-        this.features = features;
-        this.image = image;
+        this.specifiedCost = specifiedCost;
         this.power = power;
-        this.rarityAct = rarityAct;
+        this.comboPower = comboPower;
+        this.features = features;
+        this.effect = effect;
         this.rarity = rarity;
-        this.setFrom = setFrom;
-        this.specifieddcost = specifieddcost;
         this.urlimage = urlimage;
+        this.obtainedFrom = obtainedFrom;
+        this.side = side;
     }
 
+    // Getters and Setters
     public String get_id() {
         return _id;
     }
 
     public void set_id(String _id) {
         this._id = _id;
-    }
-
-    public boolean isAwakenform() {
-        return awakenform;
-    }
-
-    public void setAwakenform(boolean awakenform) {
-        this.awakenform = awakenform;
     }
 
     public String getBooster() {
@@ -120,20 +134,12 @@ public class DragonBallzFWCard {
         this.cardName = cardName;
     }
 
-    public String getCardNameLower() {
-        return cardNameLower;
+    public String getCardType() {
+        return cardType;
     }
 
-    public void setCardNameLower(String cardNameLower) {
-        this.cardNameLower = cardNameLower;
-    }
-
-    public String getCardtype() {
-        return cardtype;
-    }
-
-    public void setCardtype(String cardtype) {
-        this.cardtype = cardtype;
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
     }
 
     public String getColor() {
@@ -144,14 +150,6 @@ public class DragonBallzFWCard {
         this.color = color;
     }
 
-    public String getCombopower() {
-        return combopower;
-    }
-
-    public void setCombopower(String combopower) {
-        this.combopower = combopower;
-    }
-
     public String getCost() {
         return cost;
     }
@@ -160,28 +158,12 @@ public class DragonBallzFWCard {
         this.cost = cost;
     }
 
-    public String getEffects() {
-        return effects;
+    public String getSpecifiedCost() {
+        return specifiedCost;
     }
 
-    public void setEffects(String effects) {
-        this.effects = effects;
-    }
-
-    public String getFeatures() {
-        return features;
-    }
-
-    public void setFeatures(String features) {
-        this.features = features;
-    }
-
-    public String getImage() {
-        return image;
-    }
-
-    public void setImage(String image) {
-        this.image = image;
+    public void setSpecifiedCost(String specifiedCost) {
+        this.specifiedCost = specifiedCost;
     }
 
     public String getPower() {
@@ -192,12 +174,28 @@ public class DragonBallzFWCard {
         this.power = power;
     }
 
-    public String getRarityAct() {
-        return rarityAct;
+    public String getComboPower() {
+        return comboPower;
     }
 
-    public void setRarityAct(String rarityAct) {
-        this.rarityAct = rarityAct;
+    public void setComboPower(String comboPower) {
+        this.comboPower = comboPower;
+    }
+
+    public String getFeatures() {
+        return features;
+    }
+
+    public void setFeatures(String features) {
+        this.features = features;
+    }
+
+    public String getEffect() {
+        return effect;
+    }
+
+    public void setEffect(String effect) {
+        this.effect = effect;
     }
 
     public String getRarity() {
@@ -208,28 +206,28 @@ public class DragonBallzFWCard {
         this.rarity = rarity;
     }
 
-    public String getSetFrom() {
-        return setFrom;
-    }
-
-    public void setSetFrom(String setFrom) {
-        this.setFrom = setFrom;
-    }
-
-    public String getSpecifieddcost() {
-        return specifieddcost;
-    }
-
-    public void setSpecifieddcost(String specifieddcost) {
-        this.specifieddcost = specifieddcost;
-    }
-
     public String getUrlimage() {
         return urlimage;
     }
 
     public void setUrlimage(String urlimage) {
         this.urlimage = urlimage;
+    }
+
+    public String getObtainedFrom() {
+        return obtainedFrom;
+    }
+
+    public void setObtainedFrom(String obtainedFrom) {
+        this.obtainedFrom = obtainedFrom;
+    }
+
+    public String getSide() {
+        return side;
+    }
+
+    public void setSide(String side) {
+        this.side = side;
     }
 
     public int getCount() {
@@ -247,6 +245,4 @@ public class DragonBallzFWCard {
     public void setTcg(String tcg) {
         this.tcg = tcg;
     }
-
-    
 }
