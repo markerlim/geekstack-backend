@@ -43,9 +43,10 @@ public class UserPostMySQLRepository {
             "JOIN users u ON c.userId = u.userId " +
             "WHERE c.postId = ?";
 
-    private final static String SQL_GET_HASHTAGS = "SELECT hashtag, COUNT(*) AS usage_count FROM hashtags GROUP BY hashtag ORDER BY usage_count DESC LIMIT ?";
+    private final static String SQL_GET_HASHTAGS = "SELECT hashtag, usage_count FROM hashtags GROUP BY hashtag ORDER BY usage_count DESC LIMIT ?";
 
-    private final static String SQL_GET_HASHTAGS_BY_TERMS = "SELECT hashtag, COUNT(*) AS usage_count FROM hashtags WHERE hashtag LIKE ? GROUP BY hashtag ORDER BY usage_count DESC LIMIT ?";
+    private final static String SQL_GET_HASHTAGS_BY_TERMS = "SELECT hashtag,usage_count FROM hashtags WHERE hashtag LIKE ? GROUP BY hashtag ORDER BY usage_count DESC LIMIT ?";
+    
     private final static String SQL_UPSERT_HASHTAG = "INSERT INTO hashtags (hashtag, usage_count, created_at, updated_at) "
             +
             "VALUES (?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) " +
