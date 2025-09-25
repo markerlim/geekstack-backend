@@ -43,6 +43,16 @@ public class UserPostMySQLRepository {
             "JOIN users u ON c.userId = u.userId " +
             "WHERE c.postId = ?";
 
+    private final static String SQL_GET_HASHTAGS = "SELECT hashtag, COUNT(*) AS usage_count FROM hashtags GROUP BY hashtag ORDER BY usage_count DESC LIMIT ?";
+
+    private final static String SQL_GET_HASHTAGS_BY_TERMS = "SELECT hashtag, COUNT(*) AS usage_count FROM hashtags WHERE hashtag LIKE ? GROUP BY hashtag ORDER BY usage_count DESC LIMIT ?";
+    private final static String SQL_UPSERT_HASHTAG = "INSERT INTO hashtags (hashtag, usage_count, created_at, updated_at) "
+            +
+            "VALUES (?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP) " +
+            "ON DUPLICATE KEY UPDATE " +
+            "usage_count = usage_count + 1, " +
+            "updated_at = CURRENT_TIMESTAMP";
+
     private final static String SQL_LIKED_POST = "INSERT INTO likes(likedPostId,userId) VALUES (?,?)";
 
     private static final String SQL_UNLIKED_POST = "DELETE FROM likes WHERE likedPostId = ? AND userId = ?";
@@ -54,7 +64,7 @@ public class UserPostMySQLRepository {
             "FROM likes l " +
             "JOIN users u ON l.userId = u.userId " +
             "WHERE l.postId = ?";
-    
+
     private static final String SQL_DELETE_COMMENT = "DELETE FROM comments WHERE commentId = ? and userId = ?";
 
     // Combined query using UNION ALL
@@ -111,6 +121,66 @@ public class UserPostMySQLRepository {
     }
 
     /**
+     * Fetch top 5 hashtags by default
+     * 
+     * @return List of Map of hashtag and its usage_count
+     */
+    public List<Map<String, Object>> getTopHashtags() {
+        return getTopHashtags(5); // default limit = 5
+    }
+
+    /**
+     * Fetch top hashtags with limit
+     * 
+     * @param limit
+     * @return List of Map of hashtag and its usage_count
+     */
+    public List<Map<String, Object>> getTopHashtags(int limit) {
+        return jdbcTemplate.queryForList(SQL_GET_HASHTAGS, limit);
+    }
+
+    public List<Map<String, Object>> getTopHashtagsWithTerm(int limit, String term) {
+        String likePattern = "%" + term + "%";
+        return jdbcTemplate.queryForList(SQL_GET_HASHTAGS_BY_TERMS, likePattern, limit);
+    }
+
+    /**
+     * Upsert hashtag - insert if not exist, else update usage_count +1
+     * 
+     * @param hashtag
+     * @return
+     */
+    public boolean batchUpsertHashtags(List<String> hashtags) {
+
+        if (hashtags == null || hashtags.size() == 0) {
+            return true;
+        }
+
+        int batchSize = Math.min(hashtags.size(), 40);
+
+        try {
+            int[][] results = jdbcTemplate.batchUpdate(
+                    SQL_UPSERT_HASHTAG,
+                    hashtags,
+                    batchSize,
+                    (ps, hashtag) -> ps.setString(1, hashtag));
+
+            for (int[] batch : results) {
+                for (int count : batch) {
+                    if (count == 0) {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
      * Creates comment for post by postId
      * 
      * @param commentId
@@ -149,7 +219,7 @@ public class UserPostMySQLRepository {
         }
     }
 
-    public boolean deleteComment(String commentId, String userId){
+    public boolean deleteComment(String commentId, String userId) {
         int rowsUpdated = jdbcTemplate.update(SQL_DELETE_COMMENT, commentId, userId);
         return rowsUpdated > 0;
     }

@@ -1,6 +1,5 @@
 package com.geekstack.cards.model;
 
-import org.bson.types.ObjectId;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class CardDetails {

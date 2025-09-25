@@ -27,6 +27,7 @@ import com.geekstack.cards.model.UserPostFinal;
 import com.geekstack.cards.repository.UserPostMongoRepository;
 import com.geekstack.cards.repository.UserPostMySQLRepository;
 
+import jakarta.annotation.Nullable;
 import jakarta.json.Json;
 import jakarta.json.JsonException;
 import jakarta.json.JsonObject;
@@ -207,6 +208,18 @@ public class UserPostService {
     // Create a post
     public void createPost(UserPost userPost) {
         userPost.setTimestamp(ZonedDateTime.now());
+        List<String> hashtags = extractHashtags(userPost.getContent());
+        logger.info(userPost.getPostType());
+        if (userPost.getPostType().equals("unionarena")) {
+            String imageSrc = userPost.getListofcards().get(0).getImageSrc();
+            String fileName = imageSrc.split("/")[5];
+            String code = fileName.split("-")[0].toLowerCase();
+            userPost.setCode(code);
+        }
+        if (hashtags.size() > 0) {
+            userPost.setListofhashtags(hashtags);
+            handleHashTag(hashtags);
+        }
         userPostMongoRepository.userPostAction(userPost);
     }
 
@@ -219,8 +232,8 @@ public class UserPostService {
         Object selectedCoverObj = holder.get("selectedCover");
         if (selectedCoverObj instanceof String) {
             String selectedCover = (String) selectedCoverObj;
-            if (selectedCover.startsWith("https://storage.googleapis.com/") && 
-                selectedCover.contains("/userpost/")) {
+            if (selectedCover.startsWith("https://storage.googleapis.com/") &&
+                    selectedCover.contains("/userpost/")) {
                 urlArray.add(selectedCover);
             }
         }
@@ -326,5 +339,34 @@ public class UserPostService {
         rabbitMQProducer.sendNotificationEvent(postId, posterId,
                 ZonedDateTime.now(ZoneOffset.UTC), message, userId,
                 name, displaypic);
+    }
+
+    public List<Map<String, Object>> getTop3Hashtags(int limit, @Nullable String term) {
+        if(term != null && !term.isEmpty()) {
+            return userPostMySQLRepository.getTopHashtagsWithTerm(limit, term);
+        }
+        return userPostMySQLRepository.getTopHashtags(limit);
+    }
+
+    // Helper for hashtag extraction
+    private List<String> extractHashtags(String content) {
+        List<String> hashtags = new ArrayList<>();
+
+        if (content == null || content.isEmpty())
+            return hashtags;
+
+        Pattern pattern = Pattern.compile("data-hashtag-text=\"(.*?)\"");
+        Matcher matcher = pattern.matcher(content);
+
+        while (matcher.find()) {
+            hashtags.add(matcher.group(1));
+        }
+
+        return hashtags;
+    }
+
+    // Helper for hashtag insertion to mySQL
+    private boolean handleHashTag(List<String> value) {
+        return userPostMySQLRepository.batchUpsertHashtags(value);
     }
 }

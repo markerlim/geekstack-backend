@@ -67,13 +67,14 @@ public class UserPostController {
                 filter));
     }
 
-    @GetMapping("/type/{posttype}/search/{term}")
+    @GetMapping("/type/{posttype}/search")
     public ResponseEntity<List<UserPostFinal>> listAllUserPostsBySearchAndType(
             @RequestParam(defaultValue = "1") String page,
             @RequestParam(defaultValue = "20") String limit,
             @RequestParam(required = false) String code,
-            @PathVariable String posttype,
-            @PathVariable String term) {
+            @RequestParam String term,
+            @PathVariable String posttype
+            ) {
         String filter;
         if (code != null && !code.trim().isEmpty()) {
             filter = "SEARCHANDTYPE:" + posttype + ":" + term + ":" + code;
@@ -122,12 +123,29 @@ public class UserPostController {
         }
     }
 
-    @GetMapping("/search/{term}")
+    @GetMapping("/search")
     public ResponseEntity<List<UserPostFinal>> listalluserpostBySearch(@RequestParam(defaultValue = "1") String page,
-            @RequestParam(defaultValue = "20") String limit, @PathVariable String term) {
+            @RequestParam(defaultValue = "20") String limit, @RequestParam String term) {
         return ResponseEntity
                 .ok(userPostService.listUserPost(Integer.parseInt(page), Integer.parseInt(limit), "SEARCH:" + term));
     }
+
+    @GetMapping("/hashtag")
+    public ResponseEntity<Map<String, Object>> getTop3Hashtags(
+        @RequestParam(defaultValue = "3") Integer limit,
+        @RequestParam(required = false) String term
+    ){
+        Map<String, Object> response = new HashMap<>();
+        try {
+            List<Map<String,Object>> hashtags = userPostService.getTop3Hashtags(limit, term);
+            response.put("hashtags", hashtags);
+            response.put("message", "Successfully retrieved top 3 hashtags");
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            response.put("message", "Error retrieving hashtags: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    } 
 
     @GetMapping("/findpost/{postId}")
     public ResponseEntity<?> getPostByPostId(@PathVariable String postId) {

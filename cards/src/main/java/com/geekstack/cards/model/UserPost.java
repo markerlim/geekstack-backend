@@ -22,6 +22,7 @@ public class UserPost {
     private ZonedDateTime timestamp;// c
     private String selectedCover;// c
     private List<CardDetails> listofcards;// c
+    private List<String> listofhashtags;
     private String name;
     private String displaypic;
 
@@ -31,7 +32,7 @@ public class UserPost {
 
     public UserPost(String postId, String postType, String code, String userId, String headline, String content,
             String deckName, Boolean isTournamentDeck, ZonedDateTime timestamp, String selectedCover,
-            List<CardDetails> listofcards, List<String> listoflikes, List<Comment> listofcomments, String name,
+            List<CardDetails> listofcards, List<String> listofhashtags, String name,
             String displaypic) {
         this.postId = postId;
         this.postType = postType;
@@ -44,6 +45,7 @@ public class UserPost {
         this.timestamp = timestamp;
         this.selectedCover = selectedCover;
         this.listofcards = listofcards;
+        this.listofhashtags = listofhashtags;
         this.name = name;
         this.displaypic = displaypic;
     }
@@ -150,6 +152,14 @@ public class UserPost {
 
     public void setTimestamp(ZonedDateTime timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public List<String> getListofhashtags() {
+        return listofhashtags;
+    }
+
+    public void setListofhashtags(List<String> listofhashtags) {
+        this.listofhashtags = listofhashtags;
     }
 
     @Override
