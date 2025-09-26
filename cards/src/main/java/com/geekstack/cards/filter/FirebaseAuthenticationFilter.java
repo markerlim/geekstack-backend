@@ -33,6 +33,7 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
                     "http://localhost:8080",
                     "https://localhost",
                     "https://geekstack.dev",
+                    "https://www.geekstack.dev",
                     "https://cards.geekstack.dev"
             };
 
