@@ -86,4 +86,11 @@ public class CL_CookieRunRepository {
         return cards;
     }
 
+    public List<CookieRunCard> getCardsByMongoId(List<String> ids) {
+        Criteria criteria = Criteria.where("_id").in(ids);
+        Query query = new Query(criteria);
+        List<CookieRunCard> cards = mongoTemplate.find(query, CookieRunCard.class, C_COOKIERUN);
+        return cards;
+    }
+
 }

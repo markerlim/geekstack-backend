@@ -82,4 +82,9 @@ public class RestControllerUnionArena {
     public ResponseEntity<List<UnionArenaCard>> setCardListService(@RequestBody String value) {
         return new ResponseEntity<List<UnionArenaCard>>(cardListService.listofunionarena().deckExtract(value), HttpStatus.OK);
     }
+
+    @PostMapping("/copydeck")
+    public ResponseEntity<List<UnionArenaCard>> copyDeck(@RequestBody String value) {
+        return new ResponseEntity<List<UnionArenaCard>>(cardListService.listofunionarena().deckPostCopy(value), HttpStatus.OK);
+    }
 }

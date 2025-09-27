@@ -101,4 +101,11 @@ public class CL_UnionArenaRepository {
         return cards;
     }
 
+    public List<UnionArenaCard> getCardsByMongoId(List<String> ids){
+        Criteria criteria = Criteria.where("_id").in(ids);
+        Query query = new Query(criteria);
+        List<UnionArenaCard> cards = mongoTemplate.find(query, UnionArenaCard.class, C_UNIONARENA);
+        return cards;
+    }
+
 }

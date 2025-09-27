@@ -84,4 +84,10 @@ public class RestControllerOnePiece {
         return new ResponseEntity<List<OnePieceCard>>(cardListService.listofonepiece().deckExtract(value),
                 HttpStatus.OK);
     }
+
+    @PostMapping("/copydeck")
+    public ResponseEntity<List<OnePieceCard>> copyDeck(@RequestBody String value) {
+        return new ResponseEntity<List<OnePieceCard>>(cardListService.listofonepiece().deckPostCopy(value),
+                HttpStatus.OK);
+    }
 }

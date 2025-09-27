@@ -39,7 +39,8 @@ public class RestControllerCookieRun {
 
     // http//localhost:8080/data/cookierunbraverse/search?{phrase to search for}
     @GetMapping("/search")
-    public ResponseEntity<List<CookieRunCard>> searchCookieRun(@RequestParam(required = false) String term, @RequestParam(required = false) String color) {
+    public ResponseEntity<List<CookieRunCard>> searchCookieRun(@RequestParam(required = false) String term,
+            @RequestParam(required = false) String color) {
         return new ResponseEntity<List<CookieRunCard>>(cardListService.listofcookierun().searchDatabase(term, color),
                 HttpStatus.OK);
     }
@@ -47,6 +48,12 @@ public class RestControllerCookieRun {
     @PostMapping("/qr")
     public ResponseEntity<List<CookieRunCard>> setCardListService(@RequestBody String value) {
         return new ResponseEntity<List<CookieRunCard>>(cardListService.listofcookierun().deckExtract(value),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/copydeck")
+    public ResponseEntity<List<CookieRunCard>> copyDeck(@RequestBody String value) {
+        return new ResponseEntity<List<CookieRunCard>>(cardListService.listofcookierun().deckPostCopy(value),
                 HttpStatus.OK);
     }
 }

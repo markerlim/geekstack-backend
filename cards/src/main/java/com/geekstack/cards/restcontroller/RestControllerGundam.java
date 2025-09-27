@@ -36,8 +36,8 @@ public class RestControllerGundam {
 
     // http//localhost:8080/api/data/gundam/search?{phrase to search for}
     @GetMapping("/search")
-    public ResponseEntity<List<GundamCard>> searchHololiveCard(@RequestParam(required = false) String term, @RequestParam
-            (required = false) String color) {
+    public ResponseEntity<List<GundamCard>> searchHololiveCard(@RequestParam(required = false) String term,
+            @RequestParam(required = false) String color) {
         return new ResponseEntity<List<GundamCard>>(cardListService.listofgundam().searchDatabase(term, color),
                 HttpStatus.OK);
     }
@@ -45,5 +45,10 @@ public class RestControllerGundam {
     @PostMapping("/qr")
     public ResponseEntity<List<GundamCard>> setCardListService(@RequestBody String value) {
         return new ResponseEntity<List<GundamCard>>(cardListService.listofgundam().deckExtract(value), HttpStatus.OK);
+    }
+
+    @PostMapping("/copydeck")
+    public ResponseEntity<List<GundamCard>> copyDeck(@RequestBody String value) {
+        return new ResponseEntity<List<GundamCard>>(cardListService.listofgundam().deckPostCopy(value), HttpStatus.OK);
     }
 }
