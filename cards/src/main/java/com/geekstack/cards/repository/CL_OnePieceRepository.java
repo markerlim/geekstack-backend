@@ -170,4 +170,11 @@ public class CL_OnePieceRepository {
         List<OnePieceCard> cards = mongoTemplate.find(query, OnePieceCard.class, C_ONEPIECE);
         return cards;
     }
+
+    public List<OnePieceCard> getCardsByMongoId(List<String> ids) {
+        Criteria criteria = Criteria.where("_id").in(ids);
+        Query query = new Query(criteria);
+        List<OnePieceCard> cards = mongoTemplate.find(query, OnePieceCard.class, C_ONEPIECE);
+        return cards;
+    }
 }

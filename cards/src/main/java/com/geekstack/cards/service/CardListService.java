@@ -145,6 +145,48 @@ public class CardListService {
             return cards;
         }
 
+        public List<DuelMastersCard> deckPostCopy(String value) {
+            Map<String, Integer> idCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        idCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    idCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            // Convert to list for Mongo query
+            List<String> ids = new ArrayList<>(idCountMap.keySet());
+            List<DuelMastersCard> cards = duelMasterRepository.getCardsByMongoId(ids);
+
+            for (DuelMastersCard card : cards) {
+                String mongoId = card.get_id();
+                Integer count = idCountMap.getOrDefault(mongoId, 0);
+                card.setCount(count);
+            }
+            return cards;
+        }
+
     }
 
     // Nested class for UnionArena actions
@@ -202,6 +244,48 @@ public class CardListService {
             for (UnionArenaCard card : cards) {
                 String uid = card.getCardUid();
                 Integer count = cardUidCountMap.getOrDefault(uid, 0);
+                card.setCount(count);
+            }
+            return cards;
+        }
+
+        public List<UnionArenaCard> deckPostCopy(String value) {
+            Map<String, Integer> idCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        idCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    idCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            // Convert to list for Mongo query
+            List<String> ids = new ArrayList<>(idCountMap.keySet());
+            List<UnionArenaCard> cards = unionArenaRepository.getCardsByMongoId(ids);
+
+            for (UnionArenaCard card : cards) {
+                String mongoId = card.get_id();
+                Integer count = idCountMap.getOrDefault(mongoId, 0);
                 card.setCount(count);
             }
             return cards;
@@ -309,6 +393,48 @@ public class CardListService {
             return cards;
         }
 
+        public List<OnePieceCard> deckPostCopy(String value) {
+            Map<String, Integer> idCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        idCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    idCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            // Convert to list for Mongo query
+            List<String> ids = new ArrayList<>(idCountMap.keySet());
+            List<OnePieceCard> cards = onePieceRepository.getCardsByMongoId(ids);
+
+            for (OnePieceCard card : cards) {
+                String mongoId = card.get_id();
+                Integer count = idCountMap.getOrDefault(mongoId, 0);
+                card.setCount(count);
+            }
+            return cards;
+        }
+
     }
 
     // Nested class for CookieRun actions
@@ -380,6 +506,48 @@ public class CardListService {
                 card.setCount(count);
             }
 
+            return cards;
+        }
+
+        public List<CookieRunCard> deckPostCopy(String value) {
+            Map<String, Integer> idCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        idCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    idCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            // Convert to list for Mongo query
+            List<String> ids = new ArrayList<>(idCountMap.keySet());
+            List<CookieRunCard> cards = cookieRunRepository.getCardsByMongoId(ids);
+
+            for (CookieRunCard card : cards) {
+                String mongoId = card.get_id();
+                Integer count = idCountMap.getOrDefault(mongoId, 0);
+                card.setCount(count);
+            }
             return cards;
         }
 
@@ -466,6 +634,48 @@ public class CardListService {
             return cards;
         }
 
+        public List<DragonBallzFWCard> deckPostCopy(String value) {
+            Map<String, Integer> idCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        idCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    idCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            // Convert to list for Mongo query
+            List<String> ids = new ArrayList<>(idCountMap.keySet());
+            List<DragonBallzFWCard> cards = dragonBallzFWRepository.getCardsByMongoId(ids);
+
+            for (DragonBallzFWCard card : cards) {
+                String mongoId = card.get_id();
+                Integer count = idCountMap.getOrDefault(mongoId, 0);
+                card.setCount(count);
+            }
+            return cards;
+        }
+
     }
 
     // Nested class for Hololive actions
@@ -547,6 +757,48 @@ public class CardListService {
                 card.setCount(count);
             }
 
+            return cards;
+        }
+
+        public List<GundamCard> deckPostCopy(String value) {
+            Map<String, Integer> idCountMap = new HashMap<>();
+
+            if (value == null || value.trim().isEmpty()) {
+                return new ArrayList<>();
+            }
+
+            JsonObject jobject = Json.createReader(new StringReader(value)).readObject();
+            String data = jobject.getString("value");
+            String[] cardEntries = data.split(",");
+
+            for (String entry : cardEntries) {
+                String trimmedEntry = entry.trim();
+
+                if (trimmedEntry.contains("x")) {
+                    String[] parts = trimmedEntry.split("x", 2);
+                    if (parts.length == 2) {
+                        int count = 1;
+                        try {
+                            count = Integer.parseInt(parts[0].trim());
+                        } catch (NumberFormatException e) {
+                        }
+                        String cardUid = parts[1].trim();
+                        idCountMap.merge(cardUid, count, Integer::sum);
+                    }
+                } else {
+                    idCountMap.merge(trimmedEntry, 1, Integer::sum);
+                }
+            }
+
+            // Convert to list for Mongo query
+            List<String> ids = new ArrayList<>(idCountMap.keySet());
+            List<GundamCard> cards = gundamCGRepository.getCardsByMongoId(ids);
+
+            for (GundamCard card : cards) {
+                String mongoId = card.get_id();
+                Integer count = idCountMap.getOrDefault(mongoId, 0);
+                card.setCount(count);
+            }
             return cards;
         }
 

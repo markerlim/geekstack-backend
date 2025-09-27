@@ -119,4 +119,11 @@ public class CL_DragonBallzFWRepository {
         return cards;
     }
 
+    public List<DragonBallzFWCard> getCardsByMongoId(List<String> ids) {
+        Criteria criteria = Criteria.where("_id").in(ids);
+        Query query = new Query(criteria);
+        List<DragonBallzFWCard> cards = mongoTemplate.find(query, DragonBallzFWCard.class, C_DRAGONBALLZFW);
+        return cards;
+    }
+
 }

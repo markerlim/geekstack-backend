@@ -91,4 +91,11 @@ public class CL_GundamCGRepository {
         List<GundamCard> cards = mongoTemplate.find(query, GundamCard.class, C_GUNDAM);
         return cards;
     }
+
+    public List<GundamCard> getCardsByMongoId(List<String> ids) {
+        Criteria criteria = Criteria.where("_id").in(ids);
+        Query query = new Query(criteria);
+        List<GundamCard> cards = mongoTemplate.find(query, GundamCard.class, C_GUNDAM);
+        return cards;
+    }
 }

@@ -76,4 +76,10 @@ public class RestControllerDragonballzfw {
                 HttpStatus.OK);
     }
 
+    @PostMapping("/copydeck")
+    public ResponseEntity<List<DragonBallzFWCard>> copyDeck(@RequestBody String value) {
+        return new ResponseEntity<List<DragonBallzFWCard>>(cardListService.listofdragonballzfw().deckPostCopy(value),
+                HttpStatus.OK);
+    }
+
 }

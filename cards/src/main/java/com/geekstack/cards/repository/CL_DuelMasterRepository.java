@@ -103,4 +103,10 @@ public class CL_DuelMasterRepository {
         return cards;
     }
 
+    public List<DuelMastersCard> getCardsByMongoId(List<String> ids) {
+        Criteria criteria = Criteria.where("_id").in(ids);
+        Query query = new Query(criteria);
+        List<DuelMastersCard> cards = mongoTemplate.find(query, DuelMastersCard.class, C_DUELMASTER);
+        return cards;
+    }
 }

@@ -40,7 +40,8 @@ public class RestControllerDuelMaster {
 
     // http//localhost:8080/api/data/duelmasters/search?{phrase to search for}
     @GetMapping("/search")
-    public ResponseEntity<List<DuelMastersCard>> searchDuelMaster(@RequestParam(required = false) String term, @RequestParam(required = false) String color) {
+    public ResponseEntity<List<DuelMastersCard>> searchDuelMaster(@RequestParam(required = false) String term,
+            @RequestParam(required = false) String color) {
         return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().searchDatabase(term, color),
                 HttpStatus.OK);
     }
@@ -65,6 +66,12 @@ public class RestControllerDuelMaster {
     @PostMapping("/qr")
     public ResponseEntity<List<DuelMastersCard>> setCardListService(@RequestBody String value) {
         return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().deckExtract(value),
+                HttpStatus.OK);
+    }
+
+    @PostMapping("/copydeck")
+    public ResponseEntity<List<DuelMastersCard>> copyDeck(@RequestBody String value) {
+        return new ResponseEntity<List<DuelMastersCard>>(cardListService.listofduelmaster().deckPostCopy(value),
                 HttpStatus.OK);
     }
 }
