@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.geekstack.cards.model.GundamCard;
 import com.geekstack.cards.service.CardListService;
 
-@RestController()
+@RestController
 @RequestMapping("/api/data/gundam")
 public class RestControllerGundam {
 

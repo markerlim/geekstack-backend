@@ -1,11 +1,13 @@
 package com.geekstack.cards.model;
 
+import static com.geekstack.cards.utils.Constants.C_COOKIERUN;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "CL_cookierunbraverse")
+@Document(collection = C_COOKIERUN)
 public class CookieRunCard {
 
     @Id

@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.geekstack.cards.model.CookieRunCard;
-import com.geekstack.cards.model.UnionArenaCard;
 import com.geekstack.cards.service.CardListService;
 
 @RestController

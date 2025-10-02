@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.geekstack.cards.model.HololiveCard;
 import com.geekstack.cards.service.CardListService;
 
-@RestController()
+@RestController
 @RequestMapping("/api/data/hololive")
 public class RestControllerHololive {
 
