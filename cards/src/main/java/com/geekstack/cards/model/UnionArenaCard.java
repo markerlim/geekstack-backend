@@ -1,11 +1,13 @@
 package com.geekstack.cards.model;
 
+import static com.geekstack.cards.utils.Constants.C_UNIONARENA;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-@Document(collection = "CL_unionarena_v2")
+@Document(collection = C_UNIONARENA)
 public class UnionArenaCard {
 
     @Id

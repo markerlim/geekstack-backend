@@ -1,10 +1,12 @@
 package com.geekstack.cards.model;
 
+import static com.geekstack.cards.utils.Constants.C_ONEPIECE;
+
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "CL_onepiece_v2")
+@Document(collection = C_ONEPIECE)
 public class OnePieceCard {
 
     @Id

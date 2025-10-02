@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping
 public class MainController {
-        
+
     @GetMapping("/")
     public String redirectToSwagger() {
         return "redirect:/swagger-ui/index.html";
     }
-    
+
+
 }

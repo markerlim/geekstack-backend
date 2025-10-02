@@ -1,12 +1,14 @@
 package com.geekstack.cards.model;
 
+import static com.geekstack.cards.utils.Constants.C_DUELMASTER;
+
 import java.util.List;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "CL_duelmasters")
+@Document(collection = C_DUELMASTER)
 public class DuelMastersCard {
 
     @Id

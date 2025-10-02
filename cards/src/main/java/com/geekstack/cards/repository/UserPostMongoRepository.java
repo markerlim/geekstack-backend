@@ -2,7 +2,6 @@ package com.geekstack.cards.repository;
 
 import static com.geekstack.cards.utils.Constants.*;
 
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;

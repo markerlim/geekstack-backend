@@ -19,6 +19,7 @@ public class Constants {
     public static final String C_USERPOST = "userpost";
     public static final String C_USER = "users";
     public static final String C_NOTIFICATION = "notification";
+    public static final String C_CHANGELOG = "changelog";
 
     // Fields
     public static final String F_USERID = "_id";
@@ -51,7 +52,7 @@ public class Constants {
     public static final String F_USERPOST_CID = "commentId";
     public static final String F_USERPOST_LISTC = "listofcomments";
     public static final String F_USERPOST_LISTL = "listoflikes";
-
+ 
     public static final String PRICE_FULLA = "price_fulla_id";
     public static final String PRICE_YYT = "price_yyt_id";
 
