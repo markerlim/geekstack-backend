@@ -29,9 +29,10 @@ public class FirebaseAuthenticationFilter extends OncePerRequestFilter {
 
             String[] allowedOrigins = {
                     "http://localhost:3000",
-                    "http://localhost:4200",
                     "http://localhost:8080",
                     "https://localhost",
+                    "capacitor://localhost",
+                    "ionic://localhost",
                     "https://geekstack.dev",
                     "https://www.geekstack.dev",
                     "https://cards.geekstack.dev"
