@@ -60,6 +60,8 @@ public class Constants {
 
     public static final String T_UA = "unionarena";
     public static final String T_OP = "onepiece";
+    public static final String T_GCG = "gundam";
+    public static final String T_DM = "duelmasters";
     public static final String T_CRB = "cookierunbraverse";
     public static final String T_DBZ = "dragonballzfw";
     public static final String T_LEADER = "leader";
