@@ -33,6 +33,9 @@ public class UserDetails {
     @Field(F_HOCGDECKS)
     private List<GenericDecklist> hocgdecks;
 
+    @Field(F_WSBDECKS)
+    private List<GenericDecklist> wsbdecks;
+
     public UserDetails() {
 
     }
@@ -99,6 +102,14 @@ public class UserDetails {
 
     public void setHocgdecks(List<GenericDecklist> hocgdecks) {
         this.hocgdecks = hocgdecks;
+    }
+
+    public List<GenericDecklist> getWsbdecks() {
+        return wsbdecks;
+    }
+
+    public void setWsbdecks(List<GenericDecklist> wsbdecks) {
+        this.wsbdecks = wsbdecks;
     }
 
     

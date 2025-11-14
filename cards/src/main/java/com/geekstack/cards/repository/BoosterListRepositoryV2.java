@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import com.geekstack.cards.model.BoosterButton;
 import com.geekstack.cards.model.DuelMasterBtn;
+import com.geekstack.cards.model.WSBBtn;
 
 @Repository
 public class BoosterListRepositoryV2 {
@@ -35,5 +36,10 @@ public class BoosterListRepositoryV2 {
         query.addCriteria(Criteria.where("timestamp").gte(defaultDate));
         query.with(Sort.by(Sort.Direction.DESC, "timestamp"));
         return mongoTemplate.find(query, DuelMasterBtn.class, "NewList");
+    }
+
+    public List<WSBBtn> getWeissSchwarzBlauBooster() {
+        Query query = new Query();
+        return mongoTemplate.find(query, WSBBtn.class, "BT_wsblau");
     }
 }
