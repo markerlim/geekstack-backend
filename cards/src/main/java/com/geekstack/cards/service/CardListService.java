@@ -20,6 +20,7 @@ import com.geekstack.cards.model.HololiveCard;
 import com.geekstack.cards.model.OnePieceCard;
 import com.geekstack.cards.model.UnionArenaCard;
 import com.geekstack.cards.model.UnionArenaCardDTO;
+import com.geekstack.cards.model.WeibSchwarzBlauCard;
 import com.geekstack.cards.repository.CL_CookieRunRepository;
 import com.geekstack.cards.repository.CL_DragonBallzFWRepository;
 import com.geekstack.cards.repository.CL_DuelMasterRepository;
@@ -27,6 +28,7 @@ import com.geekstack.cards.repository.CL_GundamCGRepository;
 import com.geekstack.cards.repository.CL_HololiveRepository;
 import com.geekstack.cards.repository.CL_OnePieceRepository;
 import com.geekstack.cards.repository.CL_UnionArenaRepository;
+import com.geekstack.cards.repository.CL_WsBlauRepository;
 import com.geekstack.cards.repository.PR_FullaheadRepository;
 import com.geekstack.cards.repository.PR_YuyuteiRepository;
 
@@ -57,6 +59,9 @@ public class CardListService {
 
     @Autowired
     private CL_GundamCGRepository gundamCGRepository;
+
+    @Autowired
+    private CL_WsBlauRepository weissSchwarzBlauRepository;
 
     @Autowired
     private PR_FullaheadRepository fullaheadRepository;
@@ -804,6 +809,16 @@ public class CardListService {
 
     }
 
+    public class WsblauActions {
+        public List<WeibSchwarzBlauCard> all() {
+            return weissSchwarzBlauRepository.getCards();
+        }
+
+        public List<WeibSchwarzBlauCard> byBooster(String booster) {
+            return weissSchwarzBlauRepository.getCardsBySet(booster);
+        }
+    }
+
     public class CardPriceActions {
         public CardPriceFULLA byFulla(String id) {
             return fullaheadRepository.findCardById(id);
@@ -843,6 +858,10 @@ public class CardListService {
         return new GundamActions();
     }
 
+    public WsblauActions listofwsblau() {
+        return new WsblauActions();
+    }
+    
     public CardPriceActions cardprices() {
         return new CardPriceActions();
     }

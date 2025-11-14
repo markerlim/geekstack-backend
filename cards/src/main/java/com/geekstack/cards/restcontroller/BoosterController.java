@@ -17,6 +17,7 @@ import com.geekstack.cards.model.ChangeLog;
 import com.geekstack.cards.model.DuelMasterBtn;
 import com.geekstack.cards.model.FiltersButton;
 import com.geekstack.cards.model.UnionArenaBooster;
+import com.geekstack.cards.model.WSBBtn;
 import com.geekstack.cards.repository.BoosterListRepositoryV2;
 import com.geekstack.cards.repository.ChangeLogRepository;
 import com.geekstack.cards.service.FiltersButtonService;
@@ -52,5 +53,10 @@ public class BoosterController {
     @GetMapping("/duelmasters")
     public ResponseEntity<List<DuelMasterBtn>> getDMList(){
         return new ResponseEntity<List<DuelMasterBtn>>(boosterListRepositoryV2.getDuelMasterBooster(),HttpStatus.OK);
+    }
+
+    @GetMapping("/wsblau")
+    public ResponseEntity<List<WSBBtn>> getWSBList(){
+        return new ResponseEntity<List<WSBBtn>>(boosterListRepositoryV2.getWeissSchwarzBlauBooster(),HttpStatus.OK);
     }
 }

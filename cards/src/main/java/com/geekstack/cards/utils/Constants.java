@@ -14,6 +14,7 @@ public class Constants {
     public static final String C_COOKIERUN = "CL_cookierunbraverse";
     public static final String C_HOLOLIVE = "CL_hololiveocg";
     public static final String C_GUNDAM = "CL_gundamcardgame";
+    public static final String C_WSBLAU = "CL_wsblau";
     public static final String C_FULLAHEAD = "cardprices_fulla";
     public static final String C_YUYUTEI = "cardprices_yyt";
     public static final String C_USERPOST = "userpost";
@@ -32,6 +33,7 @@ public class Constants {
     public static final String F_DMDECKS = "dmdecks";
     public static final String F_GCGDECKS = "gcgdecks";
     public static final String F_HOCGDECKS = "hocgdecks";
+    public static final String F_WSBDECKS = "wsbdecks";
     public static final String F_DECKUID = "deckuid";
     public static final String F_PACKAGEID = "package";// For gundam booster (tmp)
 
