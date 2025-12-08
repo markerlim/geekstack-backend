@@ -6,6 +6,7 @@ import static com.geekstack.cards.utils.Constants.F_DMDECKS;
 import static com.geekstack.cards.utils.Constants.F_GCGDECKS;
 import static com.geekstack.cards.utils.Constants.F_OPDECKS;
 import static com.geekstack.cards.utils.Constants.F_UADECKS;
+import static com.geekstack.cards.utils.Constants.F_WSBDECKS;
 
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +38,7 @@ import com.geekstack.cards.model.Notification;
 import com.geekstack.cards.model.NotificationMerged;
 import com.geekstack.cards.model.OnePieceDecklist;
 import com.geekstack.cards.model.UnionArenaDecklist;
+import com.geekstack.cards.model.WeibSchwarzBlauDecklist;
 import com.geekstack.cards.model.NotificationMerged.SenderInfo;
 import com.geekstack.cards.repository.UserDetailsMongoRepository;
 import com.geekstack.cards.service.CurrencyConversionService;
@@ -393,6 +395,50 @@ public class UserDetailsController {
         String userId = user.getUid();
         return new ResponseEntity<GundamDecklist>(
                 userDetailsMongoRepository.loadGundamDecklist(userId, deckuid),
+                HttpStatus.OK);
+    }
+
+    // Weib Schwarz Blau save user deck endpoint
+    @PostMapping("/save/wsblau")
+    public ResponseEntity<Map<String, Object>> saveWSBDeck(
+            @RequestParam(required = false) String deckuid,
+            @RequestBody GenericDecklist decklist,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        Map<String, Object> response = new HashMap<>();
+        String uuid = "";
+        String userId = user.getUid();
+        try {
+            if (deckuid == null || deckuid.isEmpty()) {
+                uuid = userDetailsMongoRepository.createWSBDecklist(decklist, userId);
+                response.put("message", "Deck created successfully");
+            } else {
+                uuid = userDetailsMongoRepository.updateWSBDecklist(decklist, userId, deckuid);
+                response.put("message", "Deck updated successfully");
+            }
+            response.put("deckuid", uuid);
+            return ResponseEntity.status(HttpStatus.OK).body(response);
+        } catch (Exception e) {
+            response.put("message", "Error adding deck: " + e.getMessage());
+            response.put("deckuid", null);
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
+
+    // Weib Schwarz Blau load user lightweight of all deck endpoint
+    @GetMapping("/load/wsblau")
+    public ResponseEntity<List<GenericDecklist>> loadWSBDeck(@AuthenticationPrincipal FirebaseUser.Principal user) {
+        String userId = user.getUid();
+        return new ResponseEntity<List<GenericDecklist>>(userDetailsMongoRepository.loadDecklist(userId, F_WSBDECKS),
+                HttpStatus.OK);
+    }
+
+    // Weib Schwarz Blau load deck data by deckuid
+    @GetMapping("/load/wsblau/{deckuid}")
+    public ResponseEntity<WeibSchwarzBlauDecklist> loadOneWSBDeck(@PathVariable String deckuid,
+            @AuthenticationPrincipal FirebaseUser.Principal user) {
+        String userId = user.getUid();
+        return new ResponseEntity<WeibSchwarzBlauDecklist>(
+                userDetailsMongoRepository.loadWSBDecklist(userId, deckuid),
                 HttpStatus.OK);
     }
 
