@@ -8,7 +8,7 @@ This project combines web scraping, REST APIs, and a sleek frontend to create a 
 
 ## 🔗 Live Website
 
-👉 Visit: [**https://cards.geekstack.dev**](https://cards.geekstack.dev)
+👉 Visit: [**https://www.geekstack.dev**](https://www.geekstack.dev)
 
 ---
 
@@ -27,7 +27,7 @@ This project combines web scraping, REST APIs, and a sleek frontend to create a 
 
 | Tech               | Description                                           |
 |--------------------|-------------------------------------------------------|
-| **Frontend**       | Angular + CSS (no frameworks)                         |
+| **Frontend**       | NextJS                                                |
 | **Backend**        | Spring Boot (Java)                                    |
 | **Database**       | MongoDB Atlas (cards) & MySQL (users)                 |
 | **Authentication** | Firebase Authentication (web token protected APIs)    |
