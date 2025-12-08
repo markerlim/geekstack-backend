@@ -1,4 +1,4 @@
-# 🃏 cards.geekstack.dev
+# 🃏 www.geekstack.dev
 
 Welcome to **cards.geekstack.dev** — your one-stop platform for browsing and discovering cards from various anime trading card games like **Union Arena**, **One Piece**, and **Hololive**! ✨
 
