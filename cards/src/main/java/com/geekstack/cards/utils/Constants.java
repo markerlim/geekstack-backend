@@ -66,6 +66,7 @@ public class Constants {
     public static final String T_DM = "duelmasters";
     public static final String T_CRB = "cookierunbraverse";
     public static final String T_DBZ = "dragonballzfw";
+    public static final String T_WSB = "wsblau";
     public static final String T_LEADER = "leader";
 
     // Redis

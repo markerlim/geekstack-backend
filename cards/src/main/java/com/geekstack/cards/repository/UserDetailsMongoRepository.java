@@ -24,6 +24,7 @@ import com.geekstack.cards.model.GundamDecklist;
 import com.geekstack.cards.model.OnePieceDecklist;
 import com.geekstack.cards.model.UnionArenaDecklist;
 import com.geekstack.cards.model.UserDetails;
+import com.geekstack.cards.model.WeibSchwarzBlauDecklist;
 
 @Repository
 public class UserDetailsMongoRepository {
@@ -620,6 +621,79 @@ public class UserDetailsMongoRepository {
          * return user.getGcgdecks();
          * }
          */
+
+        public String createWSBDecklist(GenericDecklist decklist, String userId) {
+                Query query = new Query(Criteria.where(F_USERID).is(userId));
+                String uuid = UUID.randomUUID().toString();
+                decklist.setDeckuid(uuid);
+                Update update = new Update().push(F_WSBDECKS, decklist);
+                mongoTemplate.updateFirst(query, update, UserDetails.class, C_USER);
+                return uuid;
+        }
+
+        public String updateWSBDecklist(GenericDecklist decklist, String userId, String deckuid) {
+                Query query = new Query(
+                                Criteria.where(F_USERID).is(userId).and(F_WSBDECKS)
+                                                .elemMatch(Criteria.where(F_DECKUID).is(deckuid)));
+                decklist.setDeckuid(deckuid);
+                Update update = new Update().set(F_WSBDECKS + ".$", decklist);
+                mongoTemplate.updateFirst(query, update, UserDetails.class, C_USER);
+                return deckuid;
+        }
+
+        public WeibSchwarzBlauDecklist loadWSBDecklist(String userId, String deckUid) {
+                String fieldCat = F_WSBDECKS;
+                String collectionCat = C_WSBLAU;
+                Aggregation aggregation = Aggregation.newAggregation(
+                                Aggregation.match(Criteria.where(F_USERID).is(userId)),
+                                Aggregation.unwind(fieldCat),
+                                // Add match condition for specific deckuid
+                                Aggregation.match(Criteria.where(fieldCat + ".deckuid").is(deckUid)),
+                                Aggregation.unwind(fieldCat + ".listofcards", true),
+
+                                // Store the count and card ID
+                                Aggregation.project()
+                                                .and(fieldCat).as(fieldCat)
+                                                .and(fieldCat + ".listofcards.count").as("tempCount")
+                                                .and(fieldCat + ".listofcards._id").as("tempCardId"),
+
+                                Aggregation.lookup(
+                                                collectionCat,
+                                                "tempCardId",
+                                                "_id",
+                                                "cardDetails"),
+
+                                Aggregation.unwind("cardDetails", true),
+
+                                // Merge the count field into the cardDetails document using ObjectOperators
+                                Aggregation.project()
+                                                .and(ObjectOperators.MergeObjects.merge(
+                                                                "$cardDetails",
+                                                                new Document("count", "$tempCount")))
+                                                .as("mergedCard")
+                                                .and(fieldCat).as(fieldCat),
+
+                                // Group by deck fields and collect the merged cards
+                                Aggregation.group(
+                                                Fields.from(
+                                                                Fields.field("deckuid", "$" + fieldCat + ".deckuid"),
+                                                                Fields.field("deckName", "$" + fieldCat + ".deckName"),
+                                                                Fields.field("image", "$" + fieldCat + ".image")))
+                                                .push("$mergedCard")
+                                                .as("listofcards"),
+
+                                // Project final structure for deck (image field refers to deckcover)
+                                Aggregation.project()
+                                                .and("_id.deckuid").as("deckuid")
+                                                .and("_id.deckName").as("deckName")
+                                                .and("_id.image").as("image")
+                                                .and("listofcards").as("listofcards"));
+
+                // Use getUniqueMappedResult() to get a single result
+                return mongoTemplate.aggregate(aggregation, C_USER, WeibSchwarzBlauDecklist.class)
+                                .getUniqueMappedResult();
+        }
+
         public void deleteDecklist(String tcg, String userId, String deckId) {
 
                 System.out.println("Received tcg: " + tcg);
@@ -637,6 +711,8 @@ public class UserDetailsMongoRepository {
                         field = F_CRBDECKS;
                 } else if (T_DBZ.equals(tcg)) {
                         field = F_DBZFWDECKS;
+                } else if (T_WSB.equals(tcg)) {
+                        field = F_WSBDECKS;
                 }
 
                 if (field.isEmpty()) {

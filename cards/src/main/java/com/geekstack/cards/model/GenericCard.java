@@ -1,6 +1,7 @@
 package com.geekstack.cards.model;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 public class GenericCard {
     @Id
@@ -8,7 +9,8 @@ public class GenericCard {
 
     private String cardName;
 
-    private String imageSrc;
+    @Field("imageSrc")
+    private String urlimage;
 
     private int count;
 
@@ -36,13 +38,12 @@ public class GenericCard {
         this.cardName = cardName;
     }
 
-    public String getImageSrc() {
-        return imageSrc;
+    public String getUrlimage() {
+        return urlimage;
     }
 
-    public void setImageSrc(String imageSrc) {
-        this.imageSrc = imageSrc;
+    public void setUrlimage(String urlimage) {
+        this.urlimage = urlimage;
     }
-    
     
 }
