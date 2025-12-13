@@ -212,7 +212,7 @@ public class UserPostService {
         logger.info(userPost.getPostType());
         if (userPost.getPostType().equals("unionarena")) {
             String imageSrc = userPost.getListofcards().get(0).getImageSrc();
-            String fileName = imageSrc.split("/")[5];
+            String fileName = imageSrc.split("/")[4];
             String code = fileName.split("-")[0].toLowerCase();
             userPost.setCode(code);
         }
