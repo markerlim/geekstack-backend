@@ -13,57 +13,65 @@ public class CookieRunCard {
     @Id
     private String _id;
 
-    private int id;
+    @Field("card_idx")
+    private int cardIdx;
 
-    @Field("elementId")
-    private int elementId;
+    @Field("site_lang")
+    private String siteLang;
 
-    @Field("title")
+    @Field("card_name")
     @TextIndexed()
-    private String title;
+    private String cardName;
 
-    @Field("field_artistTitle")
-    private String artistTitle;
+    @Field("card_artist_title")
+    private String cardArtistTitle;
 
-    @Field("field_productTitle")
-    private String productTitle;
+    @Field("card_product_title")
+    private String cardProductTitle;
 
-    @Field("field_cardDesc")
-    private String cardDescription;
+    @Field("card_skill_text")
+    private String cardSkillText;
 
-    @Field("field_rare_tzsrperf")
-    private String rarity;
+    @Field("card_attack_text")
+    private String cardAttackText;
 
-    @Field("field_hp_zbxcocvx")
-    private String hp;
+    @Field("card_flip")
+    private String cardFlip;
+
+    @Field("card_rare")
+    private String cardRare;
+
+    @Field("card_grade")
+    private String cardGrade;
+
+    @Field("card_hp")
+    private String cardHp;
+
+    @Field("card_level")
+    private String cardLevel;
+
+    @Field("card_type")
+    private String cardType;
+
+    @Field("card_energy_type")
+    private String cardEnergyType;
+
+    @Field("card_color")
+    private String cardColor;
 
     @Field("cardUid")
+    @TextIndexed
     private String cardUid;
 
     @Field("cardId")
     @TextIndexed
     private String cardId;
 
-    @Field("field_grade")
-    private String grade;
+    @Field("booster")
+    private String booster;
 
     @Field("urlimage")
     private String urlimage;
-
-    private String productCategory;
-    private String productCategoryTitle;
-
-    private String cardType;
-    private String cardTypeTitle;
-
-    private String energyType;
-    private String energyTypeTitle;
-
-    private String cardLevel;
-    private String cardLevelTitle;
-
-    @Field("booster")
-    private String booster;
 
     private int count;
 
@@ -74,32 +82,30 @@ public class CookieRunCard {
     public CookieRunCard() {
     }
 
-    public CookieRunCard(String _id, int id, int elementId, String title, String artistTitle, String productTitle,
-            String cardDescription, String rarity, String hp, String cardUid, String cardId, String grade,
-            String urlimage, String productCategory, String productCategoryTitle, String cardType, String cardTypeTitle,
-            String energyType, String energyTypeTitle, String cardLevel, String cardLevelTitle, String booster) {
+    public CookieRunCard(String _id, int cardIdx, String siteLang, String cardName, String cardArtistTitle, 
+            String cardProductTitle, String cardSkillText, String cardAttackText, String cardFlip, 
+            String cardRare, String cardGrade, String cardHp, String cardLevel, String cardType, 
+            String cardEnergyType, String cardColor, String cardUid, String cardId, String booster, String urlimage) {
         this._id = _id;
-        this.id = id;
-        this.elementId = elementId;
-        this.title = title;
-        this.artistTitle = artistTitle;
-        this.productTitle = productTitle;
-        this.cardDescription = cardDescription;
-        this.rarity = rarity;
-        this.hp = hp;
+        this.cardIdx = cardIdx;
+        this.siteLang = siteLang;
+        this.cardName = cardName;
+        this.cardArtistTitle = cardArtistTitle;
+        this.cardProductTitle = cardProductTitle;
+        this.cardSkillText = cardSkillText;
+        this.cardAttackText = cardAttackText;
+        this.cardFlip = cardFlip;
+        this.cardRare = cardRare;
+        this.cardGrade = cardGrade;
+        this.cardHp = cardHp;
+        this.cardLevel = cardLevel;
+        this.cardType = cardType;
+        this.cardEnergyType = cardEnergyType;
+        this.cardColor = cardColor;
         this.cardUid = cardUid;
         this.cardId = cardId;
-        this.grade = grade;
-        this.urlimage = urlimage;
-        this.productCategory = productCategory;
-        this.productCategoryTitle = productCategoryTitle;
-        this.cardType = cardType;
-        this.cardTypeTitle = cardTypeTitle;
-        this.energyType = energyType;
-        this.energyTypeTitle = energyTypeTitle;
-        this.cardLevel = cardLevel;
-        this.cardLevelTitle = cardLevelTitle;
         this.booster = booster;
+        this.urlimage = urlimage;
     }
 
     public String getBooster() {
@@ -126,68 +132,124 @@ public class CookieRunCard {
         this._id = _id;
     }
 
-    public int getId() {
-        return id;
+    public int getCardIdx() {
+        return cardIdx;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setCardIdx(int cardIdx) {
+        this.cardIdx = cardIdx;
     }
 
-    public int getElementId() {
-        return elementId;
+    public String getSiteLang() {
+        return siteLang;
     }
 
-    public void setElementId(int elementId) {
-        this.elementId = elementId;
+    public void setSiteLang(String siteLang) {
+        this.siteLang = siteLang;
     }
 
-    public String getTitle() {
-        return title;
+    public String getCardName() {
+        return cardName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setCardName(String cardName) {
+        this.cardName = cardName;
     }
 
-    public String getArtistTitle() {
-        return artistTitle;
+    public String getCardArtistTitle() {
+        return cardArtistTitle;
     }
 
-    public void setArtistTitle(String artistTitle) {
-        this.artistTitle = artistTitle;
+    public void setCardArtistTitle(String cardArtistTitle) {
+        this.cardArtistTitle = cardArtistTitle;
     }
 
-    public String getProductTitle() {
-        return productTitle;
+    public String getCardProductTitle() {
+        return cardProductTitle;
     }
 
-    public void setProductTitle(String productTitle) {
-        this.productTitle = productTitle;
+    public void setCardProductTitle(String cardProductTitle) {
+        this.cardProductTitle = cardProductTitle;
     }
 
-    public String getCardDescription() {
-        return cardDescription;
+    public String getCardSkillText() {
+        return cardSkillText;
     }
 
-    public void setCardDescription(String cardDescription) {
-        this.cardDescription = cardDescription;
+    public void setCardSkillText(String cardSkillText) {
+        this.cardSkillText = cardSkillText;
     }
 
-    public String getRarity() {
-        return rarity;
+    public String getCardAttackText() {
+        return cardAttackText;
     }
 
-    public void setRarity(String rarity) {
-        this.rarity = rarity;
+    public void setCardAttackText(String cardAttackText) {
+        this.cardAttackText = cardAttackText;
     }
 
-    public String getHp() {
-        return hp;
+    public String getCardFlip() {
+        return cardFlip;
     }
 
-    public void setHp(String hp) {
-        this.hp = hp;
+    public void setCardFlip(String cardFlip) {
+        this.cardFlip = cardFlip;
+    }
+
+    public String getCardRare() {
+        return cardRare;
+    }
+
+    public void setCardRare(String cardRare) {
+        this.cardRare = cardRare;
+    }
+
+    public String getCardGrade() {
+        return cardGrade;
+    }
+
+    public void setCardGrade(String cardGrade) {
+        this.cardGrade = cardGrade;
+    }
+
+    public String getCardHp() {
+        return cardHp;
+    }
+
+    public void setCardHp(String cardHp) {
+        this.cardHp = cardHp;
+    }
+
+    public String getCardLevel() {
+        return cardLevel;
+    }
+
+    public void setCardLevel(String cardLevel) {
+        this.cardLevel = cardLevel;
+    }
+
+    public String getCardType() {
+        return cardType;
+    }
+
+    public void setCardType(String cardType) {
+        this.cardType = cardType;
+    }
+
+    public String getCardEnergyType() {
+        return cardEnergyType;
+    }
+
+    public void setCardEnergyType(String cardEnergyType) {
+        this.cardEnergyType = cardEnergyType;
+    }
+
+    public String getCardColor() {
+        return cardColor;
+    }
+
+    public void setCardColor(String cardColor) {
+        this.cardColor = cardColor;
     }
 
     public String getCardUid() {
@@ -206,84 +268,12 @@ public class CookieRunCard {
         this.cardId = cardId;
     }
 
-    public String getGrade() {
-        return grade;
-    }
-
-    public void setGrade(String grade) {
-        this.grade = grade;
-    }
-
     public String getUrlimage() {
         return urlimage;
     }
 
     public void setUrlimage(String urlimage) {
         this.urlimage = urlimage;
-    }
-
-    public String getProductCategory() {
-        return productCategory;
-    }
-
-    public void setProductCategory(String productCategory) {
-        this.productCategory = productCategory;
-    }
-
-    public String getProductCategoryTitle() {
-        return productCategoryTitle;
-    }
-
-    public void setProductCategoryTitle(String productCategoryTitle) {
-        this.productCategoryTitle = productCategoryTitle;
-    }
-
-    public String getCardType() {
-        return cardType;
-    }
-
-    public void setCardType(String cardType) {
-        this.cardType = cardType;
-    }
-
-    public String getCardTypeTitle() {
-        return cardTypeTitle;
-    }
-
-    public void setCardTypeTitle(String cardTypeTitle) {
-        this.cardTypeTitle = cardTypeTitle;
-    }
-
-    public String getEnergyType() {
-        return energyType;
-    }
-
-    public void setEnergyType(String energyType) {
-        this.energyType = energyType;
-    }
-
-    public String getEnergyTypeTitle() {
-        return energyTypeTitle;
-    }
-
-    public void setEnergyTypeTitle(String energyTypeTitle) {
-        this.energyTypeTitle = energyTypeTitle;
-    }
-
-    public String getCardLevel() {
-        return cardLevel;
-    }
-
-    public void setCardLevel(String cardLevel) {
-        this.cardLevel = cardLevel;
-    }
-
-    public String getCardLevelTitle() {
-        return cardLevelTitle;
-    }
-
-    public void setCardLevelTitle(String cardLevelTitle) {
-        this.cardLevelTitle = cardLevelTitle;
     }
 
     public String getTcg() {

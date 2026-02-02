@@ -35,7 +35,7 @@ public class CL_CookieRunRepository {
     }
 
     public List<CookieRunCard> getCardsByColor(List<String> color) {
-        Criteria criteria = Criteria.where("energyTypeTitle").in(color);
+        Criteria criteria = Criteria.where(F_ENERGYTYPE).in(color);
         Query query = new Query(criteria);
 
         QuerySorting(query, F_CARDUID, true);
@@ -65,7 +65,7 @@ public class CL_CookieRunRepository {
 
         // Optional: filter by color
         if (color != null && !color.isEmpty()) {
-            textQuery.addCriteria(Criteria.where("energyTypeTitle").in(color));
+            textQuery.addCriteria(Criteria.where(F_ENERGYTYPE).in(color));
         }
 
         TextQuerySorting(textQuery, F_BOOSTER, true, F_CARDUID, true);
@@ -87,7 +87,7 @@ public class CL_CookieRunRepository {
     }
 
     public List<CookieRunCard> getCardsByMongoId(List<String> ids) {
-        Criteria criteria = Criteria.where("_id").in(ids);
+        Criteria criteria = Criteria.where(F_MONGO_ID).in(ids);
         Query query = new Query(criteria);
         List<CookieRunCard> cards = mongoTemplate.find(query, CookieRunCard.class, C_COOKIERUN);
         return cards;

@@ -47,6 +47,9 @@ public class Constants {
     public static final String F_CARDTYPE = "cardType";
     public static final String F_CARDUID = "cardUid";
     public static final String F_CARDID = "cardId";
+    public static final String F_CARDNAME = "cardName";
+    public static final String F_ENERGYTYPE = "card_energy_type";// Cookie Run
+    public static final String F_MONGO_ID = "_id";
 
     public static final String F_USERPOST_ID = "_id";
     public static final String F_USERPOST_TYPE = "postType";

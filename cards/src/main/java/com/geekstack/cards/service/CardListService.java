@@ -192,6 +192,15 @@ public class CardListService {
             return cards;
         }
 
+        public List<DuelMastersCard> getCardsByMongoId(List<String> ids) {
+            return duelMasterRepository.getCardsByMongoId(ids);
+        }
+        public List<DuelMastersCard> searchForCardsRegex(String term) {
+            return duelMasterRepository.searchForCardsRegex(term);
+        }
+        public List<DuelMastersCard> searchForCardsMultiFieldRegex(String term) {
+            return duelMasterRepository.searchForCardsMultiFieldRegex(term);
+        }
     }
 
     // Nested class for UnionArena actions
