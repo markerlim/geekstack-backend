@@ -1,6 +1,7 @@
 package com.geekstack.cards.repository;
 
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -108,5 +109,86 @@ public class CL_DuelMasterRepository {
         Query query = new Query(criteria);
         List<DuelMastersCard> cards = mongoTemplate.find(query, DuelMastersCard.class, C_DUELMASTER);
         return cards;
+    }
+
+    public List<DuelMastersCard> searchForCardsRegex(String term) {
+        // Case-insensitive regex search on cardName field
+        Criteria criteria = Criteria.where("cardNameJP").regex(term, "i");
+        Query query = new Query(criteria);
+        QuerySorting(query, F_BOOSTER, false);
+        List<DuelMastersCard> results = mongoTemplate.find(query, DuelMastersCard.class, C_DUELMASTER);
+        return results;
+    }
+
+    public List<DuelMastersCard> searchForCardsRegex(String term, @Nullable List<String> color) {
+        // Case-insensitive regex search on cardName field with optional color filter
+        Criteria criteria = Criteria.where("cardNameJP").regex(term, "i");
+        
+        if (color != null && !color.isEmpty()) {
+            criteria = criteria.and(F_CIVILIZATION).in(color);
+        }
+        
+        Query query = new Query(criteria);
+        QuerySorting(query, F_BOOSTER, false);
+        List<DuelMastersCard> results = mongoTemplate.find(query, DuelMastersCard.class, C_DUELMASTER);
+        return results;
+    }
+
+    /**
+     * Search across multiple fields (cardNameJP, effectsJP, effects2JP) with optional decorative characters
+     * @param term Search term (can contain decorative characters like 《》)
+     * @return List of matching cards
+     */
+    public List<DuelMastersCard> searchForCardsMultiFieldRegex(String term) {
+        // Create regex pattern that allows optional decorative characters
+        String regexPattern = buildRegexPatternWithDecorations(term);
+        
+        Criteria criteria = new Criteria().orOperator(
+            Criteria.where("cardNameJP").regex(regexPattern, "i"),
+            Criteria.where("effectsJP").regex(regexPattern, "i"),
+            Criteria.where("effects2JP").regex(regexPattern, "i")
+        );
+        
+        Query query = new Query(criteria);
+        QuerySorting(query, F_BOOSTER, false);
+        List<DuelMastersCard> results = mongoTemplate.find(query, DuelMastersCard.class, C_DUELMASTER);
+        return results;
+    }
+
+    /**
+     * Search across multiple fields with optional color filter
+     * @param term Search term (can contain decorative characters like 《》)
+     * @param color Optional color filter
+     * @return List of matching cards
+     */
+    public List<DuelMastersCard> searchForCardsMultiFieldRegex(String term, @Nullable List<String> color) {
+        String regexPattern = buildRegexPatternWithDecorations(term);
+        
+        Criteria criteria = new Criteria().orOperator(
+            Criteria.where("cardNameJP").regex(regexPattern, "i"),
+            Criteria.where("effectsJP").regex(regexPattern, "i"),
+            Criteria.where("effects2JP").regex(regexPattern, "i")
+        );
+        
+        if (color != null && !color.isEmpty()) {
+            criteria = criteria.and(F_CIVILIZATION).in(color);
+        }
+        
+        Query query = new Query(criteria);
+        QuerySorting(query, F_BOOSTER, false);
+        List<DuelMastersCard> results = mongoTemplate.find(query, DuelMastersCard.class, C_DUELMASTER);
+        return results;
+    }
+
+    /**
+     * Build regex pattern that allows optional decorative characters (《》) only at start and end
+     * Example: "新世界秩序" becomes pattern that matches with or without decorations at boundaries
+     */
+    private String buildRegexPatternWithDecorations(String term) {
+        // Remove any existing decorative characters first
+        term = term.replaceAll("[《》～~]", "");
+        
+        // Build pattern with optional decorations only at start and end
+        return "[《》]*" + Pattern.quote(term) + "[《》]*";
     }
 }
